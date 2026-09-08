@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grow_socialee/Services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import 'contact.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +16,37 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  late VideoPlayerController _videoController;
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _videoKey = GlobalKey();
+  bool _isVideoInitialized = false;
+
+  // Client Logo Carousel Controllers & State
+  late PageController _clientPageController;
+  Timer? _carouselTimer;
+  int _currentLogoPage = 0;
+
+  // List of client logo assets - Add all client images here
+  final List<String> clientLogos = [
+    "assets/photos/aroma.png",
+    "assets/photos/aura.png",
+    "assets/photos/bani_thani.png",
+    "assets/photos/bindu_decor.png",
+    "assets/photos/ella.png",
+    "assets/photos/every_child.png",
+    "assets/photos/gayat_cate.png",
+    "assets/photos/kids_connect.png",
+    "assets/photos/manas.png",
+    "assets/photos/nari_sanari.png",
+    "assets/photos/nilav_shah.png",
+    "assets/photos/jinali_modi.png",
+    "assets/photos/pavan_salon.png",
+    "assets/photos/shwaas.png",
+    "assets/photos/tcl.png",
+    "assets/photos/ugs.png",
+    "assets/photos/ved_icu.png",
+    "assets/photos/wost.png",
+  ];
 
   // Theme Palette Colors
   static const Color primaryBlue = Colors.blue;
@@ -30,6 +63,114 @@ class _HomePageState extends State<HomePage> {
   final String facebookUrl = "https://www.facebook.com/growsocialeeofficial/";
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
   final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+    _scrollController.addListener(_onScrollCheckVideoVisibility);
+    _initializeClientCarousel();
+  }
+
+  void _initializeClientCarousel() {
+    _clientPageController = PageController(
+      initialPage: 0,
+      viewportFraction: 0.45, // Default for mobile, will adjust dynamically in UI
+    );
+
+    _startAutoScroll();
+  }
+
+  void _startAutoScroll() {
+    _carouselTimer?.cancel();
+    _carouselTimer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
+        if (_currentLogoPage < clientLogos.length - 1) {
+          _currentLogoPage++;
+        } else {
+          _currentLogoPage = 0;
+        }
+        _clientPageController.animateToPage(
+          _currentLogoPage,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _stopAutoScroll() {
+    _carouselTimer?.cancel();
+  }
+
+  void _nextPage() {
+    if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
+      int next = (_currentLogoPage + 1) % clientLogos.length;
+      _clientPageController.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _previousPage() {
+    if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
+      int prev = (_currentLogoPage - 1 + clientLogos.length) % clientLogos.length;
+      _clientPageController.animateToPage(
+        prev,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _initializeVideo() {
+    _videoController = VideoPlayerController.asset('assets/videos/video.mp4')
+      ..initialize().then((_) {
+        setState(() {
+          _isVideoInitialized = true;
+        });
+        _videoController.setLooping(true);
+        _videoController.setVolume(0.0); // Muted for autoplay compatibility
+        _checkAndControlVideoPlayback();
+      });
+  }
+
+  // Monitor scroll position to play/pause video when visible
+  void _onScrollCheckVideoVisibility() {
+    _checkAndControlVideoPlayback();
+  }
+
+  void _checkAndControlVideoPlayback() {
+    if (!_isVideoInitialized) return;
+
+    final RenderObject? renderObject = _videoKey.currentContext?.findRenderObject();
+    if (renderObject == null || !renderObject.attached) return;
+
+    final RenderBox box = renderObject as RenderBox;
+    final Offset position = box.localToGlobal(Offset.zero);
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    // Check if the video widget is substantially visible in the viewport
+    final bool isVisible = (position.dy < screenHeight * 0.85) && (position.dy + box.size.height > screenHeight * 0.15);
+
+    if (isVisible && !_videoController.value.isPlaying) {
+      _videoController.play();
+    } else if (!isVisible && _videoController.value.isPlaying) {
+      _videoController.pause();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScrollCheckVideoVisibility);
+    _scrollController.dispose();
+    _videoController.dispose();
+    _carouselTimer?.cancel();
+    _clientPageController.dispose();
+    super.dispose();
+  }
 
   // Helper Methods for Launching Actions
   Future<void> _launchUrlString(String url) async {
@@ -63,6 +204,49 @@ class _HomePageState extends State<HomePage> {
         );
       }
     }
+  }
+
+  // Function to view video with interactive pinch-to-zoom
+  void _openZoomableVideoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final Size deviceSize = MediaQuery.of(context).size;
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(10),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: deviceSize.width * 0.9,
+                height: deviceSize.height * 0.8,
+                child: InteractiveViewer(
+                  panEnabled: true,
+                  boundaryMargin: const EdgeInsets.all(20),
+                  minScale: 0.5,
+                  maxScale: 4.0,
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: _videoController.value.aspectRatio,
+                      child: VideoPlayer(_videoController),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -160,7 +344,7 @@ class _HomePageState extends State<HomePage> {
                       label: "REVIEWS",
                       onTap: () {
                         setState(() => _selectedIndex = 4);
-                        Navigator.pop(context); // Closes the drawer
+                        Navigator.pop(context);
                         _launchUrlString(
                           "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D",
                         );
@@ -188,50 +372,191 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
+          // Banner Image Section
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 1100),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Welcome",
-                        style: GoogleFonts.ibmPlexSansThai(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: primaryBlue,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        height: 4,
-                        width: 60,
-                        color: accentPink,
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        "Home Page Content goes here...",
-                        style: GoogleFonts.ibmPlexSansThai(
-                          fontSize: 16,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            child: SizedBox(
+              width: screenWidth,
+              child: Image.asset("assets/photos/image.png", width: screenWidth, fit: BoxFit.cover),
+            ),
+          ),
+
+          // Direct Video & Agency Info Section
+          SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 40,
+                horizontal: isDesktop ? 60 : 20,
+              ),
+              child: isDesktop
+                  ? Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(child: _buildDirectVideoPlayer(context)),
+                  const SizedBox(width: 40),
+                  Expanded(child: _buildAgencyDescription()),
+                ],
+              )
+                  : Column(
+                children: [
+                  _buildDirectVideoPlayer(context),
+                  const SizedBox(height: 30),
+                  _buildAgencyDescription(),
+                ],
               ),
             ),
           ),
-          const SliverFillRemaining(
-            hasScrollBody: false,
-            child: SizedBox.shrink(),
+
+          // Client Logo Section
+          SliverToBoxAdapter(
+            child: _clientLogo(),
           ),
+
+          // Footer Section
           SliverToBoxAdapter(
             child: _buildFooter(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Direct video display fetching dynamic device dimensions
+  Widget _buildDirectVideoPlayer(BuildContext context) {
+    final Size deviceSize = MediaQuery.of(context).size;
+    final bool isDesktop = deviceSize.width > 800;
+
+    // Dynamically set container width & height based on current screen size
+    final double playerWidth = isDesktop ? (deviceSize.width * 0.25).clamp(280.0, 360.0) : (deviceSize.width * 0.85).clamp(260.0, 340.0);
+    final double playerHeight = playerWidth * 1.55;
+
+    return Center(
+      key: _videoKey,
+      child: GestureDetector(
+        onTap: () => _openZoomableVideoDialog(context),
+        child: SizedBox(
+          width: playerWidth + 40,
+          height: playerHeight + 40,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Bottom-Left Backdrop Blue Box (Scaled dynamically)
+              Positioned(
+                left: 0,
+                bottom: 0,
+                child: Container(
+                  width: playerWidth * 0.8,
+                  height: playerHeight * 0.5,
+                  decoration: BoxDecoration(
+                    color: primaryBlue,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              // Front Video Viewport
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  width: playerWidth,
+                  height: playerHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: _isVideoInitialized
+                        ? AspectRatio(
+                      aspectRatio: _videoController.value.aspectRatio,
+                      child: VideoPlayer(_videoController),
+                    )
+                        : const Center(
+                      child: CircularProgressIndicator(color: primaryBlue),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Agency Description
+  Widget _buildAgencyDescription() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you",
+            style: GoogleFonts.ibmPlexSansThai(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
+            style: GoogleFonts.ibmPlexSansThai(
+              fontSize: 14,
+              color: Colors.black87,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Let’s build your digital success together! 📩 Contact Grow Socialee today!",
+            style: GoogleFonts.ibmPlexSansThai(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "We understand social behaviours within online communities, cultures and subcultures.",
+            style: GoogleFonts.ibmPlexSansThai(
+              fontSize: 14,
+              color: Colors.black87,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const Contact()));
+            },
+            child: Container(
+              padding: const EdgeInsets.only(left: 12, top: 8, bottom: 6, right: 8.5),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                "Get in Touch",
+                style: GoogleFonts.ibmPlexSansThai(
+                  fontSize: 15.8,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  height: 1.5,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -443,7 +768,15 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("GET IN TOUCH", style: GoogleFonts.ibmPlexSansThai(color: accentPink, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+        Text(
+          "GET IN TOUCH",
+          style: GoogleFonts.ibmPlexSansThai(
+            color: accentPink,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
         const SizedBox(height: 16),
         _buildFooterContactRow(
           icon: Icons.location_on_rounded,
@@ -507,6 +840,202 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _clientLogo() {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isDesktop = screenWidth > 800;
+
+    // Adjust fraction based on screen width so logos fit without distortion
+    final double fraction = isDesktop ? 0.22 : 0.45;
+
+    // Re-initialize controller fraction if screen configuration changes
+    if (_clientPageController.viewportFraction != fraction) {
+      _clientPageController = PageController(
+        initialPage: _currentLogoPage,
+        viewportFraction: fraction,
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 28.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "We Work With",
+            style: GoogleFonts.ibmPlexSansThai(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            height: 3,
+            width: 50,
+            decoration: BoxDecoration(
+              color: accentPink,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Carousel Stack with Forward / Backward Buttons
+          MouseRegion(
+            onEnter: (_) => _stopAutoScroll(),
+            onExit: (_) => _startAutoScroll(),
+            child: SizedBox(
+              height: 140,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification notification) {
+                      if (notification is ScrollStartNotification) {
+                        _stopAutoScroll();
+                      } else if (notification is ScrollEndNotification) {
+                        _startAutoScroll();
+                      }
+                      return false;
+                    },
+                    child: PageView.builder(
+                      controller: _clientPageController,
+                      onPageChanged: (int index) {
+                        setState(() {
+                          _currentLogoPage = index;
+                        });
+                      },
+                      itemCount: clientLogos.length,
+                      itemBuilder: (context, index) {
+                        return AnimatedBuilder(
+                          animation: _clientPageController,
+                          builder: (context, child) {
+                            double value = 1.0;
+                            if (_clientPageController.position.haveDimensions) {
+                              value = (_clientPageController.page! - index);
+                              value = (1 - (value.abs() * 0.18)).clamp(0.82, 1.0);
+                            }
+                            return Center(
+                              child: Transform.scale(
+                                scale: value,
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.grey.shade200, width: 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blue.withOpacity(0.06),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                clientLogos[index],
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => const Icon(
+                                  Icons.broken_image_outlined,
+                                  color: Colors.grey,
+                                  size: 30,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Backward Button Icon
+                  Positioned(
+                    left: isDesktop ? 20 : 5,
+                    child: Material(
+                      color: Colors.white,
+                      shape: const CircleBorder(),
+                      elevation: 3,
+                      child: InkWell(
+                        onTap: _previousPage,
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          child: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: 18,
+                            color: primaryBlue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Forward Button Icon
+                  Positioned(
+                    right: isDesktop ? 20 : 5,
+                    child: Material(
+                      color: Colors.white,
+                      shape: const CircleBorder(),
+                      elevation: 3,
+                      child: InkWell(
+                        onTap: _nextPage,
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          child: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 18,
+                            color: primaryBlue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Carousel Page Indicator Dots
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              clientLogos.length,
+                  (index) => AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                height: 7,
+                width: _currentLogoPage == index ? 18 : 7,
+                decoration: BoxDecoration(
+                  color: _currentLogoPage == index ? primaryBlue : Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
