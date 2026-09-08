@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grow_socialee/Client_Logos.dart';
 import 'package:grow_socialee/Services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   // List of client logo assets
   final List<String> clientLogos = [
-    "assets/photos/aroma.png",
+    "assets/photos/ar_dental.png",
     "assets/photos/aura.png",
     "assets/photos/bani_thani.png",
     "assets/photos/bindu_decor.png",
@@ -51,10 +52,10 @@ class _HomePageState extends State<HomePage> {
 
   // List of Our Work Videos from Assets
   final List<Map<String, String>> ourWorkVideos = [
-    {"title": "Brand Campaign 1", "path": "assets/videos/video_1.mp4"},
-    {"title": "Social Media Showcase", "path": "assets/videos/video_2.mp4"},
-    {"title": "Client Reel", "path": "assets/videos/video_3.mp4"},
-    {"title": "Promotional Short", "path": "assets/videos/video_4.mp4"},
+    {"title": "Brand Campaign 1", "path": "assets/videos/video_2.mp4"},
+    {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
+    {"title": "Client Reel", "path": "assets/videos/video_4.mp4"},
+    {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
   ];
 
   // Theme Palette Colors
@@ -329,16 +330,14 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 24.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
                 color: lightPink,
                 child: Center(
                   child: SizedBox(
                     height: 55,
                     child: Image.asset(
                       "assets/photos/Gro_Soc_Image.png",
-                      errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.business, size: 40, color: primaryBlue),
+                      color: primaryBlue,
                     ),
                   ),
                 ),
@@ -356,6 +355,12 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 0);
                         Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
                       },
                     ),
                     _buildDrawerItem(
@@ -374,6 +379,7 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 2);
                         Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ClientLogoPage()));
                       },
                     ),
                     _buildDrawerItem(
@@ -383,11 +389,7 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 3);
                         Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Services()),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Services()));
                       },
                     ),
                     _buildDrawerItem(
@@ -396,9 +398,9 @@ class _HomePageState extends State<HomePage> {
                       label: "REVIEWS",
                       onTap: () {
                         setState(() => _selectedIndex = 4);
-                        Navigator.pop(context);
+                        Navigator.pop(context); // Closes the drawer
                         _launchUrlString(
-                          "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/",
+                          "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D",
                         );
                       },
                     ),
@@ -409,11 +411,6 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 5);
                         Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Contact()),
-                        );
                       },
                     ),
                   ],
@@ -652,23 +649,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildLogoHeader() {
     return Container(
-      height: 120,
+      height: 60,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           SizedBox(
             height: 40,
-            width: 40,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                "assets/photos/Gro_Soc_Image.png",
-                fit: BoxFit.contain,
-                color: Colors.white,
-                errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.business, color: Colors.white, size: 30),
-              ),
-            ),
+            child: Image.asset("assets/photos/Gro_Soc_Image.png", color: bgWhite),
           ),
         ],
       ),
