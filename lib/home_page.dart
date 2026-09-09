@@ -187,31 +187,28 @@ class _HomePageState extends State<HomePage> {
 
   void _initializeVideo() {
     try {
-      _videoController =
-      VideoPlayerController.asset('assets/videos/video.mp4')
-        ..initialize().then((_) {
-          if (!mounted) return;
-          setState(() {
-            _isVideoInitialized = true;
-            _videoError = false;
-          });
-          _videoController.setLooping(true);
-          _videoController.setVolume(0.0);
-          _checkAndControlVideoPlayback();
-        }).catchError((error) {
-          if (mounted) {
-            setState(() {
-              _videoError = true;
-            });
-          }
-          debugPrint('Main Video initialization error: $error');
+      _videoController = VideoPlayerController.asset('assets/videos/video.mp4');
+      _videoController.initialize().then((_) {
+        if (!mounted) return;
+        setState(() {
+          _isVideoInitialized = true;
+          _videoError = false;
         });
-    } catch (e) {
-      if (mounted) {
+        _videoController.setLooping(true);
+        _videoController.setVolume(0.0);
+        _checkAndControlVideoPlayback();
+      }).catchError((error) {
+        if (!mounted) return;
         setState(() {
           _videoError = true;
         });
-      }
+        debugPrint('Main Video initialization error: $error');
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _videoError = true;
+      });
       debugPrint('Main Video initialization exception: $e');
     }
   }
@@ -238,13 +235,13 @@ class _HomePageState extends State<HomePage> {
 
     if (isVisible && !_videoController.value.isPlaying) {
       try {
-        _videoController.play();
+        if (mounted) _videoController.play();
       } catch (e) {
         debugPrint('Error playing video: $e');
       }
     } else if (!isVisible && _videoController.value.isPlaying) {
       try {
-        _videoController.pause();
+        if (mounted) _videoController.pause();
       } catch (e) {
         debugPrint('Error pausing video: $e');
       }
@@ -647,62 +644,80 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you",
-            style: GoogleFonts.ibmPlexSansThai(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+            "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar",
+            style: GoogleFonts.cormorantGaramond(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo.shade900,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you.",
+            textAlign: TextAlign.justify,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
               color: Colors.black87,
-              height: 1.5,
+              height: 1.6,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
-            style: GoogleFonts.ibmPlexSansThai(
+            textAlign: TextAlign.justify,
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               color: Colors.black87,
-              height: 1.5,
+              height: 1.6,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             "Let’s build your digital success together! 📩 Contact Grow Socialee today!",
-            style: GoogleFonts.ibmPlexSansThai(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              fontWeight: FontWeight.w700,
+              color: Colors.blue.shade800,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Text(
             "We understand social behaviours within online communities, cultures and subcultures.",
-            style: GoogleFonts.ibmPlexSansThai(
-              fontSize: 14,
-              color: Colors.black87,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              fontStyle: FontStyle.italic,
+              color: Colors.black54,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           InkWell(
             onTap: () {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => const Contact()));
             },
             child: Container(
-              padding: const EdgeInsets.only(
-                  left: 12, top: 8, bottom: 6, right: 8.5),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
                 color: primaryBlue,
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: primaryBlue.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Text(
                 "Get in Touch",
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 15.8,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
-                  height: 1.5,
                 ),
               ),
             ),
@@ -767,7 +782,7 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.ibmPlexSansThai(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: isSelected ? bgWhite : Colors.black87,
@@ -802,7 +817,15 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("We Work With", style: GoogleFonts.ibmPlexSansThai(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87, letterSpacing: 0.5)),
+          Text(
+            "We Work With",
+            style: GoogleFonts.cormorantGaramond(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo.shade900,
+              letterSpacing: 0.5,
+            ),
+          ),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -975,10 +998,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             "Our Work",
-            style: GoogleFonts.ibmPlexSansThai(
-              fontSize: 24,
+            style: GoogleFonts.cormorantGaramond(
+              fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: Colors.indigo.shade900,
               letterSpacing: 0.5,
             ),
           ),
@@ -995,7 +1018,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             "Explore video highlights crafted for our clients.",
             textAlign: TextAlign.center,
-            style: GoogleFonts.ibmPlexSansThai(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               color: Colors.black54,
             ),
@@ -1080,7 +1103,7 @@ class _HomePageState extends State<HomePage> {
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.ibmPlexSansThai(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
                   color: Colors.white,
                 ),
@@ -1106,7 +1129,7 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 12),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.ibmPlexSansThai(
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 13,
             color: Colors.white,
             height: 1.5,
@@ -1120,7 +1143,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Contact Info", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text("Contact Info", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 12),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
@@ -1130,7 +1153,7 @@ class _HomePageState extends State<HomePage> {
               const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(addressQuery, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white, height: 1.4)),
+                child: Text(addressQuery, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white, height: 1.4)),
               ),
             ],
           ),
@@ -1142,8 +1165,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white),
-              ),
+              Text(phoneNum, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white)),
             ],
           ),
         ),
@@ -1154,7 +1176,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(emailAddr, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
+              Text(emailAddr, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white)),
             ],
           ),
         ),
@@ -1166,7 +1188,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Follow Us", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text("Follow Us", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
@@ -1174,15 +1196,22 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(12)
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
                 onPressed: () => _launchUrlString(facebookUrl),
               ),
+              const SizedBox(
+                  height: 15,
+                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
                 onPressed: () => _launchUrlString(instagramUrl),
               ),
+              const SizedBox(
+                  height: 15,
+                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
                 onPressed: () => _launchUrlString(linkedInUrl),
@@ -1218,22 +1247,21 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(widget.videoPath)
-      ..initialize().then((_) {
-        if (!mounted) return;
-        setState(() {
-          _initialized = true;
-        });
-        _controller.setLooping(true);
-        _controller.setVolume(0.0);
-        _controller.play();
-      }).catchError((err) {
-        if (mounted) {
-          setState(() {
-            _hasError = true;
-          });
-        }
+    _controller = VideoPlayerController.asset(widget.videoPath);
+    _controller.initialize().then((_) {
+      if (!mounted) return;
+      setState(() {
+        _initialized = true;
       });
+      _controller.setLooping(true);
+      _controller.setVolume(0.0);
+      _controller.play();
+    }).catchError((err) {
+      if (!mounted) return;
+      setState(() {
+        _hasError = true;
+      });
+    });
   }
 
   @override
@@ -1298,7 +1326,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
             child: Text(
               widget.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.ibmPlexSansThai(
+              style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
