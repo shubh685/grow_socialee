@@ -8,6 +8,53 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'contact.dart';
 
+class UniformLogoCard extends StatelessWidget {
+  final String imagePath;
+  final double width;
+  final bool isWhiteLogo;
+
+  const UniformLogoCard({
+    Key? key,
+    required this.imagePath,
+    this.width = 320,
+    this.isWhiteLogo = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: width / 2.7,
+      decoration: BoxDecoration(
+        color: isWhiteLogo ? const Color(0xFF2C3E50) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isWhiteLogo ? Colors.transparent : const Color(0xFFF06292),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFF06292).withOpacity(0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: Center(
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) => Container(
+            color: Colors.grey[100],
+            child: const Icon(Icons.broken_image_outlined, color: Colors.grey),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -23,34 +70,31 @@ class _HomePageState extends State<HomePage> {
   bool _isVideoInitialized = false;
   bool _videoError = false;
 
-  // Client Logo Carousel Controllers & State
   late PageController _clientPageController;
   Timer? _carouselTimer;
   int _currentLogoPage = 0;
 
-  // List of client logo assets - Updated extensions for ar_dental_2.png, bani_thani.jpg, and tcl.jpg
-  final List<String> clientLogos = [
-    "assets/photos/aroma.png",
-    "assets/photos/aura.png",
-    "assets/photos/bani_thni.png",
-    "assets/photos/bindu_decor.png",
-    "assets/photos/ella.png",
-    "assets/photos/every_child.png",
-    "assets/photos/gayat_cate.png",
-    "assets/photos/kids_connect.png",
-    "assets/photos/manas.png",
-    "assets/photos/nari_sanari.png",
-    "assets/photos/nilav_shah.png",
-    "assets/photos/jinali_modi.png",
-    "assets/photos/pavan_salon.png",
-    "assets/photos/shwass.png",
-    "assets/photos/th_ce_la.png",
-    "assets/photos/ugs.png",
-    "assets/photos/ved_icu.png",
-    "assets/photos/wost.png",
+  final List<Map<String, dynamic>> clientLogos = [
+    {"path": "assets/photos/aroma.png", "isWhite": true},
+    {"path": "assets/photos/aura.png", "isWhite": false},
+    {"path": "assets/photos/bani_thani.png", "isWhite": true},
+    {"path": "assets/photos/bindu_decor.png", "isWhite": false},
+    {"path": "assets/photos/ella.png", "isWhite": false},
+    {"path": "assets/photos/every_child.png", "isWhite": false},
+    {"path": "assets/photos/gayat_cate.png", "isWhite": false},
+    {"path": "assets/photos/kids_connect.png", "isWhite": false},
+    {"path": "assets/photos/manas.png", "isWhite": false},
+    {"path": "assets/photos/nari_sanari.png", "isWhite": false},
+    {"path": "assets/photos/nilav_shah.png", "isWhite": false},
+    {"path": "assets/photos/jinali_modi.png", "isWhite": false},
+    {"path": "assets/photos/pavan_salon.png", "isWhite": false},
+    {"path": "assets/photos/shwass.png", "isWhite": false},
+    {"path": "assets/photos/the_celebration.png", "isWhite": true},
+    {"path": "assets/photos/ugs.png", "isWhite": false},
+    {"path": "assets/photos/ved_icu.png", "isWhite": false},
+    {"path": "assets/photos/wost.png", "isWhite": false},
   ];
 
-  // List of Our Work Videos from Assets
   final List<Map<String, String>> ourWorkVideos = [
     {"title": "Brand Campaign 1", "path": "assets/videos/video_2.mp4"},
     {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
@@ -58,13 +102,11 @@ class _HomePageState extends State<HomePage> {
     {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
   ];
 
-  // Theme Palette Colors
   static const Color primaryBlue = Colors.blue;
   static const Color accentPink = Color(0xFFE91E63);
   static const Color bgWhite = Colors.white;
   static const Color lightPink = Color(0xFFFCE4EC);
 
-  // Contact Details & Social Links
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -72,12 +114,9 @@ class _HomePageState extends State<HomePage> {
   final String googleMapsUrl =
       "https://maps.google.com/?q=Leela+Efcee+Bhavnagar+Gujarat";
 
-  final String facebookUrl =
-      "https://www.facebook.com/growsocialeeofficial/";
-  final String instagramUrl =
-      "https://www.instagram.com/growsocialee.official/";
-  final String linkedInUrl =
-      "https://in.linkedin.com/company/grow-socialee";
+  final String facebookUrl = "https://www.facebook.com/growsocialeeofficial/";
+  final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
+  final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
   @override
   void initState() {
@@ -90,9 +129,8 @@ class _HomePageState extends State<HomePage> {
   void _initializeClientCarousel() {
     _clientPageController = PageController(
       initialPage: 0,
-      viewportFraction: 0.45,
+      viewportFraction: 0.18,
     );
-
     _startAutoScroll();
   }
 
@@ -309,22 +347,36 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          backgroundColor: primaryBlue,
-          automaticallyImplyLeading: false,
-          elevation: 2,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
+        preferredSize: const Size.fromHeight(70),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Colors.indigo.shade700, Colors.blue.shade400,
+            ]),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.shade700.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-            ),
-            const SizedBox(width: 8),
-          ],
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            titleSpacing: 0,
+            title: _buildLogoHeader(),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
         ),
       ),
       endDrawer: Drawer(
@@ -335,15 +387,14 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 24.0, horizontal: 16.0),
-                color: lightPink,
+                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                color: Colors.blue.shade600,
                 child: Center(
                   child: SizedBox(
                     height: 55,
                     child: Image.asset(
                       "assets/photos/Gro_Soc_Image.png",
-                      color: primaryBlue,
+                      color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
                         color: primaryBlue,
@@ -491,12 +542,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // CLIENT LOGO SECTION
           SliverToBoxAdapter(
             child: _clientLogo(),
           ),
 
-          // OUR WORK SECTION (AUTO-PLAYING VIDEOS)
           SliverToBoxAdapter(
             child: _buildOurWorkSection(context),
           ),
@@ -535,7 +584,7 @@ class _HomePageState extends State<HomePage> {
                   width: playerWidth * 0.8,
                   height: playerHeight * 0.5,
                   decoration: BoxDecoration(
-                    color: primaryBlue,
+                    color: Colors.blue.shade600,
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
@@ -571,15 +620,9 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment:
                           MainAxisAlignment.center,
                           children: const [
-                            Icon(Icons.videocam_off,
-                                color: Colors.grey, size: 40),
+                            Icon(Icons.videocam_off, color: Colors.grey, size: 40),
                             SizedBox(height: 8),
-                            Text(
-                              "Video format unsupported",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.grey, fontSize: 12),
-                            ),
+                            Text("Video format unsupported", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
                           ],
                         )
                             : const CircularProgressIndicator(
@@ -650,7 +693,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(
                   left: 12, top: 8, bottom: 6, right: 8.5),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: primaryBlue,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -711,7 +754,7 @@ class _HomePageState extends State<HomePage> {
             padding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? primaryBlue : Colors.transparent,
+              color: isSelected ? Colors.pink.shade400: Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: isSelected
                   ? null
@@ -719,7 +762,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? bgWhite : accentPink),
+                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
@@ -733,8 +776,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      size: 14, color: bgWhite),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: bgWhite),
               ],
             ),
           ),
@@ -746,7 +788,7 @@ class _HomePageState extends State<HomePage> {
   Widget _clientLogo() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 36.0),
+      padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
       decoration: BoxDecoration(
         color: bgWhite,
         boxShadow: [
@@ -760,12 +802,7 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("We Work With",
-              style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                  letterSpacing: 0.5)),
+          Text("We Work With", style: GoogleFonts.ibmPlexSansThai(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87, letterSpacing: 0.5)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -780,7 +817,7 @@ class _HomePageState extends State<HomePage> {
             onEnter: (_) => _stopAutoScroll(),
             onExit: (_) => _startAutoScroll(),
             child: SizedBox(
-              height: 180,
+              height: 150,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -810,8 +847,7 @@ class _HomePageState extends State<HomePage> {
                             double value = 1.0;
                             if (_clientPageController.position.haveDimensions) {
                               value = (_clientPageController.page! - index);
-                              value =
-                                  (1 - (value.abs() * 0.15)).clamp(0.85, 1.0);
+                              value = (1 - (value.abs() * 0.12)).clamp(0.88, 1.0);
                             }
                             return Center(
                               child: Transform.scale(
@@ -821,47 +857,38 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                           child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                  color: accentPink.withOpacity(0.6), width: 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: accentPink.withOpacity(0.15),
-                                  blurRadius: 12,
-                                  spreadRadius: 1,
-                                  offset: const Offset(0, 4),
+                            margin: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Container(
+                              width: 220,
+                              height: 110,
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: (clientLogos[index]["isWhite"] ?? false)
+                                    ? const Color(0xFF2C3E50)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: (clientLogos[index]["isWhite"] ?? false)
+                                      ? Colors.transparent
+                                      : Colors.grey.shade200,
+                                  width: 1,
                                 ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                clientLogos[index],
-                                fit: BoxFit.contain,
-                                filterQuality: FilterQuality.high,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Container(
-                                      color: Colors.grey.shade100,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                        children: const [
-                                          Icon(Icons.broken_image_outlined,
-                                              color: Colors.grey, size: 28),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            "Logo Error",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 10),
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  clientLogos[index]["path"]!,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.broken_image_outlined,
+                                      color: Colors.grey),
+                                ),
                               ),
                             ),
                           ),
@@ -870,19 +897,19 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Positioned(
-                    left: 10,
+                    left: 6,
                     child: Material(
                       color: Colors.white,
                       shape: const CircleBorder(),
-                      elevation: 4,
+                      elevation: 3,
                       child: InkWell(
                         onTap: _previousPage,
                         customBorder: const CircleBorder(),
                         child: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           child: const Icon(
                             Icons.arrow_back_ios_rounded,
-                            size: 18,
+                            size: 14,
                             color: primaryBlue,
                           ),
                         ),
@@ -890,19 +917,19 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Positioned(
-                    right: 10,
+                    right: 6,
                     child: Material(
                       color: Colors.white,
                       shape: const CircleBorder(),
-                      elevation: 4,
+                      elevation: 3,
                       child: InkWell(
                         onTap: _nextPage,
                         customBorder: const CircleBorder(),
                         child: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           child: const Icon(
                             Icons.arrow_forward_ios_rounded,
-                            size: 18,
+                            size: 14,
                             color: primaryBlue,
                           ),
                         ),
@@ -913,15 +940,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               clientLogos.length,
                   (index) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: _currentLogoPage == index ? 12 : 6,
-                height: 6,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                width: _currentLogoPage == index ? 10 : 5,
+                height: 5,
                 decoration: BoxDecoration(
                   color: _currentLogoPage == index
                       ? accentPink
@@ -1010,13 +1037,13 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       width: double.infinity,
-      color: lightPink,
+      color: Colors.indigo.shade500,
       child: Column(
         children: [
           Container(
             height: 5,
             width: double.infinity,
-            color: primaryBlue,
+            color: Colors.blue.shade600,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
@@ -1049,13 +1076,13 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: bgWhite,
+            color: Colors.blue.shade600,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.ibmPlexSansThai(
                   fontSize: 12,
-                  color: Colors.black54,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -1073,15 +1100,7 @@ class _HomePageState extends State<HomePage> {
           height: 45,
           child: Image.asset(
             "assets/photos/Gro_Soc_Image.png",
-            color: primaryBlue,
-            errorBuilder: (context, error, stackTrace) => const Text(
-              "Grow Socialee",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: primaryBlue,
-              ),
-            ),
+            color: Colors.white,
           ),
         ),
         const SizedBox(height: 12),
@@ -1089,7 +1108,7 @@ class _HomePageState extends State<HomePage> {
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.ibmPlexSansThai(
             fontSize: 13,
-            color: Colors.black87,
+            color: Colors.white,
             height: 1.5,
           ),
         ),
@@ -1101,32 +1120,17 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Contact Info",
-          style: GoogleFonts.ibmPlexSansThai(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
+        Text("Contact Info", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 12),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined,
-                  size: 18, color: accentPink),
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  addressQuery,
-                  style: GoogleFonts.ibmPlexSansThai(
-                    fontSize: 13,
-                    color: Colors.black87,
-                    height: 1.4,
-                  ),
-                ),
+                child: Text(addressQuery, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white, height: 1.4)),
               ),
             ],
           ),
@@ -1136,14 +1140,9 @@ class _HomePageState extends State<HomePage> {
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: accentPink),
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(
-                phoneNum,
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 13,
-                  color: Colors.black87,
-                ),
+              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white),
               ),
             ],
           ),
@@ -1153,15 +1152,9 @@ class _HomePageState extends State<HomePage> {
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: accentPink),
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(
-                emailAddr,
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 13,
-                  color: Colors.black87,
-                ),
-              ),
+              Text(emailAddr, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
             ],
           ),
         ),
@@ -1173,33 +1166,29 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Follow Us",
-          style: GoogleFonts.ibmPlexSansThai(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
+        Text("Follow Us", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.facebook,
-                  size: 20, color: primaryBlue),
-              onPressed: () => _launchUrlString(facebookUrl),
-            ),
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.instagram,
-                  size: 20, color: accentPink),
-              onPressed: () => _launchUrlString(instagramUrl),
-            ),
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.linkedin,
-                  size: 20, color: primaryBlue),
-              onPressed: () => _launchUrlString(linkedInUrl),
-            ),
-          ],
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white70,
+              borderRadius: BorderRadius.circular(12)
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(facebookUrl),
+              ),
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
+                onPressed: () => _launchUrlString(instagramUrl),
+              ),
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(linkedInUrl),
+              ),
+            ],
+          ),
         ),
       ],
     );
