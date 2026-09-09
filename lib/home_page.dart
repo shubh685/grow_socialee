@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grow_socialee/About.dart';
 import 'package:grow_socialee/Client_Logos.dart';
 import 'package:grow_socialee/Services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -429,6 +430,7 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 1);
                         Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
                       },
                     ),
                     _buildDrawerItem(
