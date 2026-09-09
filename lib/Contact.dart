@@ -463,17 +463,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 ),
               ),
               const SizedBox(height: 14),
-              Text(
-                "How Can We Help Grow Your Brand?",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: primaryBlue,
-                  height: 1.2,
-                ),
-              ),
+              // Main Title updated to use Radley font
+              Text("How Can We Help Grow Your Brand?", textAlign: TextAlign.center, style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
               const SizedBox(height: 10),
+              // Description kept as GoogleFonts.ibmPlexSansThai
               Text(
                 "Have a question, idea, or project in mind? Pick your preferred mode of communication below or drop us a message.",
                 textAlign: TextAlign.center,
@@ -496,7 +489,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: bgWhite,
+        gradient: LinearGradient(colors: [
+          Colors.blue.shade600, Colors.indigo.shade500
+        ]),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -517,9 +512,11 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Send Us A Message", style: GoogleFonts.ibmPlexSansThai(fontSize: 22, fontWeight: FontWeight.bold, color: primaryBlue)),
+                      // Subtitle Title inside card uses Radley font
+                      Text("Send Us A Message", style: GoogleFonts.radley(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                       const SizedBox(height: 2),
-                      Text("Fill out the form below and we'll reply shortly.", style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.black54)),
+                      // Subtitle description kept as GoogleFonts.ibmPlexSansThai
+                      Text("Fill out the form below and we'll reply shortly.", style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white70)),
                     ],
                   ),
                 ),
@@ -546,10 +543,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     child: ChoiceChip(
                       label: Text(categories[index]),
                       selected: isSelected,
-                      selectedColor: primaryBlue,
+                      selectedColor: Colors.white,
                       backgroundColor: Colors.grey[100],
                       labelStyle: GoogleFonts.ibmPlexSansThai(
-                        color: isSelected ? bgWhite : Colors.black87,
+                        color: isSelected ? Colors.black87 : Colors.pink.shade200,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         fontSize: 12,
                       ),
@@ -602,13 +599,15 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             DropdownButtonFormField<String>(
               value: _serviceDr,
               isExpanded: true,
-              style: GoogleFonts.ibmPlexSansThai(fontSize: 14, color: Colors.black87),
+              dropdownColor: Colors.blue.shade600, // Background color for dropdown list items
+              style: GoogleFonts.radley(fontSize: 14, color: Colors.black87),
+              iconEnabledColor: Colors.blue.shade600,
               decoration: InputDecoration(
                 labelText: "Select Service",
                 labelStyle: GoogleFonts.ibmPlexSansThai(color: Colors.black54, fontSize: 14),
                 prefixIcon: const Icon(Icons.cleaning_services_outlined, color: primaryBlue, size: 20),
                 filled: true,
-                fillColor: Colors.grey[50],
+                fillColor: bgWhite,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -630,9 +629,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               items: _servicesList.map((String service) {
                 return DropdownMenuItem<String>(
                   value: service,
-                  child: Text(
-                    service,
-                    overflow: TextOverflow.ellipsis,
+                  child: Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.only(left: 10, right: 8),
+                    child: Text(service, overflow: TextOverflow.ellipsis, style: GoogleFonts.radley(color: Colors.pink.shade300, fontSize: 14, fontWeight: FontWeight.w500,),),
                   ),
                 );
               }).toList(),
@@ -660,7 +660,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: accentPink,
+                  backgroundColor: lightPink,
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -672,17 +672,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.near_me_rounded, color: bgWhite, size: 20),
+                    const Icon(Icons.near_me_rounded, color: accentPink, size: 22),
                     const SizedBox(width: 8),
-                    Text(
-                      "SUBMIT INQUIRY",
-                      style: GoogleFonts.ibmPlexSansThai(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: bgWhite,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
+                    Text("SUBMIT INQUIRY", style: GoogleFonts.radley(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.blue.shade600, letterSpacing: 1.1)),
                   ],
                 ),
               ),
@@ -729,8 +721,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   children: [
                     Text(
                       "Fast Response Guarantee",
-                      style: GoogleFonts.ibmPlexSansThai(
-                        fontSize: 16,
+                      style: GoogleFonts.radley(
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
                         color: bgWhite,
                       ),
@@ -826,8 +818,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.ibmPlexSansThai(
-                        fontSize: 14,
+                      style: GoogleFonts.radley(
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: primaryBlue,
                       ),
@@ -984,8 +976,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                             children: [
                               Text(
                                 "Grow Socialee",
-                                style: GoogleFonts.ibmPlexSansThai(
-                                  fontSize: 15,
+                                style: GoogleFonts.radley(
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black87,
                                 ),
@@ -1066,13 +1058,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                         elevation: 3,
                       ),
                       icon: const Icon(Icons.directions_rounded, size: 18),
-                      label: Text(
-                        "Get Directions",
-                        style: GoogleFonts.ibmPlexSansThai(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      label: Text("Get Directions", style: GoogleFonts.radley(fontSize: 13, fontWeight: FontWeight.bold)),
                       onPressed: () => _launchUrlString(googleDirectionsUrl),
                     ),
                   ),
@@ -1098,10 +1084,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       maxLines: maxLines,
       keyboardType: keyboardType,
       validator: validator,
-      style: GoogleFonts.ibmPlexSansThai(fontSize: 14, color: Colors.black87),
+      style: GoogleFonts.radley(fontSize: 14, color: Colors.black87),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.ibmPlexSansThai(color: Colors.black54, fontSize: 14),
+        labelStyle: GoogleFonts.radley(color: Colors.black54, fontSize: 14),
         prefixIcon: Icon(icon, color: primaryBlue, size: 20),
         filled: true,
         fillColor: Colors.grey[50],
@@ -1132,13 +1118,13 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
 
     return Container(
       width: double.infinity,
-      color: lightPink,
+      color: Colors.indigo.shade500,
       child: Column(
         children: [
           Container(
             height: 5,
             width: double.infinity,
-            color: primaryBlue,
+            color: Colors.blue.shade600,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
@@ -1149,34 +1135,35 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(flex: 2, child: _buildFooterBranding()),
+                    Expanded(flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 40),
-                    Expanded(flex: 3, child: _buildFooterContactDetails()),
+                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildFooterBranding(),
-                    const SizedBox(height: 32),
-                    const Divider(color: Colors.black12, thickness: 1),
-                    const SizedBox(height: 24),
-                    _buildFooterContactDetails(),
+                    _buildFooterBrandSection(),
+                    const SizedBox(height: 30),
+                    _buildFooterContactSection(),
+                    const SizedBox(height: 30),
+                    _buildFooterSocialSection(),
                   ],
                 ),
               ),
             ),
           ),
           Container(
-            width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: primaryBlue,
+            color: Colors.blue.shade600,
             child: Center(
               child: Text(
-                "© ${DateTime.now().year} All Rights Reserved.",
+                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.ibmPlexSansThai(
-                  color: bgWhite,
-                  fontSize: 13,
+                  fontSize: 12,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -1186,162 +1173,112 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildFooterBranding() {
+  Widget _buildFooterBrandSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 48,
-          child: Image.asset("assets/photos/Gro_Soc_Image.png", color: primaryBlue),
+          height: 45,
+          child: Image.asset(
+            "assets/photos/Gro_Soc_Image.png",
+            color: Colors.white,
+          ),
         ),
         const SizedBox(height: 12),
-        Container(
-          height: 3,
-          width: 40,
-          color: accentPink,
-        ),
-        const SizedBox(height: 16),
         Text(
-          "Social Media Marketing Agency in Bhavnagar",
+          "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.ibmPlexSansThai(
-            color: Colors.black87,
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 20),
-        _buildSocialIconsRow(),
-      ],
-    );
-  }
-
-  Widget _buildSocialIconsRow() {
-    return Row(
-      children: [
-        _buildSocialIconButton(
-          icon: FontAwesomeIcons.facebookF,
-          backgroundColor: const Color(0xFF1877F2),
-          onTap: () => _launchUrlString(facebookUrl),
-        ),
-        const SizedBox(width: 12),
-        _buildSocialIconButton(
-          icon: FontAwesomeIcons.instagram,
-          backgroundColor: const Color(0xFFE4405F),
-          onTap: () => _launchUrlString(instagramUrl),
-        ),
-        const SizedBox(width: 12),
-        _buildSocialIconButton(
-          icon: FontAwesomeIcons.linkedinIn,
-          backgroundColor: const Color(0xFF0A66C2),
-          onTap: () => _launchUrlString(linkedInUrl),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialIconButton({
-    required IconData icon,
-    required Color backgroundColor,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: backgroundColor,
-      shape: const CircleBorder(),
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: Container(
-          width: 38,
-          height: 38,
-          alignment: Alignment.center,
-          child: FaIcon(
-            icon,
+            fontSize: 13,
             color: Colors.white,
-            size: 18,
+            height: 1.5,
           ),
         ),
-      ),
+      ],
     );
   }
 
-  Widget _buildFooterContactDetails() {
+  Widget _buildFooterContactSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "GET IN TOUCH",
-          style: GoogleFonts.ibmPlexSansThai(
-            color: accentPink,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
+        Text("Contact Info", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        const SizedBox(height: 12),
+        InkWell(
+          onTap: () => _launchUrlString(googleMapsUrl),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(addressQuery, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white, height: 1.4)),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 16),
-        _buildFooterContactRow(
-          icon: Icons.location_on_rounded,
-          text: addressQuery,
-          onTap: () => _launchUrlString(googleMapsUrl),
-        ),
-        const SizedBox(height: 12),
-        _buildFooterContactRow(
-          icon: Icons.phone_rounded,
-          text: "+91 94085 18168",
+        const SizedBox(height: 10),
+        InkWell(
           onTap: () => _makePhoneCall(phoneNum),
+          child: Row(
+            children: [
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
+              const SizedBox(width: 8),
+              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white),
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: 12),
-        _buildFooterContactRow(
-          icon: Icons.email_rounded,
-          text: emailAddr,
+        const SizedBox(height: 10),
+        InkWell(
           onTap: () => _sendEmail(emailAddr),
-        ),
-        const SizedBox(height: 12),
-        _buildFooterContactRow(
-          icon: Icons.access_time_filled_rounded,
-          text: "Working Hours: 9:30 AM to 7:00 PM",
-          onTap: null,
+          child: Row(
+            children: [
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
+              const SizedBox(width: 8),
+              Text(emailAddr, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
+            ],
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildFooterContactRow({
-    required IconData icon,
-    required String text,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(6),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.12),
-                shape: BoxShape.circle,
+  Widget _buildFooterSocialSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Follow Us", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white70,
+              borderRadius: BorderRadius.circular(12)
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(facebookUrl),
               ),
-              child: Icon(icon, color: primaryBlue, size: 18),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                text,
-                style: GoogleFonts.ibmPlexSansThai(
-                  color: Colors.black87,
-                  fontSize: 14,
-                  height: 1.4,
-                  decoration: onTap != null ? TextDecoration.underline : TextDecoration.none,
-                ),
+              const SizedBox(
+                  height: 15,
+                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
+                onPressed: () => _launchUrlString(instagramUrl),
               ),
-            ),
-          ],
+              const SizedBox(
+                  height: 15,
+                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(linkedInUrl),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
