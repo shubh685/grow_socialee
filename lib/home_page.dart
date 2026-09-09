@@ -656,43 +656,23 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 12),
           Text(
             "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you.",
-            textAlign: TextAlign.justify,
-            style: GoogleFonts.radley(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: Colors.black87,
-              height: 1.6,
-            ),
+            textAlign: TextAlign.justify, style: GoogleFonts.radley(fontSize: 16.2, fontWeight: FontWeight.w400, color: Colors.black87, height: 1.6),
           ),
           const SizedBox(height: 16),
           Text(
             "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
-            textAlign: TextAlign.justify,
-            style: GoogleFonts.radley(
-              fontSize: 14,
-              color: Colors.black87,
-              height: 1.6,
-            ),
+            textAlign: TextAlign.justify, style: GoogleFonts.radley(fontSize: 16.2, color: Colors.black87, height: 1.6),
           ),
           const SizedBox(height: 16),
           Text(
             "Let’s build your digital success together! 📩 Contact Grow Socialee today!",
-            style: GoogleFonts.radley(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.blue.shade800,
-              height: 1.5,
-            ),
+            textAlign: TextAlign.justify,
+            style: GoogleFonts.radley(fontSize: 16.2, fontWeight: FontWeight.w700, color: Colors.blue.shade800, height: 1.5),
           ),
           const SizedBox(height: 12),
           Text(
             "We understand social behaviours within online communities, cultures and subcultures.",
-            style: GoogleFonts.radley(
-              fontSize: 13,
-              fontStyle: FontStyle.italic,
-              color: Colors.black54,
-              height: 1.5,
-            ),
+            textAlign: TextAlign.justify, style: GoogleFonts.radley(fontSize: 16.2, fontStyle: FontStyle.italic, color: Colors.black54, height: 1.5),
           ),
           const SizedBox(height: 20),
           InkWell(
@@ -812,7 +792,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Brands We’re Proud Of", style: GoogleFonts.readexPro(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
+            "Brands We’re Proud Of", style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
           const SizedBox(height: 6),
           Container(
             height: 3,
