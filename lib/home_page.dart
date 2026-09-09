@@ -28,11 +28,11 @@ class _HomePageState extends State<HomePage> {
   Timer? _carouselTimer;
   int _currentLogoPage = 0;
 
-  // List of client logo assets
+  // List of client logo assets - Updated extensions for ar_dental_2.png, bani_thani.jpg, and tcl.jpg
   final List<String> clientLogos = [
-    "assets/photos/ar_dental.png",
+    "assets/photos/aroma.png",
     "assets/photos/aura.png",
-    "assets/photos/bani_thani.png",
+    "assets/photos/bani_thni.png",
     "assets/photos/bindu_decor.png",
     "assets/photos/ella.png",
     "assets/photos/every_child.png",
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     "assets/photos/jinali_modi.png",
     "assets/photos/pavan_salon.png",
     "assets/photos/shwass.png",
-    "assets/photos/tcl.png",
+    "assets/photos/th_ce_la.png",
     "assets/photos/ugs.png",
     "assets/photos/ved_icu.png",
     "assets/photos/wost.png",
@@ -99,7 +99,10 @@ class _HomePageState extends State<HomePage> {
   void _startAutoScroll() {
     _carouselTimer?.cancel();
     _carouselTimer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
-      if (!mounted) return;
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
         if (_currentLogoPage < clientLogos.length - 1) {
           _currentLogoPage++;
@@ -120,6 +123,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _nextPage() {
+    if (!mounted) return;
     if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
       int next = (_currentLogoPage + 1) % clientLogos.length;
       _clientPageController.animateToPage(
@@ -131,6 +135,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _previousPage() {
+    if (!mounted) return;
     if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
       int prev =
           (_currentLogoPage - 1 + clientLogos.length) % clientLogos.length;
@@ -210,7 +215,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _carouselTimer?.cancel();
+    _stopAutoScroll();
     _scrollController.removeListener(_onScrollCheckVideoVisibility);
     _scrollController.dispose();
     _videoController.dispose();
@@ -330,7 +335,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 24.0, horizontal: 16.0),
                 color: lightPink,
                 child: Center(
                   child: SizedBox(
@@ -338,6 +344,11 @@ class _HomePageState extends State<HomePage> {
                     child: Image.asset(
                       "assets/photos/Gro_Soc_Image.png",
                       color: primaryBlue,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.image,
+                        color: primaryBlue,
+                        size: 40,
+                      ),
                     ),
                   ),
                 ),
@@ -379,7 +390,10 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 2);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ClientLogoPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()));
                       },
                     ),
                     _buildDrawerItem(
@@ -389,7 +403,10 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 3);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Services()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()));
                       },
                     ),
                     _buildDrawerItem(
@@ -398,7 +415,7 @@ class _HomePageState extends State<HomePage> {
                       label: "REVIEWS",
                       onTap: () {
                         setState(() => _selectedIndex = 4);
-                        Navigator.pop(context); // Closes the drawer
+                        Navigator.pop(context);
                         _launchUrlString(
                           "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D",
                         );
@@ -411,6 +428,10 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 5);
                         Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Contact()));
                       },
                     ),
                   ],
@@ -438,7 +459,8 @@ class _HomePageState extends State<HomePage> {
                   height: 200,
                   color: Colors.grey[300],
                   child: const Center(
-                    child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                    child:
+                    Icon(Icons.broken_image, size: 50, color: Colors.grey),
                   ),
                 ),
               ),
@@ -474,7 +496,7 @@ class _HomePageState extends State<HomePage> {
             child: _clientLogo(),
           ),
 
-          // OUR WORK SECTION (PLAYABLE VIDEOS)
+          // OUR WORK SECTION (AUTO-PLAYING VIDEOS)
           SliverToBoxAdapter(
             child: _buildOurWorkSection(context),
           ),
@@ -655,7 +677,15 @@ class _HomePageState extends State<HomePage> {
         children: [
           SizedBox(
             height: 40,
-            child: Image.asset("assets/photos/Gro_Soc_Image.png", color: bgWhite),
+            child: Image.asset(
+              "assets/photos/Gro_Soc_Image.png",
+              color: bgWhite,
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.business,
+                color: bgWhite,
+                size: 30,
+              ),
+            ),
           ),
         ],
       ),
@@ -714,18 +744,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _clientLogo() {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
-
-    final double fraction = isDesktop ? 0.22 : 0.45;
-
-    if (_clientPageController.viewportFraction != fraction) {
-      _clientPageController = PageController(
-        initialPage: _currentLogoPage,
-        viewportFraction: fraction,
-      );
-    }
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 36.0),
@@ -742,15 +760,12 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            "We Work With",
-            style: GoogleFonts.ibmPlexSansThai(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-              letterSpacing: 0.5,
-            ),
-          ),
+          Text("We Work With",
+              style: GoogleFonts.ibmPlexSansThai(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                  letterSpacing: 0.5)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -793,8 +808,7 @@ class _HomePageState extends State<HomePage> {
                           animation: _clientPageController,
                           builder: (context, child) {
                             double value = 1.0;
-                            if (_clientPageController
-                                .position.haveDimensions) {
+                            if (_clientPageController.position.haveDimensions) {
                               value = (_clientPageController.page! - index);
                               value =
                                   (1 - (value.abs() * 0.15)).clamp(0.85, 1.0);
@@ -809,7 +823,7 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 10),
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16),
@@ -832,10 +846,20 @@ class _HomePageState extends State<HomePage> {
                                 errorBuilder: (context, error, stackTrace) =>
                                     Container(
                                       color: Colors.grey.shade100,
-                                      child: const Icon(
-                                        Icons.broken_image_outlined,
-                                        color: Colors.grey,
-                                        size: 30,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: const [
+                                          Icon(Icons.broken_image_outlined,
+                                              color: Colors.grey, size: 28),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            "Logo Error",
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 10),
+                                          )
+                                        ],
                                       ),
                                     ),
                               ),
@@ -846,7 +870,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Positioned(
-                    left: isDesktop ? 20 : 5,
+                    left: 10,
                     child: Material(
                       color: Colors.white,
                       shape: const CircleBorder(),
@@ -866,7 +890,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Positioned(
-                    right: isDesktop ? 20 : 5,
+                    right: 10,
                     child: Material(
                       color: Colors.white,
                       shape: const CircleBorder(),
@@ -995,8 +1019,7 @@ class _HomePageState extends State<HomePage> {
             color: primaryBlue,
           ),
           Padding(
-            padding:
-            const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -1004,25 +1027,20 @@ class _HomePageState extends State<HomePage> {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                        flex: 2,
-                        child: _buildFooterBrandSection()),
-                    const SizedBox(width: 32),
-                    Expanded(
-                        flex: 2,
-                        child: _buildFooterContactSection()),
-                    const SizedBox(width: 32),
-                    Expanded(
-                        flex: 1, child: _buildFooterSocialSection()),
+                    Expanded(flex: 2, child: _buildFooterBrandSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFooterBrandSection(),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 30),
                     _buildFooterContactSection(),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 30),
                     _buildFooterSocialSection(),
                   ],
                 ),
@@ -1030,16 +1048,15 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Container(
-            width: double.infinity,
-            color: primaryBlue,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            child: Text(
-              "© ${DateTime.now().year} Grow Socialee. All Rights Reserved.",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ibmPlexSansThai(
-                fontSize: 12,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            color: bgWhite,
+            child: Center(
+              child: Text(
+                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
+                style: GoogleFonts.ibmPlexSansThai(
+                  fontSize: 12,
+                  color: Colors.black54,
+                ),
               ),
             ),
           ),
@@ -1056,10 +1073,11 @@ class _HomePageState extends State<HomePage> {
           height: 45,
           child: Image.asset(
             "assets/photos/Gro_Soc_Image.png",
-            errorBuilder: (context, error, stackTrace) => Text(
-              "GROW SOCIALEE",
-              style: GoogleFonts.ibmPlexSansThai(
-                fontSize: 18,
+            color: primaryBlue,
+            errorBuilder: (context, error, stackTrace) => const Text(
+              "Grow Socialee",
+              style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: primaryBlue,
               ),
@@ -1068,7 +1086,7 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 12),
         Text(
-          "Boost your online presence with Bhavnagar's leading social media marketing & branding agency.",
+          "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.ibmPlexSansThai(
             fontSize: 13,
             color: Colors.black87,
@@ -1091,13 +1109,14 @@ class _HomePageState extends State<HomePage> {
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on, size: 18, color: accentPink),
+              const Icon(Icons.location_on_outlined,
+                  size: 18, color: accentPink),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -1112,12 +1131,12 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         InkWell(
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone, size: 18, color: primaryBlue),
+              const Icon(Icons.phone_outlined, size: 18, color: accentPink),
               const SizedBox(width: 8),
               Text(
                 phoneNum,
@@ -1129,12 +1148,12 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         InkWell(
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email, size: 18, color: accentPink),
+              const Icon(Icons.email_outlined, size: 18, color: accentPink),
               const SizedBox(width: 8),
               Text(
                 emailAddr,
@@ -1166,18 +1185,18 @@ class _HomePageState extends State<HomePage> {
         Row(
           children: [
             IconButton(
-              icon: const FaIcon(FontAwesomeIcons.facebook,
-                  color: primaryBlue, size: 22),
+              icon: const Icon(FontAwesomeIcons.facebook,
+                  size: 20, color: primaryBlue),
               onPressed: () => _launchUrlString(facebookUrl),
             ),
             IconButton(
-              icon: const FaIcon(FontAwesomeIcons.instagram,
-                  color: accentPink, size: 22),
+              icon: const Icon(FontAwesomeIcons.instagram,
+                  size: 20, color: accentPink),
               onPressed: () => _launchUrlString(instagramUrl),
             ),
             IconButton(
-              icon: const FaIcon(FontAwesomeIcons.linkedin,
-                  color: primaryBlue, size: 22),
+              icon: const Icon(FontAwesomeIcons.linkedin,
+                  size: 20, color: primaryBlue),
               onPressed: () => _launchUrlString(linkedInUrl),
             ),
           ],
@@ -1187,7 +1206,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// INDIVIDUAL WORK VIDEO CARD COMPONENT
 class _OurWorkVideoCard extends StatefulWidget {
   final String videoPath;
   final String title;
@@ -1205,42 +1223,28 @@ class _OurWorkVideoCard extends StatefulWidget {
 
 class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   late VideoPlayerController _controller;
-  bool _isInitialized = false;
+  bool _initialized = false;
   bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
-    _initCardVideo();
-  }
-
-  void _initCardVideo() {
-    try {
-      _controller = VideoPlayerController.asset(widget.videoPath)
-        ..initialize().then((_) {
-          if (!mounted) return;
-          setState(() {
-            _isInitialized = true;
-            _hasError = false;
-          });
-          _controller.setLooping(true);
-          _controller.setVolume(0.0);
-        }).catchError((err) {
-          if (mounted) {
-            setState(() {
-              _hasError = true;
-            });
-          }
-          debugPrint("Video initialization failed for ${widget.videoPath}: $err");
-        });
-    } catch (e) {
-      if (mounted) {
+    _controller = VideoPlayerController.asset(widget.videoPath)
+      ..initialize().then((_) {
+        if (!mounted) return;
         setState(() {
-          _hasError = true;
+          _initialized = true;
         });
-      }
-      debugPrint("Video Exception for ${widget.videoPath}: $e");
-    }
+        _controller.setLooping(true);
+        _controller.setVolume(0.0);
+        _controller.play();
+      }).catchError((err) {
+        if (mounted) {
+          setState(() {
+            _hasError = true;
+          });
+        }
+      });
   }
 
   @override
@@ -1254,96 +1258,49 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blue.withOpacity(0.3), width: 1.5),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(
             color: Colors.black12,
-            blurRadius: 8,
-            offset: Offset(0, 4),
+            blurRadius: 6,
+            offset: Offset(0, 3),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AspectRatio(
-            aspectRatio: 9 / 16,
-            child: ClipRRect(
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  _isInitialized && !_hasError
-                      ? VideoPlayer(_controller)
-                      : Container(
-                    color: Colors.grey[200],
-                    child: Center(
-                      child: _hasError
-                          ? Column(
-                        mainAxisAlignment:
-                        MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.videocam_off_rounded,
-                              color: Colors.grey, size: 36),
-                          const SizedBox(height: 6),
-                          const Text(
-                            "Unsupported Format",
-                            style: TextStyle(
-                                color: Colors.grey, fontSize: 11),
-                          ),
-                          const SizedBox(height: 6),
-                          IconButton(
-                            icon: const Icon(Icons.refresh,
-                                size: 20, color: Colors.blue),
-                            onPressed: _initCardVideo,
-                          ),
-                        ],
-                      )
-                          : const CircularProgressIndicator(
-                          color: Colors.blue),
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: AspectRatio(
+              aspectRatio: 9 / 16,
+              child: _initialized && !_hasError
+                  ? GestureDetector(
+                onTap: () => widget.onExpand(_controller),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    VideoPlayer(_controller),
+                    Container(
+                      color: Colors.black12,
                     ),
+                    const Icon(
+                      Icons.fullscreen,
+                      color: Colors.white,
+                      size: 36,
+                    ),
+                  ],
+                ),
+              )
+                  : Container(
+                color: Colors.grey[200],
+                child: Center(
+                  child: _hasError
+                      ? const Icon(Icons.broken_image, color: Colors.grey)
+                      : const CircularProgressIndicator(
+                    color: Colors.blue,
                   ),
-                  if (_isInitialized && !_hasError)
-                    Positioned(
-                      child: IconButton(
-                        iconSize: 48,
-                        icon: Icon(
-                          _controller.value.isPlaying
-                              ? Icons.pause_circle_filled_rounded
-                              : Icons.play_circle_fill_rounded,
-                          color: Colors.white.withOpacity(0.85),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            if (_controller.value.isPlaying) {
-                              _controller.pause();
-                            } else {
-                              _controller.play();
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                  if (_isInitialized && !_hasError)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: InkWell(
-                        onTap: () => widget.onExpand(_controller),
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.black45,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(Icons.fullscreen_rounded,
-                              color: Colors.white, size: 20),
-                        ),
-                      ),
-                    ),
-                ],
+                ),
               ),
             ),
           ),
@@ -1352,8 +1309,6 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
             child: Text(
               widget.title,
               textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.ibmPlexSansThai(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,

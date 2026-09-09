@@ -19,9 +19,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
 
   // List of client logo assets
   final List<String> clientLogos = [
-    "assets/photos/ar_dental.png",
+    "assets/photos/aroma.png",
     "assets/photos/aura.png",
-    "assets/photos/bani_thani.png",
+    "assets/photos/bani_thni.png",
     "assets/photos/bindu_decor.png",
     "assets/photos/ella.png",
     "assets/photos/every_child.png",
@@ -33,7 +33,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     "assets/photos/jinali_modi.png",
     "assets/photos/pavan_salon.png",
     "assets/photos/shwass.png",
-    "assets/photos/tcl.png",
+    "assets/photos/th_ce_la.png",
     "assets/photos/ugs.png",
     "assets/photos/ved_icu.png",
     "assets/photos/wost.png",
@@ -135,6 +135,11 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     child: Image.asset(
                       "assets/photos/Gro_Soc_Image.png",
                       color: primaryBlue,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.business,
+                        size: 40,
+                        color: primaryBlue,
+                      ),
                     ),
                   ),
                 ),
@@ -176,7 +181,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 2);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ClientLogoPage()));
                       },
                     ),
                     _buildDrawerItem(
@@ -186,7 +190,10 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 3);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Services()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Services()),
+                        );
                       },
                     ),
                     _buildDrawerItem(
@@ -195,7 +202,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       label: "REVIEWS",
                       onTap: () {
                         setState(() => _selectedIndex = 4);
-                        Navigator.pop(context); // Closes the drawer
+                        Navigator.pop(context);
                         _launchUrlString(
                           "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D",
                         );
@@ -223,12 +230,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       ),
       body: CustomScrollView(
         slivers: [
-          // ALL CLIENT LOGOS GRID VIEW WITH MULTI-DIRECTIONAL ANIMATIONS
           SliverToBoxAdapter(
             child: _buildAllLogosGrid(context),
           ),
-
-          // FOOTER
           SliverToBoxAdapter(
             child: _buildFooter(context),
           ),
@@ -245,7 +249,15 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         children: [
           SizedBox(
             height: 40,
-            child: Image.asset("assets/photos/Gro_Soc_Image.png", color: bgWhite),
+            child: Image.asset(
+              "assets/photos/Gro_Soc_Image.png",
+              color: bgWhite,
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.business,
+                color: bgWhite,
+                size: 30,
+              ),
+            ),
           ),
         ],
       ),
@@ -268,8 +280,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: isSelected ? primaryBlue : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
@@ -489,8 +500,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             color: primaryBlue,
           ),
           Padding(
-            padding:
-            const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -498,16 +508,11 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                        flex: 2,
-                        child: _buildFooterBrandSection()),
+                    Expanded(flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 32),
-                    Expanded(
-                        flex: 2,
-                        child: _buildFooterContactSection()),
+                    Expanded(flex: 2, child: _buildFooterContactSection()),
                     const SizedBox(width: 32),
-                    Expanded(
-                        flex: 1, child: _buildFooterSocialSection()),
+                    Expanded(flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
@@ -543,7 +548,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   }
 }
 
-// Custom Animated Card Widget supporting multi-directional entry animations
 class AnimatedLogoCard extends StatefulWidget {
   final String imagePath;
   final int index;
@@ -573,25 +577,24 @@ class _AnimatedLogoCardState extends State<AnimatedLogoCard>
       vsync: this,
     );
 
-    // Calculate different offsets depending on item index
     Offset startOffset;
     switch (widget.index % 6) {
-      case 0: // Left to Right
+      case 0:
         startOffset = const Offset(-1.2, 0.0);
         break;
-      case 1: // Right to Left
+      case 1:
         startOffset = const Offset(1.2, 0.0);
         break;
-      case 2: // Top to Bottom
+      case 2:
         startOffset = const Offset(0.0, -1.2);
         break;
-      case 3: // Bottom to Top
+      case 3:
         startOffset = const Offset(0.0, 1.2);
         break;
-      case 4: // Top-Left to Bottom-Right
+      case 4:
         startOffset = const Offset(-1.0, -1.0);
         break;
-      case 5: // Bottom-Right to Top-Left
+      case 5:
       default:
         startOffset = const Offset(1.0, 1.0);
         break;
@@ -613,7 +616,6 @@ class _AnimatedLogoCardState extends State<AnimatedLogoCard>
       curve: Curves.easeIn,
     ));
 
-    // Stagger start duration based on index
     Future.delayed(Duration(milliseconds: (widget.index % 6) * 120), () {
       if (mounted) {
         _controller.forward();
