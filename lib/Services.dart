@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'About.dart';
 import 'Client_Logos.dart';
 import 'contact.dart';
 import 'home_page.dart';
@@ -238,6 +239,7 @@ class _ServicesState extends State<Services> {
                       onTap: () {
                         setState(() => _selectedIndex = 1);
                         Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
                       },
                     ),
                     _buildDrawerItem(

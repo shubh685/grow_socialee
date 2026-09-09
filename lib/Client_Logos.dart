@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grow_socialee/home_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'About.dart';
 import 'contact.dart';
 import 'Services.dart';
 
@@ -186,6 +187,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 1);
                         Navigator.pop(context);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
                       },
                     ),
                     _buildDrawerItem(
