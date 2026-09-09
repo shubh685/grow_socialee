@@ -645,7 +645,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar",
-            style: GoogleFonts.cormorantGaramond(
+            textAlign: TextAlign.justify,
+            style: GoogleFonts.radley(
               fontSize: 26,
               fontWeight: FontWeight.bold,
               color: Colors.indigo.shade900,
@@ -656,7 +657,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you.",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.radley(
               fontSize: 15,
               fontWeight: FontWeight.w400,
               color: Colors.black87,
@@ -667,7 +668,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.radley(
               fontSize: 14,
               color: Colors.black87,
               height: 1.6,
@@ -676,7 +677,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 16),
           Text(
             "Let’s build your digital success together! 📩 Contact Grow Socialee today!",
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.radley(
               fontSize: 14,
               fontWeight: FontWeight.w700,
               color: Colors.blue.shade800,
@@ -686,7 +687,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 12),
           Text(
             "We understand social behaviours within online communities, cultures and subcultures.",
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.radley(
               fontSize: 13,
               fontStyle: FontStyle.italic,
               color: Colors.black54,
@@ -712,14 +713,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              child: Text(
-                "Get in Touch",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              child: Text("Get in Touch", style: GoogleFonts.radley(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white)),
             ),
           ),
         ],
@@ -729,12 +723,12 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildLogoHeader() {
     return Container(
-      height: 60,
+      height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           SizedBox(
-            height: 40,
+            height: 55,
             child: Image.asset(
               "assets/photos/Gro_Soc_Image.png",
               color: bgWhite,
@@ -818,14 +812,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "We Work With",
-            style: GoogleFonts.cormorantGaramond(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo.shade900,
-              letterSpacing: 0.5,
-            ),
-          ),
+            "Brands We’re Proud Of", style: GoogleFonts.readexPro(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -996,15 +983,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
       child: Column(
         children: [
-          Text(
-            "Our Work",
-            style: GoogleFonts.cormorantGaramond(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo.shade900,
-              letterSpacing: 0.5,
-            ),
-          ),
+          Text("What We’ve Built", style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -1016,9 +995,9 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 12),
           Text(
-            "Explore video highlights crafted for our clients.",
+            "Creative showcases.",
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.radley(
               fontSize: 14,
               color: Colors.black54,
             ),

@@ -897,15 +897,7 @@ class _ServicesState extends State<Services> {
                       builder: (context) => const Contact()),
                 );
               },
-              child: Text(
-                "GET IN TOUCH",
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: bgWhite,
-                  letterSpacing: 1.1,
-                ),
-              ),
+              child: Text("GET IN TOUCH", style: GoogleFonts.ibmPlexSansThai(fontSize: 13, fontWeight: FontWeight.bold, color: bgWhite, letterSpacing: 1.1)),
             ),
           ],
         );
