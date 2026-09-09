@@ -1050,7 +1050,7 @@ class _ServicesState extends State<Services> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Follow Us", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text("Follow Us on", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
@@ -1058,15 +1058,22 @@ class _ServicesState extends State<Services> {
               borderRadius: BorderRadius.circular(12)
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
                 onPressed: () => _launchUrlString(facebookUrl),
               ),
+              const SizedBox(
+                  height: 15,
+                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
                 onPressed: () => _launchUrlString(instagramUrl),
               ),
+              const SizedBox(
+                  height: 15,
+                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
               IconButton(
                 icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
                 onPressed: () => _launchUrlString(linkedInUrl),
