@@ -265,12 +265,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
 
   Widget _buildLogoHeader() {
     return Container(
-      height: 60,
+      height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           SizedBox(
-            height: 40,
+            height: 55,
             child: Image.asset(
               "assets/photos/Gro_Soc_Image.png",
               color: bgWhite,
