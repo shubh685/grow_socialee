@@ -17,26 +17,26 @@ class ClientLogoPage extends StatefulWidget {
 class _ClientLogoPageState extends State<ClientLogoPage> {
   int _selectedIndex = 2; // Selected index for CLIENTS page
 
-  // List of client logo assets
-  final List<String> clientLogos = [
-    "assets/photos/aroma.png",
-    "assets/photos/aura.png",
-    "assets/photos/bani_thni.png",
-    "assets/photos/bindu_decor.png",
-    "assets/photos/ella.png",
-    "assets/photos/every_child.png",
-    "assets/photos/gayat_cate.png",
-    "assets/photos/kids_connect.png",
-    "assets/photos/manas.png",
-    "assets/photos/nari_sanari.png",
-    "assets/photos/nilav_shah.png",
-    "assets/photos/jinali_modi.png",
-    "assets/photos/pavan_salon.png",
-    "assets/photos/shwass.png",
-    "assets/photos/th_ce_la.png",
-    "assets/photos/ugs.png",
-    "assets/photos/ved_icu.png",
-    "assets/photos/wost.png",
+  // List of client logo assets with isWhite flag for white logos
+  final List<Map<String, dynamic>> clientLogos = [
+    {"path": "assets/photos/aroma.png", "isWhite": true},           // AROMA - white logo
+    {"path": "assets/photos/aura.png", "isWhite": false},
+    {"path": "assets/photos/bani_thani.png", "isWhite": true},
+    {"path": "assets/photos/bindu_decor.png", "isWhite": false},
+    {"path": "assets/photos/ella.png", "isWhite": false},
+    {"path": "assets/photos/every_child.png", "isWhite": false},
+    {"path": "assets/photos/gayat_cate.png", "isWhite": false},
+    {"path": "assets/photos/kids_connect.png", "isWhite": false},
+    {"path": "assets/photos/manas.png", "isWhite": false},
+    {"path": "assets/photos/nari_sanari.png", "isWhite": false},
+    {"path": "assets/photos/nilav_shah.png", "isWhite": false},
+    {"path": "assets/photos/jinali_modi.png", "isWhite": false},
+    {"path": "assets/photos/pavan_salon.png", "isWhite": false},
+    {"path": "assets/photos/shwass.png", "isWhite": false},
+    {"path": "assets/photos/the_celebration.png", "isWhite": true}, // The Celebration - white logo
+    {"path": "assets/photos/ugs.png", "isWhite": false},
+    {"path": "assets/photos/ved_icu.png", "isWhite": false},
+    {"path": "assets/photos/wost.png", "isWhite": false},
   ];
 
   // Theme Palette Colors
@@ -101,22 +101,36 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          backgroundColor: primaryBlue,
-          automaticallyImplyLeading: false,
-          elevation: 2,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
+        preferredSize: const Size.fromHeight(70),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Colors.indigo.shade700, Colors.blue.shade400,
+            ]),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.shade700.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-            ),
-            const SizedBox(width: 8),
-          ],
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            titleSpacing: 0,
+            title: _buildLogoHeader(),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
         ),
       ),
       endDrawer: Drawer(
@@ -128,17 +142,17 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                color: lightPink,
+                color: Colors.blue.shade600,
                 child: Center(
                   child: SizedBox(
                     height: 55,
                     child: Image.asset(
                       "assets/photos/Gro_Soc_Image.png",
-                      color: primaryBlue,
+                      color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.business,
-                        size: 40,
+                        Icons.image,
                         color: primaryBlue,
+                        size: 40,
                       ),
                     ),
                   ),
@@ -181,6 +195,10 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 2);
                         Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()));
                       },
                     ),
                     _buildDrawerItem(
@@ -191,9 +209,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                         setState(() => _selectedIndex = 3);
                         Navigator.pop(context);
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Services()),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()));
                       },
                     ),
                     _buildDrawerItem(
@@ -215,6 +233,10 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 5);
                         Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Contact()));
                       },
                     ),
                   ],
@@ -280,9 +302,10 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? primaryBlue : Colors.transparent,
+              color: isSelected ? Colors.pink.shade400: Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: isSelected
                   ? null
@@ -290,7 +313,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? bgWhite : accentPink),
+                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
@@ -304,8 +327,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      size: 14, color: bgWhite),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: bgWhite),
               ],
             ),
           ),
@@ -343,14 +365,77 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 1.2,
+              childAspectRatio: 1.4,
             ),
             itemBuilder: (context, index) {
               return AnimatedLogoCard(
-                imagePath: clientLogos[index],
+                imagePath: clientLogos[index]["path"]!,
+                isWhiteLogo: clientLogos[index]["isWhite"] ?? false,
                 index: index,
               );
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildFooter(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isDesktop = screenWidth > 800;
+
+    return Container(
+      width: double.infinity,
+      color: Colors.indigo.shade500,
+      child: Column(
+        children: [
+          Container(
+            height: 5,
+            width: double.infinity,
+            color: Colors.blue.shade600,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: isDesktop
+                    ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 2, child: _buildFooterBrandSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 1, child: _buildFooterSocialSection()),
+                  ],
+                )
+                    : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFooterBrandSection(),
+                    const SizedBox(height: 30),
+                    _buildFooterContactSection(),
+                    const SizedBox(height: 30),
+                    _buildFooterSocialSection(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            color: Colors.blue.shade600,
+            child: Center(
+              child: Text(
+                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
+                style: GoogleFonts.ibmPlexSansThai(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -365,17 +450,16 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           height: 45,
           child: Image.asset(
             "assets/photos/Gro_Soc_Image.png",
-            errorBuilder: (context, error, stackTrace) =>
-            const Icon(Icons.business, size: 40, color: primaryBlue),
+            color: Colors.white,
           ),
         ),
         const SizedBox(height: 12),
         Text(
-          "Empowering brands with impactful digital marketing solutions.",
+          "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.ibmPlexSansThai(
             fontSize: 13,
-            color: Colors.black87,
-            height: 1.4,
+            color: Colors.white,
+            height: 1.5,
           ),
         ),
       ],
@@ -386,65 +470,41 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Contact Info",
-          style: GoogleFonts.ibmPlexSansThai(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 8),
+        Text("Contact Info", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on, size: 18, color: accentPink),
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  addressQuery,
-                  style: GoogleFonts.ibmPlexSansThai(
-                    fontSize: 13,
-                    color: Colors.black87,
-                  ),
-                ),
+                child: Text(addressQuery, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white, height: 1.4)),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         InkWell(
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone, size: 18, color: accentPink),
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(
-                phoneNum,
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 13,
-                  color: Colors.black87,
-                ),
+              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         InkWell(
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email, size: 18, color: accentPink),
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(
-                emailAddr,
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 13,
-                  color: Colors.black87,
-                ),
-              ),
+              Text(emailAddr, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
             ],
           ),
         ),
@@ -456,106 +516,45 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Follow Us",
-          style: GoogleFonts.ibmPlexSansThai(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
+        Text("Follow Us", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.facebook, color: primaryBlue),
-              onPressed: () => _launchUrlString(facebookUrl),
-            ),
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.instagram, color: accentPink),
-              onPressed: () => _launchUrlString(instagramUrl),
-            ),
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.linkedin, color: primaryBlue),
-              onPressed: () => _launchUrlString(linkedInUrl),
-            ),
-          ],
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white70,
+              borderRadius: BorderRadius.circular(12)
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(facebookUrl),
+              ),
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
+                onPressed: () => _launchUrlString(instagramUrl),
+              ),
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(linkedInUrl),
+              ),
+            ],
+          ),
         ),
       ],
-    );
-  }
-
-  Widget _buildFooter(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
-
-    return Container(
-      width: double.infinity,
-      color: lightPink,
-      child: Column(
-        children: [
-          Container(
-            height: 5,
-            width: double.infinity,
-            color: primaryBlue,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
-            child: Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                child: isDesktop
-                    ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 2, child: _buildFooterBrandSection()),
-                    const SizedBox(width: 32),
-                    Expanded(flex: 2, child: _buildFooterContactSection()),
-                    const SizedBox(width: 32),
-                    Expanded(flex: 1, child: _buildFooterSocialSection()),
-                  ],
-                )
-                    : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildFooterBrandSection(),
-                    const SizedBox(height: 28),
-                    _buildFooterContactSection(),
-                    const SizedBox(height: 28),
-                    _buildFooterSocialSection(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: primaryBlue,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            child: Text(
-              "© ${DateTime.now().year} Grow Socialee. All Rights Reserved.",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ibmPlexSansThai(
-                fontSize: 12,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
 
 class AnimatedLogoCard extends StatefulWidget {
   final String imagePath;
+  final bool isWhiteLogo;
   final int index;
 
   const AnimatedLogoCard({
     super.key,
     required this.imagePath,
     required this.index,
+    this.isWhiteLogo = false,
   });
 
   @override
@@ -638,9 +637,12 @@ class _AnimatedLogoCardState extends State<AnimatedLogoCard>
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white,
+            // Dark background for white logos
+            color: widget.isWhiteLogo ? const Color(0xFF2C3E50) : Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
+            border: Border.all(
+              color: widget.isWhiteLogo ? Colors.transparent : Colors.grey.shade200,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.03),
@@ -653,6 +655,7 @@ class _AnimatedLogoCardState extends State<AnimatedLogoCard>
             child: Image.asset(
               widget.imagePath,
               fit: BoxFit.contain,
+              // For white logos, don't apply any color filter (they'll show on dark bg)
               errorBuilder: (context, error, stackTrace) =>
               const Icon(Icons.broken_image_outlined, color: Colors.grey),
             ),

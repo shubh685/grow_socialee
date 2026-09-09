@@ -150,22 +150,36 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9FC),
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          backgroundColor: primaryBlue,
-          automaticallyImplyLeading: false,
-          elevation: 2,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
+        preferredSize: const Size.fromHeight(70),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Colors.indigo.shade700, Colors.blue.shade400,
+            ]),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.shade700.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-            ),
-            const SizedBox(width: 8),
-          ],
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            titleSpacing: 0,
+            title: _buildLogoHeader(),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
         ),
       ),
       endDrawer: Drawer(
@@ -177,13 +191,18 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                color: lightPink,
+                color: Colors.blue.shade600,
                 child: Center(
                   child: SizedBox(
                     height: 55,
                     child: Image.asset(
                       "assets/photos/Gro_Soc_Image.png",
-                      color: primaryBlue,
+                      color: Colors.white,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.image,
+                        color: primaryBlue,
+                        size: 40,
+                      ),
                     ),
                   ),
                 ),
@@ -225,7 +244,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       onTap: () {
                         setState(() => _selectedIndex = 2);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ClientLogoPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()));
                       },
                     ),
                     _buildDrawerItem(
@@ -235,7 +257,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       onTap: () {
                         setState(() => _selectedIndex = 3);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Services()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()));
                       },
                     ),
                     _buildDrawerItem(
@@ -244,7 +269,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       label: "REVIEWS",
                       onTap: () {
                         setState(() => _selectedIndex = 4);
-                        Navigator.pop(context); // Closes the drawer
+                        Navigator.pop(context);
                         _launchUrlString(
                           "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D",
                         );
@@ -257,6 +282,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       onTap: () {
                         setState(() => _selectedIndex = 5);
                         Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Contact()));
                       },
                     ),
                   ],
@@ -359,15 +388,18 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? primaryBlue : Colors.transparent,
+              color: isSelected ? Colors.pink.shade400: Colors.transparent,
               borderRadius: BorderRadius.circular(8),
-              border: isSelected ? null : Border.all(color: Colors.black12, width: 0.5),
+              border: isSelected
+                  ? null
+                  : Border.all(color: Colors.black12, width: 0.5),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? bgWhite : accentPink),
+                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(

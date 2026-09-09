@@ -153,14 +153,16 @@ class _ServicesState extends State<Services> {
     return Scaffold(
       backgroundColor: const Color(0xFFFAFCFF),
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(65),
+        preferredSize: const Size.fromHeight(70),
         child: Container(
           decoration: BoxDecoration(
-            color: primaryBlue,
+            gradient: LinearGradient(colors: [
+              Colors.indigo.shade700, Colors.blue.shade400,
+            ]),
             boxShadow: [
               BoxShadow(
-                color: primaryBlue.withOpacity(0.3),
-                blurRadius: 12,
+                color: Colors.blue.shade700.withOpacity(0.3),
+                blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
             ],
@@ -191,15 +193,19 @@ class _ServicesState extends State<Services> {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 24.0, horizontal: 16.0),
-                color: lightPink,
+                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                color: Colors.blue.shade600,
                 child: Center(
                   child: SizedBox(
                     height: 55,
                     child: Image.asset(
                       "assets/photos/Gro_Soc_Image.png",
-                      color: primaryBlue,
+                      color: Colors.white,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.image,
+                        color: primaryBlue,
+                        size: 40,
+                      ),
                     ),
                   ),
                 ),
@@ -241,7 +247,10 @@ class _ServicesState extends State<Services> {
                       onTap: () {
                         setState(() => _selectedIndex = 2);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ClientLogoPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()));
                       },
                     ),
                     _buildDrawerItem(
@@ -251,6 +260,10 @@ class _ServicesState extends State<Services> {
                       onTap: () {
                         setState(() => _selectedIndex = 3);
                         Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()));
                       },
                     ),
                     _buildDrawerItem(
@@ -273,17 +286,18 @@ class _ServicesState extends State<Services> {
                         setState(() => _selectedIndex = 5);
                         Navigator.pop(context);
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Contact(),
-                          ),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Contact()));
                       },
                     ),
                   ],
                 ),
               ),
-              Container(height: 6, color: accentPink)
+              Container(
+                height: 6,
+                color: accentPink,
+              )
             ],
           ),
         ),
@@ -362,20 +376,21 @@ class _ServicesState extends State<Services> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? primaryBlue : Colors.transparent,
-              borderRadius: BorderRadius.circular(10),
+              color: isSelected ? Colors.pink.shade400: Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
               border: isSelected
                   ? null
-                  : Border.all(color: Colors.black.withOpacity(0.05), width: 1),
+                  : Border.all(color: Colors.black12, width: 0.5),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? bgWhite : accentPink),
+                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
@@ -389,8 +404,7 @@ class _ServicesState extends State<Services> {
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      size: 14, color: bgWhite),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: bgWhite),
               ],
             ),
           ),
@@ -900,22 +914,23 @@ class _ServicesState extends State<Services> {
   }
 
   // Footer Component
+
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      color: lightPink,
+      color: Colors.indigo.shade500,
       child: Column(
         children: [
           Container(
-            height: 4,
+            height: 5,
             width: double.infinity,
-            color: primaryBlue,
+            color: Colors.blue.shade600,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -923,35 +938,35 @@ class _ServicesState extends State<Services> {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(flex: 2, child: _buildFooterBranding()),
+                    Expanded(flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 40),
-                    Expanded(
-                        flex: 3, child: _buildFooterContactDetails()),
+                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildFooterBranding(),
-                    const SizedBox(height: 32),
-                    const Divider(color: Colors.black12, thickness: 1),
-                    const SizedBox(height: 24),
-                    _buildFooterContactDetails(),
+                    _buildFooterBrandSection(),
+                    const SizedBox(height: 30),
+                    _buildFooterContactSection(),
+                    const SizedBox(height: 30),
+                    _buildFooterSocialSection(),
                   ],
                 ),
               ),
             ),
           ),
           Container(
-            width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: primaryBlue,
+            color: Colors.blue.shade600,
             child: Center(
               child: Text(
-                "© ${DateTime.now().year} All Rights Reserved.",
+                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.ibmPlexSansThai(
-                  color: bgWhite,
-                  fontSize: 13,
+                  fontSize: 12,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -961,164 +976,105 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  Widget _buildFooterBranding() {
+  Widget _buildFooterBrandSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 48,
-          child: Image.asset("assets/photos/Gro_Soc_Image.png",
-              color: primaryBlue),
+          height: 45,
+          child: Image.asset(
+            "assets/photos/Gro_Soc_Image.png",
+            color: Colors.white,
+          ),
         ),
         const SizedBox(height: 12),
-        Container(
-          height: 3,
-          width: 40,
-          color: accentPink,
-        ),
-        const SizedBox(height: 16),
         Text(
-          "Social Media Marketing Agency in Bhavnagar",
+          "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.ibmPlexSansThai(
-            color: Colors.black87,
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 20),
-        _buildSocialIconsRow(),
-      ],
-    );
-  }
-
-  Widget _buildSocialIconsRow() {
-    return Row(
-      children: [
-        _buildSocialIconButton(
-          icon: FontAwesomeIcons.facebookF,
-          backgroundColor: const Color(0xFF1877F2),
-          onTap: () => _launchUrlString(facebookUrl),
-        ),
-        const SizedBox(width: 12),
-        _buildSocialIconButton(
-          icon: FontAwesomeIcons.instagram,
-          backgroundColor: const Color(0xFFE4405F),
-          onTap: () => _launchUrlString(instagramUrl),
-        ),
-        const SizedBox(width: 12),
-        _buildSocialIconButton(
-          icon: FontAwesomeIcons.linkedinIn,
-          backgroundColor: const Color(0xFF0A66C2),
-          onTap: () => _launchUrlString(linkedInUrl),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialIconButton({
-    required IconData icon,
-    required Color backgroundColor,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: backgroundColor,
-      shape: const CircleBorder(),
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: Container(
-          width: 38,
-          height: 38,
-          alignment: Alignment.center,
-          child: FaIcon(
-            icon,
+            fontSize: 13,
             color: Colors.white,
-            size: 18,
+            height: 1.5,
           ),
         ),
-      ),
+      ],
     );
   }
 
-  Widget _buildFooterContactDetails() {
+  Widget _buildFooterContactSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "GET IN TOUCH",
-          style: GoogleFonts.ibmPlexSansThai(
-            color: accentPink,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
+        Text("Contact Info", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        const SizedBox(height: 12),
+        InkWell(
+          onTap: () => _launchUrlString(googleMapsUrl),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(addressQuery, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white, height: 1.4)),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 16),
-        _buildFooterContactRow(
-          icon: Icons.location_on_rounded,
-          text: addressQuery,
-          onTap: () => _launchUrlString(googleMapsUrl),
-        ),
-        const SizedBox(height: 12),
-        _buildFooterContactRow(
-          icon: Icons.phone_rounded,
-          text: "+91 94085 18168",
+        const SizedBox(height: 10),
+        InkWell(
           onTap: () => _makePhoneCall(phoneNum),
+          child: Row(
+            children: [
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
+              const SizedBox(width: 8),
+              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white),
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: 12),
-        _buildFooterContactRow(
-          icon: Icons.email_rounded,
-          text: emailAddr,
+        const SizedBox(height: 10),
+        InkWell(
           onTap: () => _sendEmail(emailAddr),
-        ),
-        const SizedBox(height: 12),
-        _buildFooterContactRow(
-          icon: Icons.access_time_filled_rounded,
-          text: "Working Hours: 9:30 AM to 7:00 PM",
-          onTap: null,
+          child: Row(
+            children: [
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
+              const SizedBox(width: 8),
+              Text(emailAddr, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
+            ],
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildFooterContactRow({
-    required IconData icon,
-    required String text,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.12),
-                shape: BoxShape.circle,
+  Widget _buildFooterSocialSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Follow Us", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white70,
+              borderRadius: BorderRadius.circular(12)
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(facebookUrl),
               ),
-              child: Icon(icon, color: primaryBlue, size: 18),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                text,
-                style: GoogleFonts.ibmPlexSansThai(
-                  color: Colors.black87,
-                  fontSize: 14,
-                  height: 1.4,
-                  decoration:
-                  onTap != null ? TextDecoration.underline : TextDecoration.none,
-                ),
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
+                onPressed: () => _launchUrlString(instagramUrl),
               ),
-            ),
-          ],
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
+                onPressed: () => _launchUrlString(linkedInUrl),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
