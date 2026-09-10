@@ -191,7 +191,6 @@ class _HomePageState extends State<HomePage> {
       _videoController = VideoPlayerController.asset('assets/videos/video.mp4');
       _videoController.setLooping(true);
       _videoController.setVolume(0.0);
-      _videoController.play();
       _videoController.initialize().then((_) {
         if (!mounted) return;
         setState(() {
@@ -223,7 +222,7 @@ class _HomePageState extends State<HomePage> {
 
   void _checkAndControlVideoPlayback() {
     if (!mounted || _videoError) return;
-    if (!_videoController.value.isPlaying) {
+    if (_videoController.value.isInitialized && !_videoController.value.isPlaying) {
       try {
         _videoController.play();
       } catch (e) {
@@ -1273,7 +1272,6 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
     _controller = VideoPlayerController.asset(widget.videoPath);
     _controller.setLooping(true);
     _controller.setVolume(0.0);
-    _controller.play();
     _controller.initialize().then((_) {
       if (!mounted) return;
       setState(() {});
