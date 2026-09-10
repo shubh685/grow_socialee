@@ -627,10 +627,10 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar",
+            "Grow Socialee",
             textAlign: TextAlign.justify,
             style: GoogleFonts.bebasNeue(
-              fontSize: 26,
+              fontSize: 36,
               fontWeight: FontWeight.bold,
               color: Colors.indigo.shade900,
               height: 1.25,
@@ -640,7 +640,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you.",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.kadwa(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
               fontWeight: FontWeight.w400,
               color: Colors.black87,
@@ -651,7 +651,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.kadwa(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
               fontWeight: FontWeight.w400,
               color: Colors.black87,
@@ -662,7 +662,7 @@ class _HomePageState extends State<HomePage> {
           Text(
             "Let’s build your digital success together! 📩 Contact Grow Socialee today!",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.kadwa(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
               fontWeight: FontWeight.w700,
               color: Colors.blue.shade800,
@@ -673,10 +673,10 @@ class _HomePageState extends State<HomePage> {
           Text(
             "We understand social behaviours within online communities, cultures and subcultures.",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.kadwa(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 18,
               fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               color: Colors.black87,
               height: 1.4,
             ),
@@ -702,7 +702,7 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Text(
                 "Get in Touch",
-                style: GoogleFonts.kadwa(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -1320,14 +1320,6 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                   alignment: Alignment.center,
                   children: [
                     VideoPlayer(_controller),
-                    Container(
-                      color: Colors.black12,
-                    ),
-                    const Icon(
-                      Icons.fullscreen,
-                      color: Colors.white,
-                      size: 36,
-                    ),
                   ],
                 ),
               )
@@ -1341,15 +1333,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.kadwa(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
+            child: Text(widget.title, textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
           ),
         ],
       ),
