@@ -350,14 +350,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
       child: Column(
         children: [
-          Text(
-            "Our Valued Clients",
-            style: GoogleFonts.ibmPlexSansThai(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
+          Text("Our Valued Clients", style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87)),
           const SizedBox(height: 16),
           GridView.builder(
             shrinkWrap: true,

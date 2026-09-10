@@ -445,38 +445,16 @@ class _ServicesState extends State<Services> {
                     const Icon(Icons.auto_awesome_rounded,
                         size: 16, color: primaryBlue),
                     const SizedBox(width: 8),
-                    Text(
-                      "GROW SOCIALEE SERVICES",
-                      style: GoogleFonts.ibmPlexSansThai(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: primaryBlue,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
+                    Text("GROW SOCIALEE SERVICES", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
                   ],
                 ),
               ),
               const SizedBox(height: 18),
-              Text(
-                "Elevate Your Brand's Digital Footprint",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  color: primaryBlue,
-                  height: 1.2,
-                ),
-              ),
+              Text("Elevate Your Brand's Digital Footprint", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 34, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
               const SizedBox(height: 14),
               Text(
                 "From end-to-end strategy development to high-converting social media ads, we empower local and global businesses with result-driven digital solutions.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  height: 1.5,
-                ),
+                textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 16, color: Colors.black87, height: 1.5),
               ),
             ],
           ),
@@ -543,18 +521,9 @@ class _ServicesState extends State<Services> {
                         Expanded(
                           child: Text(
                             service["title"],
-                            style: GoogleFonts.ibmPlexSansThai(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: isSelected ? accentPink : Colors.black87,
-                            ),
-                          ),
+                            style: GoogleFonts.bebasNeue(fontSize: 15, fontWeight: FontWeight.bold, color: isSelected ? accentPink : Colors.black87,)),
                         ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 16,
-                          color: isSelected ? accentPink : Colors.black26,
-                        ),
+                        Icon(Icons.arrow_forward_ios_rounded, size: 16, color: isSelected ? accentPink : Colors.black26,),
                       ],
                     ),
                   ),
@@ -607,65 +576,29 @@ class _ServicesState extends State<Services> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          activeService["tag"],
-                          style: GoogleFonts.ibmPlexSansThai(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: primaryBlue,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
+                          activeService["tag"], style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.0)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  Text(
-                    activeService["title"],
-                    style: GoogleFonts.ibmPlexSansThai(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: primaryBlue,
-                    ),
+                  Text(activeService["title"], style: GoogleFonts.bebasNeue(fontSize: 24, fontWeight: FontWeight.bold, color: primaryBlue),
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    activeService["desc"],
-                    style: GoogleFonts.ibmPlexSansThai(
-                      fontSize: 15,
-                      color: Colors.black87,
-                      height: 1.6,
-                    ),
-                  ),
+                  Text(activeService["desc"], style: GoogleFonts.plusJakartaSans(fontSize: 15, color: Colors.black87, height: 1.6)),
                   const SizedBox(height: 24),
                   const Divider(color: Colors.black12),
                   const SizedBox(height: 16),
-                  Text(
-                    "KEY DELIVERABLES",
-                    style: GoogleFonts.ibmPlexSansThai(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: accentPink,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
+                  Text("KEY DELIVERABLES", style: GoogleFonts.bebasNeue(fontSize: 12, fontWeight: FontWeight.bold, color: accentPink, letterSpacing: 1.1)),
                   const SizedBox(height: 12),
                   ...List<String>.from(activeService["deliverables"]).map(
                         (item) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0),
                       child: Row(
                         children: [
-                          const Icon(Icons.check_circle_rounded,
-                              size: 18, color: accentPink),
+                          const Icon(Icons.check_circle_rounded, size: 18, color: accentPink),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: Text(
-                              item,
-                              style: GoogleFonts.ibmPlexSansThai(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
+                            child: Text(item, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87,)),
                           ),
                         ],
                       ),
