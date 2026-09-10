@@ -399,16 +399,16 @@ class _AboutState extends State<About> {
                   children: [
                     const Icon(Icons.bolt_rounded, size: 16, color: primaryBlue),
                     const SizedBox(width: 6),
-                    Text("WHO WE ARE", style: GoogleFonts.radley(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
+                    Text("WHO WE ARE", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
                   ],
                 ),
               ),
               const SizedBox(height: 14),
-              Text("Empowering Brands in the Digital Era", textAlign: TextAlign.center, style: GoogleFonts.radley(fontSize: isDesktop ? 36 : 28, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.2)),
+              Text("Empowering Brands in the Digital Era", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: isDesktop ? 36 : 28, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.2)),
               const SizedBox(height: 10),
               Text(
                   "Grow Socialee is Bhavnagar's premier marketing agency dedicated to scaling local businesses through strategic digital experiences and high-converting creative media.",
-                  textAlign: TextAlign.center, style: GoogleFonts.radley(fontSize: 16, color: Colors.black87, height: 1.5)),
+                  textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 16, color: Colors.black87, height: 1.5)),
             ],
           ),
         ),
@@ -453,26 +453,17 @@ class _AboutState extends State<About> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar",
-          textAlign: TextAlign.justify,
-          style: GoogleFonts.radley(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Colors.indigo.shade900,
-            height: 1.2,
-          ),
-        ),
+        Text("Grow Socialee", textAlign: TextAlign.justify, style: GoogleFonts.bebasNeue(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.25)),
         const SizedBox(height: 12),
         Text("We are Grow Socialee, a dedicated social media marketing agency in Bhavnagar, focused on helping small "
             "and medium-sized businesses build their online presence", textAlign: TextAlign.justify,
-            style: GoogleFonts.radley(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
+            style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
         const SizedBox(height: 12),
         Text("In today’s digital landscape, having a strong online identity is essential for business success, and we are here to simplify that journey for you.", textAlign: TextAlign.justify,
-            style: GoogleFonts.radley(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
+            style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
         const SizedBox(height: 12),
         Text("At Grow Socialee, we understand that the digital world can be complicated, but we make it easy for businesses to navigate. Our expertise lies in various areas, including branding, content creation, creative design, social media management, & digital advertising campaigns. We are committed to helping you reach your goals and ensuring your business stands out from the crowd. Start your digital marketing journey with us!", textAlign: TextAlign.justify,
-            style: GoogleFonts.radley(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
+            style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
       ],
     );
   }
@@ -755,7 +746,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       title: "Our Mission",
       content: Text(
         "To simplify digital growth for local businesses by delivering impactful branding, creative design, engaging content, strategic social media management, and data-driven advertising campaigns that drive real results.",
-        style: GoogleFonts.cormorantGaramond(fontSize: 15, color: Colors.black87, height: 1.4),
+        style: GoogleFonts.plusJakartaSans(fontSize: 15, color: Colors.black87, height: 1.4),
       ),
     );
 
@@ -764,7 +755,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       title: "Our Vision",
       content: Text(
         "To empower small and medium-sized businesses to build strong, distinct online identities and confidently succeed in an ever-evolving digital world.",
-        style: GoogleFonts.cormorantGaramond(fontSize: 15, color: Colors.black87, height: 1.4),
+        style: GoogleFonts.plusJakartaSans(fontSize: 15, color: Colors.black87, height: 1.4),
       ),
     );
 
@@ -788,7 +779,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       color: Colors.white,
       child: Column(
         children: [
-          Text("Why Choose Us", style: GoogleFonts.cormorantGaramond(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
+          Text("Why Choose Us", style: GoogleFonts.bebasNeue(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -858,7 +849,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
   Widget _buildPillarPoint(String boldTitle, String text) {
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.cormorantGaramond(fontSize: 14, color: Colors.black87, height: 1.4),
+        style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.black87, height: 1.4),
         children: [
           TextSpan(
             text: boldTitle,
@@ -907,7 +898,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
             child: Icon(icon, color: accentPink, size: 28),
           ),
           const SizedBox(height: 16),
-          Text(title, style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
+          Text(title, style: GoogleFonts.bebasNeue(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
           const SizedBox(height: 10),
           content,
         ],
@@ -1010,7 +1001,7 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
       color: Colors.grey[50],
       child: Column(
         children: [
-          Text("Meet Our Leadership", style: GoogleFonts.cormorantGaramond(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
+          Text("Meet Our Leadership", style: GoogleFonts.bebasNeue(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -1106,34 +1097,13 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
           CircleAvatar(
             radius: 40,
             backgroundColor: lightPink,
-            child: Icon(
-              Icons.person_rounded,
-              size: 45,
-              color: Colors.indigo.shade700,
-            ),
+            child: Icon(Icons.person_rounded, size: 45, color: Colors.indigo.shade700),
           ),
           const SizedBox(height: 16),
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.cormorantGaramond(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo.shade900,
-            ),
-          ),
+          Text(name, textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
           const SizedBox(height: 6),
-          Text(
-            designation,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Colors.pink.shade600,
-              letterSpacing: 0.8,
-            ),
-          ),
-        ],
+          Text(designation, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.pink.shade600, letterSpacing: 0.8)),
+        ]
       ),
     );
   }
@@ -1326,7 +1296,7 @@ class _StatsSectionState extends State<StatsSection>
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("$formattedValue${item.suffix}", style: GoogleFonts.cormorantGaramond(fontSize: widget.isDesktop ? 38 : 30, fontWeight: FontWeight.bold, color: Colors.white, height: 1.0)),
+        Text("$formattedValue${item.suffix}", style: GoogleFonts.bebasNeue(fontSize: widget.isDesktop ? 38 : 30, fontWeight: FontWeight.bold, color: Colors.white, height: 1.0)),
         const SizedBox(height: 6),
         Text(item.label.toUpperCase(), textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: widget.isDesktop ? 12 : 10, color: Colors.white.withOpacity(0.85), fontWeight: FontWeight.w600, letterSpacing: 1.1)),
       ],
