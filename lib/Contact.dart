@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,16 +17,14 @@ class Contact extends StatefulWidget {
 }
 
 class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
-  int _selectedIndex = 5; // Contact Us active index
-  int _selectedFormCategory = 0; // 0: General, 1: Project Quote, 2: Support
+  int _selectedIndex = 5;
+  int _selectedFormCategory = 0;
 
-  // Theme Palette Colors
   static const Color primaryBlue = Colors.blue;
   static const Color accentPink = Color(0xFFE91E63);
   static const Color bgWhite = Colors.white;
   static const Color lightPink = Color(0xFFFCE4EC);
 
-  // Form Key & Controllers
   final _formKey = GlobalKey<FormState>();
   String? _serviceDr;
   final TextEditingController _nameController = TextEditingController();
@@ -35,7 +32,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
 
-  // List of services mapped from Services.dart
   final List<String> _servicesList = [
     "Social Media Strategy Development",
     "Content Creation",
@@ -46,11 +42,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
   ];
 
   bool _isSubmitting = false;
-
-  // Animation controller for map radar sweep effect
   late AnimationController _radarAnimationController;
 
-  // URLs & Contact Constants
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -83,7 +76,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  // URL Launcher Utility Methods
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -123,15 +115,11 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         _isSubmitting = true;
       });
 
-      // 1. Define category mapping based on selected choice chip index
       final List<String> categories = ["General Inquiry", "Get Quote", "Support"];
       final String selectedCategory = categories[_selectedFormCategory];
-
-      // 2. Define API Endpoint URL
       final Uri apiUrl = Uri.parse("http://192.168.1.103/grow_socialee/send_inquiry.php");
 
       try {
-        // 3. Prepare Payload matching backend PHP key expectations
         final Map<String, dynamic> requestData = {
           "name": _nameController.text.trim(),
           "phone": _phoneController.text.trim(),
@@ -141,7 +129,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           "message": _messageController.text.trim(),
         };
 
-        // 4. Send HTTP POST Request
         final response = await http.post(
           apiUrl,
           headers: {
@@ -156,7 +143,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         if (!mounted) return;
 
         if (response.statusCode == 200 && responseData['success'] == true) {
-          // Success Handling
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(responseData['message'] ?? "Thank you! Your inquiry has been dispatched successfully."),
@@ -165,7 +151,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             ),
           );
 
-          // Reset form controls
           _formKey.currentState?.reset();
           _nameController.clear();
           _emailController.clear();
@@ -175,7 +160,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             _serviceDr = null;
           });
         } else {
-          // Failure Handling
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(responseData['message'] ?? "Failed to submit inquiry. Please try again."),
@@ -363,9 +347,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       ),
       body: CustomScrollView(
         slivers: [
+          // Sphinix-style Hero Banner
           SliverToBoxAdapter(
-            child: _buildHeroSection(),
+            child: _buildSphinixHeroBanner(screenWidth, isDesktop),
           ),
+
+          // Contact Content
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
@@ -406,6 +393,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
+
+          // Footer
           SliverToBoxAdapter(
             child: _buildFooter(context),
           ),
@@ -478,51 +467,148 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildHeroSection() {
+  // Sphinix-style Hero Banner
+  Widget _buildSphinixHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [lightPink, bgWhite],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          colors: [
+            Colors.indigo.shade700,
+            Colors.blue.shade500,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(
-                  color: primaryBlue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: CustomPaint(
+                painter: _ContactHeroPatternPainter(),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: isDesktop ? 80 : 50,
+              horizontal: isDesktop ? 60 : 24,
+            ),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
                   children: [
-                    const Icon(Icons.bolt_rounded, size: 16, color: primaryBlue),
-                    const SizedBox(width: 6),
-                    Text("Let's Connect", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.chat_bubble_outline_rounded,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            "GET IN TOUCH",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "Let's Build Something Great Together",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bebasNeue(
+                        fontSize: isDesktop ? 48 : 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Get prompt responses from a friendly, professional and knowledgeable support team.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: isDesktop ? 18 : 15,
+                        color: Colors.white.withOpacity(0.95),
+                        height: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // Quick Contact Buttons
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 12,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentPink,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 14,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          icon: const Icon(Icons.phone_rounded, size: 18),
+                          label: Text(
+                            "CALL NOW",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          onPressed: () => _makePhoneCall(phoneNum),
+                        ),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 14,
+                            ),
+                            side: const BorderSide(color: Colors.white, width: 2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          icon: const Icon(Icons.email_rounded, size: 18),
+                          label: Text(
+                            "EMAIL US",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          onPressed: () => _sendEmail(emailAddr),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 14),
-              Text("How Can We Help Grow Your Brand?", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 32, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
-              const SizedBox(height: 10),
-              Text(
-                "Have a question, idea, or project in mind? Pick your preferred mode of communication below or drop us a message.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 15,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -756,8 +842,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     Text("Fast Response Guarantee", style: GoogleFonts.radley(fontSize: 17, fontWeight: FontWeight.bold, color: bgWhite)),
                     const SizedBox(height: 2),
                     Text(
-                      "We usually respond within 2 working hours during business times.",
-                      style: GoogleFonts.ibmPlexSansThai(fontSize: 12, color: bgWhite.withOpacity(0.9))),
+                        "We usually respond within 2 working hours during business times.",
+                        style: GoogleFonts.ibmPlexSansThai(fontSize: 12, color: bgWhite.withOpacity(0.9))),
                   ],
                 ),
               ),
@@ -1344,4 +1430,24 @@ class _MapGridPainter extends CustomPainter {
   bool shouldRepaint(covariant _MapGridPainter oldDelegate) {
     return oldDelegate.animationValue != animationValue;
   }
+}
+
+// Custom Painter for Contact Hero Pattern
+class _ContactHeroPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.1)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // Draw circles pattern
+    final center = Offset(size.width / 2, size.height / 2);
+    for (double radius = 50; radius < size.width; radius += 80) {
+      canvas.drawCircle(center, radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
