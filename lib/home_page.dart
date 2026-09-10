@@ -189,15 +189,15 @@ class _HomePageState extends State<HomePage> {
   void _initializeVideo() {
     try {
       _videoController = VideoPlayerController.asset('assets/videos/video.mp4');
+      _videoController.setLooping(true);
+      _videoController.setVolume(0.0);
       _videoController.initialize().then((_) {
         if (!mounted) return;
         setState(() {
           _isVideoInitialized = true;
           _videoError = false;
         });
-        _videoController.setLooping(true);
-        _videoController.setVolume(0.0);
-        _checkAndControlVideoPlayback();
+        _videoController.play();
       }).catchError((error) {
         if (!mounted) return;
         setState(() {
@@ -222,29 +222,11 @@ class _HomePageState extends State<HomePage> {
 
   void _checkAndControlVideoPlayback() {
     if (!mounted || !_isVideoInitialized || _videoError) return;
-
-    final RenderObject? renderObject =
-    _videoKey.currentContext?.findRenderObject();
-    if (renderObject == null || !renderObject.attached) return;
-
-    final RenderBox box = renderObject as RenderBox;
-    final Offset position = box.localToGlobal(Offset.zero);
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    final bool isVisible = (position.dy < screenHeight * 0.85) &&
-        (position.dy + box.size.height > screenHeight * 0.15);
-
-    if (isVisible && !_videoController.value.isPlaying) {
+    if (!_videoController.value.isPlaying) {
       try {
-        if (mounted) _videoController.play();
+        _videoController.play();
       } catch (e) {
         debugPrint('Error playing video: $e');
-      }
-    } else if (!isVisible && _videoController.value.isPlaying) {
-      try {
-        if (mounted) _videoController.pause();
-      } catch (e) {
-        debugPrint('Error pausing video: $e');
       }
     }
   }
@@ -624,8 +606,7 @@ class _HomePageState extends State<HomePage> {
                             Text("Video format unsupported", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
                           ],
                         )
-                            : const CircularProgressIndicator(
-                            color: primaryBlue),
+                            : const SizedBox.shrink(),
                       ),
                     ),
                   ),
@@ -794,7 +775,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Brands We’re Proud Of", style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
+              "Brands We’re Proud Of", style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -1209,13 +1190,13 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.asset(widget.videoPath);
+    _controller.setLooping(true);
+    _controller.setVolume(0.0);
     _controller.initialize().then((_) {
       if (!mounted) return;
       setState(() {
         _initialized = true;
       });
-      _controller.setLooping(true);
-      _controller.setVolume(0.0);
       _controller.play();
     }).catchError((err) {
       if (!mounted) return;
@@ -1275,9 +1256,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                 child: Center(
                   child: _hasError
                       ? const Icon(Icons.broken_image, color: Colors.grey)
-                      : const CircularProgressIndicator(
-                    color: Colors.blue,
-                  ),
+                      : const SizedBox.shrink(),
                 ),
               ),
             ),
