@@ -996,7 +996,7 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
     );
 
     final managerCard = _buildTeamCard(
-      name: "Umesh Parmar",
+      name: "Umesh Baraiya",
       designation: "Manager",
     );
 
