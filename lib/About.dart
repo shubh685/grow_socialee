@@ -453,7 +453,7 @@ class _AboutState extends State<About> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("Grow Socialee", textAlign: TextAlign.justify, style: GoogleFonts.bebasNeue(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.25)),
+        Text("Grow Socialee", textAlign: TextAlign.justify, style: GoogleFonts.bebasNeue(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.blue.shade600, height: 1.25)),
         const SizedBox(height: 12),
         Text("We are Grow Socialee, a dedicated social media marketing agency in Bhavnagar, focused on helping small "
             "and medium-sized businesses build their online presence", textAlign: TextAlign.justify,

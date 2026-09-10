@@ -75,6 +75,9 @@ class _HomePageState extends State<HomePage> {
   Timer? _carouselTimer;
   int _currentLogoPage = 0;
 
+  // FAQ expansion states
+  final List<bool> _faqExpanded = List.generate(6, (index) => false);
+
   final List<Map<String, dynamic>> clientLogos = [
     {"path": "assets/photos/aroma.png", "isWhite": true},
     {"path": "assets/photos/aura.png", "isWhite": false},
@@ -102,6 +105,35 @@ class _HomePageState extends State<HomePage> {
     {"title": "Client Reel", "path": "assets/videos/video_4.mp4"},
     {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
   ];
+
+  // FAQ Data
+  final List<Map<String, String>> faqs = [
+    {
+      "question": "How will you learn about my business?",
+      "answer": "We start with a comprehensive discovery session where we dive deep into understanding your business goals, target audience, competitors, and unique value proposition. This helps us create a tailored strategy that aligns with your brand vision."
+    },
+    {
+      "question": "What type of results can I expect?",
+      "answer": "Results vary based on your industry and goals, but typically our clients see increased engagement within 30 days, follower growth within 60 days, and measurable ROI within 90 days. We set clear KPIs and track progress transparently."
+    },
+    {
+      "question": "How will you create content that fits my business?",
+      "answer": "Our creative team develops a brand style guide based on your identity, then creates content that resonates with your audience. We combine trending formats with your unique brand voice to maximize engagement."
+    },
+    {
+      "question": "How soon should I expect to see result?",
+      "answer": "While some improvements like profile optimization are immediate, meaningful growth typically takes 2-3 months. Social media success is a marathon, not a sprint - we focus on sustainable, long-term growth."
+    },
+    {
+      "question": "How will you report and how do we know what you'll be working on?",
+      "answer": "You'll receive monthly performance reports with detailed analytics, plus access to a shared content calendar. We also schedule regular check-in calls to discuss strategy and upcoming campaigns."
+    },
+    {
+      "question": "What sorts of businesses do you work with?",
+      "answer": "We work with businesses of all sizes - from local startups to established brands. Our expertise spans retail, healthcare, hospitality, education, and professional services."
+    },
+  ];
+
 
   static const Color primaryBlue = Colors.blue;
   static const Color accentPink = Color(0xFFE91E63);
@@ -481,24 +513,11 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
+          // Hero Banner with Tagline
           SliverToBoxAdapter(
-            child: SizedBox(
-              width: screenWidth,
-              child: Image.asset(
-                "assets/photos/image.png",
-                width: screenWidth,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 200,
-                  color: Colors.grey[300],
-                  child: const Center(
-                    child:
-                    Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                  ),
-                ),
-              ),
-            ),
+            child: _buildHeroBanner(screenWidth, isDesktop),
           ),
+          // Video + Agency Description Section
           SliverToBoxAdapter(
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -523,16 +542,462 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          // Our Recognition Section
+          SliverToBoxAdapter(
+            child: _buildRecognitionSection(isDesktop),
+          ),
+          // Client Logos Carousel
           SliverToBoxAdapter(
             child: _clientLogo(),
           ),
+          // Our Work Section
           SliverToBoxAdapter(
             child: _buildOurWorkSection(context),
           ),
+          // FAQ Section
+          SliverToBoxAdapter(
+            child: _buildFAQSection(isDesktop),
+          ),
+          // Footer
           SliverToBoxAdapter(
             child: _buildFooter(context),
           ),
         ],
+      ),
+    );
+  }
+
+  // New: Hero Banner with Tagline (Sphinix style)
+  Widget _buildHeroBanner(double screenWidth, bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.indigo.shade700, Colors.blue.shade400],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Background Image with Overlay
+          Positioned.fill(
+            child: Image.asset(
+              "assets/photos/image.png",
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.indigo.shade700,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.indigo.shade900.withOpacity(0.85),
+                    Colors.blue.shade600.withOpacity(0.7),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: isDesktop ? 100 : 60,
+              horizontal: isDesktop ? 80 : 24,
+            ),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
+                  children: [
+                    Text(
+                      "Getting your name on top is our #1 priority.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bebasNeue(
+                        fontSize: isDesktop ? 48 : 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: isDesktop ? 18 : 15,
+                        color: Colors.white.withOpacity(0.95),
+                        height: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // CTA Buttons
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 12,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentPink,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 18,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 4,
+                          ),
+                          icon: const Icon(Icons.rocket_launch_rounded, size: 20),
+                          label: Text(
+                            "GET STARTED",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Contact(),
+                              ),
+                            );
+                          },
+                        ),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 18,
+                            ),
+                            side: const BorderSide(color: Colors.white, width: 2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          icon: const Icon(Icons.play_circle_outline_rounded, size: 20),
+                          label: Text(
+                            "OUR SERVICES",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Services(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // New: Recognition Section (Sphinix style)
+  Widget _buildRecognitionSection(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: 50,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      color: Colors.grey[50],
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Column(
+            children: [
+              Text(
+                "Our Recognition",
+                style: GoogleFonts.bebasNeue(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo.shade900,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 3,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: accentPink,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: isDesktop ? 18 : 15,
+                  color: Colors.black87,
+                  height: 1.6,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 32),
+              // Recognition Badges
+              Wrap(
+                spacing: 24,
+                runSpacing: 24,
+                alignment: WrapAlignment.center,
+                children: [
+                  _buildRecognitionBadge(
+                    icon: Icons.workspace_premium_rounded,
+                    title: "Top Rated",
+                    subtitle: "Social Media Agency",
+                  ),
+                  _buildRecognitionBadge(
+                    icon: Icons.thumb_up_rounded,
+                    title: "99% Retention",
+                    subtitle: "Client Satisfaction",
+                  ),
+                  _buildRecognitionBadge(
+                    icon: Icons.trending_up_rounded,
+                    title: "20+ Brands",
+                    subtitle: "Successfully Scaled",
+                  ),
+                  _buildRecognitionBadge(
+                    icon: Icons.video_library_rounded,
+                    title: "100+ Videos",
+                    subtitle: "Created & Delivered",
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecognitionBadge({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Container(
+      width: 200,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.black12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: lightPink,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: accentPink, size: 28),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.bebasNeue(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo.shade900,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              color: Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // New: FAQ Section (Sphinix style)
+  Widget _buildFAQSection(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: 50,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      color: Colors.grey[50],
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Column(
+            children: [
+              Text(
+                "FAQ's",
+                style: GoogleFonts.bebasNeue(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo.shade900,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 3,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: accentPink,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Frequently asked questions",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 32),
+              ...List.generate(faqs.length, (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildFAQItem(index),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFAQItem(int index) {
+    final faq = faqs[index];
+    final isExpanded = _faqExpanded[index];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isExpanded ? primaryBlue.withOpacity(0.3) : Colors.black12,
+          width: isExpanded ? 2 : 1,
+        ),
+        boxShadow: isExpanded
+            ? [
+          BoxShadow(
+            color: primaryBlue.withOpacity(0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ]
+            : [],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            setState(() {
+              _faqExpanded[index] = !_faqExpanded[index];
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: isExpanded ? primaryBlue : lightPink,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.help_outline_rounded,
+                        size: 18,
+                        color: isExpanded ? Colors.white : accentPink,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        faq["question"]!,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.indigo.shade900,
+                        ),
+                      ),
+                    ),
+                    AnimatedRotation(
+                      turns: isExpanded ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: isExpanded ? primaryBlue : Colors.black54,
+                        size: 24,
+                      ),
+                    ),
+                  ],
+                ),
+                AnimatedCrossFade(
+                  firstChild: const SizedBox(height: 0, width: double.infinity),
+                  secondChild: Padding(
+                    padding: const EdgeInsets.only(top: 16, left: 48),
+                    child: Text(
+                      faq["answer"]!,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 14,
+                        color: Colors.black87,
+                        height: 1.6,
+                      ),
+                    ),
+                  ),
+                  crossFadeState: isExpanded
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  duration: const Duration(milliseconds: 250),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -637,7 +1102,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 12),
           Text(
-            "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you.",
+            "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
             textAlign: TextAlign.justify,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
@@ -659,7 +1124,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 16),
           Text(
-            "Let’s build your digital success together! 📩 Contact Grow Socialee today!",
+            "Let's build your digital success together! 📩 Contact Grow Socialee today!",
             textAlign: TextAlign.justify,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
@@ -806,7 +1271,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Brands We’re Proud Of",
+            "The Brands We're Working With",
             style: GoogleFonts.bebasNeue(
               fontSize: 30,
               fontWeight: FontWeight.bold,
@@ -984,15 +1449,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
       child: Column(
         children: [
-          Text(
-            "What We’ve Built",
-            style: GoogleFonts.bebasNeue(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo.shade900,
-              letterSpacing: 0.5,
-            ),
-          ),
+          Text("What We've Built", style: GoogleFonts.bebasNeue(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -1003,16 +1460,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            "Creative showcases.",
-            textAlign: TextAlign.center,
-            style: GoogleFonts.kadwa(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              fontStyle: FontStyle.italic,
-              color: Colors.black54,
-            ),
-          ),
+          Text("Creative showcases.", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 18, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic, color: Colors.black54)),
           const SizedBox(height: 28),
           LayoutBuilder(
             builder: (context, constraints) {
@@ -1331,7 +1779,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text(widget.title, textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
+            child: Text(widget.title, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
           ),
         ],
       ),
