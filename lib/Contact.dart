@@ -505,25 +505,17 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   children: [
                     const Icon(Icons.bolt_rounded, size: 16, color: primaryBlue),
                     const SizedBox(width: 6),
-                    Text(
-                      "LET'S CONNECT",
-                      style: GoogleFonts.ibmPlexSansThai(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: primaryBlue,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
+                    Text("Let's Connect", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
                   ],
                 ),
               ),
               const SizedBox(height: 14),
-              Text("How Can We Help Grow Your Brand?", textAlign: TextAlign.center, style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
+              Text("How Can We Help Grow Your Brand?", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 32, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
               const SizedBox(height: 10),
               Text(
                 "Have a question, idea, or project in mind? Pick your preferred mode of communication below or drop us a message.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSansThai(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 15,
                   color: Colors.black87,
                 ),
@@ -564,9 +556,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Send Us A Message", style: GoogleFonts.radley(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                      Text("Send Us A Message", style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                       const SizedBox(height: 2),
-                      Text("Fill out the form below and we'll reply shortly.", style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white70)),
+                      Text("Fill out the form below and we'll reply shortly.", style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white70)),
                     ],
                   ),
                 ),
@@ -718,7 +710,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   children: [
                     const Icon(Icons.near_me_rounded, color: accentPink, size: 22),
                     const SizedBox(width: 8),
-                    Text("SUBMIT INQUIRY", style: GoogleFonts.radley(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.blue.shade600, letterSpacing: 1.1)),
+                    Text("SUBMIT INQUIRY", style: GoogleFonts.plusJakartaSans(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.blue.shade600, letterSpacing: 1.1)),
                   ],
                 ),
               ),
@@ -761,22 +753,11 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Fast Response Guarantee",
-                      style: GoogleFonts.radley(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: bgWhite,
-                      ),
-                    ),
+                    Text("Fast Response Guarantee", style: GoogleFonts.radley(fontSize: 17, fontWeight: FontWeight.bold, color: bgWhite)),
                     const SizedBox(height: 2),
                     Text(
                       "We usually respond within 2 working hours during business times.",
-                      style: GoogleFonts.ibmPlexSansThai(
-                        fontSize: 12,
-                        color: bgWhite.withOpacity(0.9),
-                      ),
-                    ),
+                      style: GoogleFonts.ibmPlexSansThai(fontSize: 12, color: bgWhite.withOpacity(0.9))),
                   ],
                 ),
               ),
@@ -1121,7 +1102,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       style: GoogleFonts.radley(fontSize: 14, color: Colors.black87),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.radley(color: Colors.black54, fontSize: 14),
+        labelStyle: GoogleFonts.plusJakartaSans(color: Colors.black54, fontSize: 14),
         prefixIcon: Icon(icon, color: primaryBlue, size: 20),
         filled: true,
         fillColor: Colors.grey[50],
