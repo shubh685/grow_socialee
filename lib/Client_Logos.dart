@@ -16,11 +16,10 @@ class ClientLogoPage extends StatefulWidget {
 }
 
 class _ClientLogoPageState extends State<ClientLogoPage> {
-  int _selectedIndex = 2; // Selected index for CLIENTS page
+  int _selectedIndex = 2;
 
-  // List of client logo assets with isWhite flag for white logos
   final List<Map<String, dynamic>> clientLogos = [
-    {"path": "assets/photos/aroma.png", "isWhite": true},           // AROMA - white logo
+    {"path": "assets/photos/aroma.png", "isWhite": true},
     {"path": "assets/photos/aura.png", "isWhite": false},
     {"path": "assets/photos/bani_thani.png", "isWhite": true},
     {"path": "assets/photos/bindu_decor.png", "isWhite": false},
@@ -34,19 +33,17 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     {"path": "assets/photos/jinali_modi.png", "isWhite": false},
     {"path": "assets/photos/pavan_salon.png", "isWhite": false},
     {"path": "assets/photos/shwass.png", "isWhite": false},
-    {"path": "assets/photos/the_celebration.png", "isWhite": true}, // The Celebration - white logo
+    {"path": "assets/photos/the_celebration.png", "isWhite": true},
     {"path": "assets/photos/ugs.png", "isWhite": false},
     {"path": "assets/photos/ved_icu.png", "isWhite": false},
     {"path": "assets/photos/wost.png", "isWhite": false},
   ];
 
-  // Theme Palette Colors
   static const Color primaryBlue = Colors.blue;
   static const Color accentPink = Color(0xFFE91E63);
   static const Color bgWhite = Colors.white;
   static const Color lightPink = Color(0xFFFCE4EC);
 
-  // Contact Details & Social Links
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -54,12 +51,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   final String googleMapsUrl =
       "https://maps.google.com/?q=Leela+Efcee+Bhavnagar+Gujarat";
 
-  final String facebookUrl =
-      "https://www.facebook.com/growsocialeeofficial/";
-  final String instagramUrl =
-      "https://www.instagram.com/growsocialee.official/";
-  final String linkedInUrl =
-      "https://in.linkedin.com/company/grow-socialee";
+  final String facebookUrl = "https://www.facebook.com/growsocialeeofficial/";
+  final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
+  final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
@@ -254,6 +248,10 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       ),
       body: CustomScrollView(
         slivers: [
+          // Enhanced Hero Section
+          SliverToBoxAdapter(
+            child: _buildHeroSection(isDesktop),
+          ),
           SliverToBoxAdapter(
             child: _buildAllLogosGrid(context),
           ),
@@ -338,6 +336,51 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     );
   }
 
+  // Enhanced Hero Section with Sphinix-style tagline
+  Widget _buildHeroSection(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [lightPink, bgWhite],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(
+                  color: primaryBlue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.people_alt_rounded, size: 16, color: primaryBlue),
+                    const SizedBox(width: 6),
+                    Text("OUR CLIENTS", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              Text("The Brands We're Working With", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: isDesktop ? 36 : 28, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.2)),
+              const SizedBox(height: 10),
+              Text(
+                  "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
+                  textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 16, color: Colors.black87, height: 1.5)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildAllLogosGrid(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final int crossAxisCount = screenWidth > 900
@@ -350,8 +393,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
       child: Column(
         children: [
-          Text("Our Valued Clients", style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87)),
-          const SizedBox(height: 16),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -374,7 +415,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       ),
     );
   }
-
 
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -639,7 +679,6 @@ class _AnimatedLogoCardState extends State<AnimatedLogoCard>
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            // Dark background for white logos
             color: widget.isWhiteLogo ? const Color(0xFF2C3E50) : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
@@ -657,7 +696,6 @@ class _AnimatedLogoCardState extends State<AnimatedLogoCard>
             child: Image.asset(
               widget.imagePath,
               fit: BoxFit.contain,
-              // For white logos, don't apply any color filter (they'll show on dark bg)
               errorBuilder: (context, error, stackTrace) =>
               const Icon(Icons.broken_image_outlined, color: Colors.grey),
             ),

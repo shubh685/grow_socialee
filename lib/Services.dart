@@ -15,16 +15,14 @@ class Services extends StatefulWidget {
 }
 
 class _ServicesState extends State<Services> {
-  int _selectedIndex = 3; // Active Drawer Index for Services[cite: 12]
-  int _selectedServiceIndex = 0; // For Interactive Service Showcase View
+  int _selectedIndex = 3;
+  int _selectedServiceIndex = 0;
 
-  // Theme Palette Colors (Exact Palette Retained)[cite: 12]
   static const Color primaryBlue = Colors.blue;
   static const Color accentPink = Color(0xFFE91E63);
   static const Color bgWhite = Colors.white;
   static const Color lightPink = Color(0xFFFCE4EC);
 
-  // Contact Details & Social Links Constants[cite: 12]
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -36,7 +34,6 @@ class _ServicesState extends State<Services> {
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
   final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
-  // Service Data Structure[cite: 12]
   final List<Map<String, dynamic>> serviceData = [
     {
       "title": "Social Media Strategy Development",
@@ -112,7 +109,6 @@ class _ServicesState extends State<Services> {
     },
   ];
 
-  // URL Launchers[cite: 12]
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -306,7 +302,7 @@ class _ServicesState extends State<Services> {
       ),
       body: CustomScrollView(
         slivers: [
-          // Hero Banner Section
+          // Hero Banner Section with Sphinix-style tagline
           SliverToBoxAdapter(
             child: _buildHeroSection(),
           ),
@@ -415,7 +411,7 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Hero Banner Section
+  // Hero Banner Section - Enhanced with Sphinix-style tagline
   Widget _buildHeroSection() {
     return Container(
       width: double.infinity,
@@ -450,10 +446,10 @@ class _ServicesState extends State<Services> {
                 ),
               ),
               const SizedBox(height: 18),
-              Text("Elevate Your Brand's Digital Footprint", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 34, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
+              Text("Getting your name on top is our #1 priority", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 34, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
               const SizedBox(height: 14),
               Text(
-                "From end-to-end strategy development to high-converting social media ads, we empower local and global businesses with result-driven digital solutions.",
+                "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
                 textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 16, color: Colors.black87, height: 1.5),
               ),
             ],
@@ -520,8 +516,8 @@ class _ServicesState extends State<Services> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Text(
-                            service["title"],
-                            style: GoogleFonts.bebasNeue(fontSize: 15, fontWeight: FontWeight.bold, color: isSelected ? accentPink : Colors.black87,)),
+                              service["title"],
+                              style: GoogleFonts.bebasNeue(fontSize: 15, fontWeight: FontWeight.bold, color: isSelected ? accentPink : Colors.black87,)),
                         ),
                         Icon(Icons.arrow_forward_ios_rounded, size: 16, color: isSelected ? accentPink : Colors.black26,),
                       ],
@@ -576,7 +572,7 @@ class _ServicesState extends State<Services> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          activeService["tag"], style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.0)),
+                            activeService["tag"], style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.0)),
                       ),
                     ],
                   ),
@@ -841,7 +837,6 @@ class _ServicesState extends State<Services> {
   }
 
   // Footer Component
-
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
