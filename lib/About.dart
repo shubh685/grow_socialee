@@ -399,16 +399,16 @@ class _AboutState extends State<About> {
                   children: [
                     const Icon(Icons.bolt_rounded, size: 16, color: primaryBlue),
                     const SizedBox(width: 6),
-                    Text("WHO WE ARE", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
+                    Text("WHO WE ARE", style: GoogleFonts.radley(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
                   ],
                 ),
               ),
               const SizedBox(height: 14),
-              Text("Empowering Brands in the Digital Era", textAlign: TextAlign.center, style: GoogleFonts.cormorantGaramond(fontSize: isDesktop ? 36 : 28, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.2)),
+              Text("Empowering Brands in the Digital Era", textAlign: TextAlign.center, style: GoogleFonts.radley(fontSize: isDesktop ? 36 : 28, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.2)),
               const SizedBox(height: 10),
               Text(
                   "Grow Socialee is Bhavnagar's premier marketing agency dedicated to scaling local businesses through strategic digital experiences and high-converting creative media.",
-                  textAlign: TextAlign.center, style: GoogleFonts.cormorantGaramond(fontSize: 16, color: Colors.black87, height: 1.5)),
+                  textAlign: TextAlign.center, style: GoogleFonts.radley(fontSize: 16, color: Colors.black87, height: 1.5)),
             ],
           ),
         ),
@@ -456,7 +456,7 @@ class _AboutState extends State<About> {
         Text(
           "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.cormorantGaramond(
+          style: GoogleFonts.radley(
             fontSize: 26,
             fontWeight: FontWeight.bold,
             color: Colors.indigo.shade900,
@@ -466,13 +466,13 @@ class _AboutState extends State<About> {
         const SizedBox(height: 12),
         Text("We are Grow Socialee, a dedicated social media marketing agency in Bhavnagar, focused on helping small "
             "and medium-sized businesses build their online presence", textAlign: TextAlign.justify,
-            style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
+            style: GoogleFonts.radley(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
         const SizedBox(height: 12),
         Text("In today’s digital landscape, having a strong online identity is essential for business success, and we are here to simplify that journey for you.", textAlign: TextAlign.justify,
-            style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
+            style: GoogleFonts.radley(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
         const SizedBox(height: 12),
         Text("At Grow Socialee, we understand that the digital world can be complicated, but we make it easy for businesses to navigate. Our expertise lies in various areas, including branding, content creation, creative design, social media management, & digital advertising campaigns. We are committed to helping you reach your goals and ensuring your business stands out from the crowd. Start your digital marketing journey with us!", textAlign: TextAlign.justify,
-            style: GoogleFonts.cormorantGaramond(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
+            style: GoogleFonts.radley(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
       ],
     );
   }
