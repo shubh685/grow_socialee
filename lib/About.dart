@@ -16,20 +16,17 @@ class About extends StatefulWidget {
 }
 
 class _AboutState extends State<About> {
-  int _selectedIndex = 1; // 1 for About Page active index
+  int _selectedIndex = 1;
 
-  // Key to locate and trigger stats animation when scrolling into view
   final GlobalKey<_StatsSectionState> _statsKey = GlobalKey<_StatsSectionState>();
   final GlobalKey<_ValuesSectionState> _valuesKey = GlobalKey<_ValuesSectionState>();
   final GlobalKey<_TeamSectionState> _teamKey = GlobalKey<_TeamSectionState>();
 
-  // Theme Constants
   static const Color primaryBlue = Colors.blue;
   static const Color accentPink = Color(0xFFE91E63);
   static const Color bgWhite = Colors.white;
   static const Color lightPink = Color(0xFFFCE4EC);
 
-  // Agency Contact Constants
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -41,7 +38,6 @@ class _AboutState extends State<About> {
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
   final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
-  // URL Launchers
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -248,9 +244,9 @@ class _AboutState extends State<About> {
         },
         child: CustomScrollView(
           slivers: [
-            // Banner Section
+            // Sphinix-style Hero Banner
             SliverToBoxAdapter(
-              child: _buildHeroSection(isDesktop),
+              child: _buildSphinixHeroBanner(screenWidth, isDesktop),
             ),
 
             // Overview & Vision Section
@@ -279,12 +275,12 @@ class _AboutState extends State<About> {
               ),
             ),
 
-            // Statistics Counter Bar with dynamic scroll trigger
+            // Statistics Counter Bar
             SliverToBoxAdapter(
               child: StatsSection(key: _statsKey, isDesktop: isDesktop),
             ),
 
-            // Core Value Cards Section with Equal Height and Directed Animations
+            // Core Value Cards Section
             SliverToBoxAdapter(
               child: ValuesSection(key: _valuesKey, isDesktop: isDesktop),
             ),
@@ -371,47 +367,93 @@ class _AboutState extends State<About> {
     );
   }
 
-  // Hero Section
-  Widget _buildHeroSection(bool isDesktop) {
+  // Sphinix-style Hero Banner
+  Widget _buildSphinixHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [lightPink, bgWhite],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          colors: [
+            Colors.indigo.shade700,
+            Colors.blue.shade500,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(
-                  color: primaryBlue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: CustomPaint(
+                painter: _AboutHeroPatternPainter(),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: isDesktop ? 80 : 50,
+              horizontal: isDesktop ? 60 : 24,
+            ),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
                   children: [
-                    const Icon(Icons.bolt_rounded, size: 16, color: primaryBlue),
-                    const SizedBox(width: 6),
-                    Text("WHO WE ARE", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.auto_awesome_rounded,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            "WHO WE ARE",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "Getting your name on top is our #1 priority.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bebasNeue(
+                        fontSize: isDesktop ? 48 : 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: isDesktop ? 18 : 15,
+                        color: Colors.white.withOpacity(0.95),
+                        height: 1.6,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 14),
-              Text("Empowering Brands in the Digital Era", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: isDesktop ? 36 : 28, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, height: 1.2)),
-              const SizedBox(height: 10),
-              Text(
-                  "Grow Socialee is Bhavnagar's premier marketing agency dedicated to scaling local businesses through strategic digital experiences and high-converting creative media.",
-                  textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 16, color: Colors.black87, height: 1.5)),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -459,7 +501,7 @@ class _AboutState extends State<About> {
             "and medium-sized businesses build their online presence", textAlign: TextAlign.justify,
             style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
         const SizedBox(height: 12),
-        Text("In today’s digital landscape, having a strong online identity is essential for business success, and we are here to simplify that journey for you.", textAlign: TextAlign.justify,
+        Text("In today's digital landscape, having a strong online identity is essential for business success, and we are here to simplify that journey for you.", textAlign: TextAlign.justify,
             style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
         const SizedBox(height: 12),
         Text("At Grow Socialee, we understand that the digital world can be complicated, but we make it easy for businesses to navigate. Our expertise lies in various areas, including branding, content creation, creative design, social media management, & digital advertising campaigns. We are committed to helping you reach your goals and ensuring your business stands out from the crowd. Start your digital marketing journey with us!", textAlign: TextAlign.justify,
@@ -667,6 +709,29 @@ class _AboutState extends State<About> {
   }
 }
 
+// Custom Painter for About Hero Pattern
+class _AboutHeroPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.1)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // Draw diagonal lines pattern
+    for (double i = -size.height; i < size.width + size.height; i += 50) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 // State Management for Values Section Animations with Visibility Detection
 class ValuesSection extends StatefulWidget {
   final bool isDesktop;
@@ -679,9 +744,9 @@ class ValuesSection extends StatefulWidget {
 
 class _ValuesSectionState extends State<ValuesSection> with SingleTickerProviderStateMixin {
   late AnimationController _animController;
-  late Animation<Offset> _leftToRightAnimation; // Our Mission
-  late Animation<Offset> _topToBottomAnimation; // Our Vision
-  late Animation<Offset> _rightToLeftAnimation; // Our Brand Pillars
+  late Animation<Offset> _leftToRightAnimation;
+  late Animation<Offset> _topToBottomAnimation;
+  late Animation<Offset> _rightToLeftAnimation;
   late Animation<double> _fadeAnimation;
 
   bool _hasAnimated = false;
@@ -919,9 +984,9 @@ class TeamSection extends StatefulWidget {
 
 class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStateMixin {
   late AnimationController _animController;
-  late Animation<Offset> _leftToRightAnimation; // Founder Card
-  late Animation<Offset> _topToBottomAnimation; // Manager Card
-  late Animation<Offset> _rightToLeftAnimation; // Sub Manager Card
+  late Animation<Offset> _leftToRightAnimation;
+  late Animation<Offset> _topToBottomAnimation;
+  late Animation<Offset> _rightToLeftAnimation;
   late Animation<double> _fadeAnimation;
 
   bool _hasAnimated = false;
@@ -1090,20 +1155,20 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: lightPink,
-            child: Icon(Icons.person_rounded, size: 45, color: Colors.indigo.shade700),
-          ),
-          const SizedBox(height: 16),
-          Text(name, textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
-          const SizedBox(height: 6),
-          Text(designation, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.pink.shade600, letterSpacing: 0.8)),
-        ]
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: lightPink,
+              child: Icon(Icons.person_rounded, size: 45, color: Colors.indigo.shade700),
+            ),
+            const SizedBox(height: 16),
+            Text(name, textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
+            const SizedBox(height: 6),
+            Text(designation, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.pink.shade600, letterSpacing: 0.8)),
+          ]
       ),
     );
   }

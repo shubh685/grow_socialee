@@ -302,33 +302,35 @@ class _ServicesState extends State<Services> {
       ),
       body: CustomScrollView(
         slivers: [
-          // Hero Banner Section with Sphinix-style tagline
+          // Sphinix-style Hero Banner
           SliverToBoxAdapter(
-            child: _buildHeroSection(),
+            child: _buildSphinixHeroBanner(screenWidth, isDesktop),
           ),
 
-          // Interactive Dynamic Service View Section
+          // Services Grid (Sphinix-style cards)
+          SliverToBoxAdapter(
+            child: _buildServicesGrid(isDesktop),
+          ),
+
+          // Interactive Service Detail Section
+          SliverToBoxAdapter(
+            child: _buildInteractiveServiceSection(isDesktop),
+          ),
+
+          // Consultation CTA
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
               child: Center(
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 1200),
-                  child: Column(
-                    children: [
-                      isDesktop
-                          ? _buildDesktopInteractiveServices()
-                          : _buildMobileServicesList(),
-                      const SizedBox(height: 48),
-                      _buildConsultationCTA(),
-                    ],
-                  ),
+                  child: _buildConsultationCTA(),
                 ),
               ),
             ),
           ),
 
-          // Enhanced Modern Footer
+          // Footer
           SliverToBoxAdapter(
             child: _buildFooter(context),
           ),
@@ -411,305 +413,641 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Hero Banner Section - Enhanced with Sphinix-style tagline
-  Widget _buildHeroSection() {
+  // Sphinix-style Hero Banner
+  Widget _buildSphinixHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [lightPink, bgWhite],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          colors: [
+            Colors.indigo.shade700,
+            Colors.blue.shade500,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 850),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                decoration: BoxDecoration(
-                  color: primaryBlue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: primaryBlue.withOpacity(0.2)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        children: [
+          // Background pattern
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: CustomPaint(
+                painter: _HeroPatternPainter(),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: isDesktop ? 80 : 50,
+              horizontal: isDesktop ? 60 : 24,
+            ),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
                   children: [
-                    const Icon(Icons.auto_awesome_rounded,
-                        size: 16, color: primaryBlue),
-                    const SizedBox(width: 8),
-                    Text("GROW SOCIALEE SERVICES", style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.2)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 18),
-              Text("Getting your name on top is our #1 priority", textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 34, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
-              const SizedBox(height: 14),
-              Text(
-                "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
-                textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 16, color: Colors.black87, height: 1.5),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Desktop Interactive Split Showcase View
-  Widget _buildDesktopInteractiveServices() {
-    final activeService = serviceData[_selectedServiceIndex];
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Left Column: Interactive Selector List
-        Expanded(
-          flex: 2,
-          child: Column(
-            children: List.generate(serviceData.length, (index) {
-              final service = serviceData[index];
-              final bool isSelected = _selectedServiceIndex == index;
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: InkWell(
-                  onTap: () => setState(() => _selectedServiceIndex = index),
-                  borderRadius: BorderRadius.circular(14),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: isSelected ? lightPink : bgWhite,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: isSelected ? accentPink : Colors.black12,
-                        width: isSelected ? 2 : 1,
+                    // Badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: Colors.white.withOpacity(0.3)),
                       ),
-                      boxShadow: isSelected
-                          ? [
-                        BoxShadow(
-                          color: accentPink.withOpacity(0.15),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        )
-                      ]
-                          : [],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: isSelected ? accentPink : primaryBlue.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            service["icon"],
-                            color: isSelected ? bgWhite : primaryBlue,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                              service["title"],
-                              style: GoogleFonts.bebasNeue(fontSize: 15, fontWeight: FontWeight.bold, color: isSelected ? accentPink : Colors.black87,)),
-                        ),
-                        Icon(Icons.arrow_forward_ios_rounded, size: 16, color: isSelected ? accentPink : Colors.black26,),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-        const SizedBox(width: 28),
-        // Right Column: Focused Service Display Detail
-        Expanded(
-          flex: 3,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: Container(
-              key: ValueKey<int>(_selectedServiceIndex),
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: bgWhite,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryBlue.withOpacity(0.08),
-                    blurRadius: 25,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: lightPink,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Icon(activeService["icon"],
-                            color: accentPink, size: 36),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: primaryBlue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                            activeService["tag"], style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: primaryBlue, letterSpacing: 1.0)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Text(activeService["title"], style: GoogleFonts.bebasNeue(fontSize: 24, fontWeight: FontWeight.bold, color: primaryBlue),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(activeService["desc"], style: GoogleFonts.plusJakartaSans(fontSize: 15, color: Colors.black87, height: 1.6)),
-                  const SizedBox(height: 24),
-                  const Divider(color: Colors.black12),
-                  const SizedBox(height: 16),
-                  Text("KEY DELIVERABLES", style: GoogleFonts.bebasNeue(fontSize: 12, fontWeight: FontWeight.bold, color: accentPink, letterSpacing: 1.1)),
-                  const SizedBox(height: 12),
-                  ...List<String>.from(activeService["deliverables"]).map(
-                        (item) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.check_circle_rounded, size: 18, color: accentPink),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(item, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87,)),
+                          const Icon(Icons.auto_awesome_rounded,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            "OUR SERVICES",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    // Main Headline - Sphinix style
+                    Text(
+                      "Getting your name on top is our #1 priority.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bebasNeue(
+                        fontSize: isDesktop ? 48 : 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Subheadline
+                    Text(
+                      "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: isDesktop ? 18 : 15,
+                        color: Colors.white.withOpacity(0.95),
+                        height: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // CTA Buttons
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 12,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentPink,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 28,
+                              vertical: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 4,
+                          ),
+                          icon: const Icon(Icons.rocket_launch_rounded, size: 20),
+                          label: Text(
+                            "GET STARTED",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Contact(),
+                              ),
+                            );
+                          },
+                        ),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 28,
+                              vertical: 16,
+                            ),
+                            side: const BorderSide(color: Colors.white, width: 2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          icon: const Icon(Icons.phone_rounded, size: 20),
+                          label: Text(
+                            "CALL US",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          onPressed: () => _makePhoneCall(phoneNum),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  // Mobile Accordion/Card View
-  Widget _buildMobileServicesList() {
-    return Column(
-      children: List.generate(serviceData.length, (index) {
-        final service = serviceData[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          decoration: BoxDecoration(
-            color: bgWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.black.withOpacity(0.08)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+  // Services Grid - Sphinix Style Cards
+  Widget _buildServicesGrid(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: 60,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      color: Colors.grey[50],
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            children: [
+              Text(
+                "What We Offer",
+                style: GoogleFonts.bebasNeue(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo.shade900,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 4,
+                width: 80,
+                decoration: BoxDecoration(
+                  color: accentPink,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Comprehensive digital marketing solutions tailored to your business needs.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  color: Colors.black54,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 40),
+              // Service Cards Grid
+              Wrap(
+                spacing: 24,
+                runSpacing: 24,
+                alignment: WrapAlignment.center,
+                children: List.generate(serviceData.length, (index) {
+                  final service = serviceData[index];
+                  return _buildServiceCard(
+                    service: service,
+                    index: index,
+                    isDesktop: isDesktop,
+                  );
+                }),
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        ),
+      ),
+    );
+  }
+
+  Widget _buildServiceCard({
+    required Map<String, dynamic> service,
+    required int index,
+    required bool isDesktop,
+  }) {
+    final double cardWidth = isDesktop ? 360 : double.infinity;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedServiceIndex = index;
+          });
+          // Scroll to detail section
+          Scrollable.ensureVisible(
+            context,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: cardWidth,
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: _selectedServiceIndex == index
+                  ? accentPink
+                  : Colors.black.withOpacity(0.08),
+              width: _selectedServiceIndex == index ? 2 : 1,
+            ),
+            boxShadow: _selectedServiceIndex == index
+                ? [
+              BoxShadow(
+                color: accentPink.withOpacity(0.2),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ]
+                : [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon and Tag Row
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: lightPink,
-                        borderRadius: BorderRadius.circular(12),
+                        color: _selectedServiceIndex == index
+                            ? accentPink
+                            : lightPink,
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(service["icon"], color: accentPink, size: 24),
+                      child: Icon(
+                        service["icon"],
+                        color: _selectedServiceIndex == index
+                            ? Colors.white
+                            : accentPink,
+                        size: 28,
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: primaryBlue.withOpacity(0.08),
+                        color: primaryBlue.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         service["tag"],
-                        style: GoogleFonts.ibmPlexSansThai(
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                           color: primaryBlue,
+                          letterSpacing: 0.8,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
-                Text(
-                  service["title"],
-                  style: GoogleFonts.ibmPlexSansThai(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: primaryBlue,
-                  ),
+              ),
+              const SizedBox(height: 20),
+              // Title
+              Text(
+                service["title"],
+                style: GoogleFonts.bebasNeue(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo.shade900,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  service["desc"],
-                  style: GoogleFonts.ibmPlexSansThai(
-                    fontSize: 13,
-                    color: Colors.black87,
-                    height: 1.4,
-                  ),
+              ),
+              const SizedBox(height: 10),
+              // Description
+              Text(
+                service["desc"],
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  color: Colors.black54,
+                  height: 1.5,
                 ),
-                const SizedBox(height: 14),
-                const Divider(color: Colors.black12),
-                const SizedBox(height: 8),
-                ...List<String>.from(service["deliverables"]).map(
-                      (item) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.check_circle_rounded,
-                            size: 15, color: accentPink),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            item,
-                            style: GoogleFonts.ibmPlexSansThai(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      ],
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 20),
+              // Learn More Link
+              Row(
+                children: [
+                  Text(
+                    "Learn More",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: accentPink,
                     ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(width: 6),
+                  const Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 16,
+                    color: accentPink,
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
-      }),
+        ),
+      ),
+    );
+  }
+
+  // Interactive Service Detail Section
+  Widget _buildInteractiveServiceSection(bool isDesktop) {
+    final activeService = serviceData[_selectedServiceIndex];
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: 60,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      color: Colors.white,
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            children: [
+              // Section Header
+              Text(
+                "Service Deep Dive",
+                style: GoogleFonts.bebasNeue(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo.shade900,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 4,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: primaryBlue,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 40),
+              // Service Detail Card
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Container(
+                  key: ValueKey<int>(_selectedServiceIndex),
+                  padding: EdgeInsets.all(isDesktop ? 40 : 24),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: primaryBlue.withOpacity(0.15),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: isDesktop
+                      ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Left: Icon and Tag
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: lightPink,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Icon(
+                                activeService["icon"],
+                                color: accentPink,
+                                size: 48,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: primaryBlue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                activeService["tag"],
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryBlue,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 40),
+                      // Right: Content
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              activeService["title"],
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.indigo.shade900,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              activeService["desc"],
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 16,
+                                color: Colors.black87,
+                                height: 1.6,
+                              ),
+                            ),
+                            const SizedBox(height: 28),
+                            Text(
+                              "KEY DELIVERABLES",
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: accentPink,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
+                              children: List<String>.from(
+                                  activeService["deliverables"])
+                                  .map((item) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: Colors.black.withOpacity(0.08)),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.check_circle_rounded,
+                                      size: 16,
+                                      color: accentPink,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      item,
+                                      style:
+                                      GoogleFonts.plusJakartaSans(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ))
+                                  .toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                      : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: lightPink,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Icon(
+                              activeService["icon"],
+                              color: accentPink,
+                              size: 32,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: primaryBlue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                activeService["tag"],
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryBlue,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        activeService["title"],
+                        style: GoogleFonts.bebasNeue(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.indigo.shade900,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        activeService["desc"],
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 14,
+                          color: Colors.black87,
+                          height: 1.6,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        "KEY DELIVERABLES",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: accentPink,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ...List<String>.from(activeService["deliverables"])
+                          .map((item) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.check_circle_rounded,
+                              size: 16,
+                              color: accentPink,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                item,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -1006,4 +1344,27 @@ class _ServicesState extends State<Services> {
       ],
     );
   }
+}
+
+// Custom Painter for Hero Background Pattern
+class _HeroPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.1)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // Draw diagonal lines pattern
+    for (double i = -size.height; i < size.width + size.height; i += 40) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
