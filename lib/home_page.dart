@@ -191,6 +191,7 @@ class _HomePageState extends State<HomePage> {
       _videoController = VideoPlayerController.asset('assets/videos/video.mp4');
       _videoController.setLooping(true);
       _videoController.setVolume(0.0);
+      _videoController.play();
       _videoController.initialize().then((_) {
         if (!mounted) return;
         setState(() {
@@ -221,7 +222,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkAndControlVideoPlayback() {
-    if (!mounted || !_isVideoInitialized || _videoError) return;
+    if (!mounted || _videoError) return;
     if (!_videoController.value.isPlaying) {
       try {
         _videoController.play();
@@ -276,8 +277,6 @@ class _HomePageState extends State<HomePage> {
 
   void _openZoomableVideoDialog(
       BuildContext context, VideoPlayerController controller) {
-    if (!controller.value.isInitialized) return;
-
     showDialog(
       context: context,
       builder: (context) {
@@ -298,7 +297,9 @@ class _HomePageState extends State<HomePage> {
                   maxScale: 4.0,
                   child: Center(
                     child: AspectRatio(
-                      aspectRatio: controller.value.aspectRatio,
+                      aspectRatio: controller.value.isInitialized
+                          ? controller.value.aspectRatio
+                          : (9 / 16),
                       child: VideoPlayer(controller),
                     ),
                   ),
@@ -331,7 +332,8 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              Colors.indigo.shade700, Colors.blue.shade400,
+              Colors.indigo.shade700,
+              Colors.blue.shade400,
             ]),
             boxShadow: [
               BoxShadow(
@@ -522,15 +524,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
           SliverToBoxAdapter(
             child: _clientLogo(),
           ),
-
           SliverToBoxAdapter(
             child: _buildOurWorkSection(context),
           ),
-
           SliverToBoxAdapter(
             child: _buildFooter(context),
           ),
@@ -588,25 +587,26 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: _isVideoInitialized && !_videoError
+                    child: !_videoError
                         ? AspectRatio(
-                      aspectRatio: _videoController.value.aspectRatio,
+                      aspectRatio: _videoController.value.isInitialized
+                          ? _videoController.value.aspectRatio
+                          : (9 / 16),
                       child: VideoPlayer(_videoController),
                     )
                         : Container(
                       color: Colors.grey[200],
                       child: Center(
-                        child: _videoError
-                            ? Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.videocam_off, color: Colors.grey, size: 40),
-                            SizedBox(height: 8),
-                            Text("Video format unsupported", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.videocam_off, color: Colors.grey, size: 40),
+                            const SizedBox(height: 8),
+                            Text("Video format unsupported",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.plusJakartaSans(color: Colors.grey, fontSize: 12)),
                           ],
-                        )
-                            : const SizedBox.shrink(),
+                        ),
                       ),
                     ),
                   ),
@@ -629,33 +629,57 @@ class _HomePageState extends State<HomePage> {
           Text(
             "Grow Socialee – The Best Social Media Marketing Agency in Bhavnagar",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.radley(
+            style: GoogleFonts.bebasNeue(
               fontSize: 26,
               fontWeight: FontWeight.bold,
               color: Colors.indigo.shade900,
-              height: 1.2,
+              height: 1.25,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today’s digital world, standing out is essential, and we simplify that process for you.",
-            textAlign: TextAlign.justify, style: GoogleFonts.radley(fontSize: 16.2, fontWeight: FontWeight.w400, color: Colors.black87, height: 1.6),
+            textAlign: TextAlign.justify,
+            style: GoogleFonts.kadwa(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: Colors.black87,
+              height: 1.6,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
             "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
-            textAlign: TextAlign.justify, style: GoogleFonts.radley(fontSize: 16.2, color: Colors.black87, height: 1.6),
+            textAlign: TextAlign.justify,
+            style: GoogleFonts.kadwa(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: Colors.black87,
+              height: 1.6,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
             "Let’s build your digital success together! 📩 Contact Grow Socialee today!",
             textAlign: TextAlign.justify,
-            style: GoogleFonts.radley(fontSize: 16.2, fontWeight: FontWeight.w700, color: Colors.blue.shade800, height: 1.5),
+            style: GoogleFonts.kadwa(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Colors.blue.shade800,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             "We understand social behaviours within online communities, cultures and subcultures.",
-            textAlign: TextAlign.justify, style: GoogleFonts.radley(fontSize: 16.2, fontStyle: FontStyle.italic, color: Colors.black54, height: 1.5),
+            textAlign: TextAlign.justify,
+            style: GoogleFonts.kadwa(
+              fontSize: 18,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+              height: 1.4,
+            ),
           ),
           const SizedBox(height: 20),
           InkWell(
@@ -664,7 +688,7 @@ class _HomePageState extends State<HomePage> {
                   context, MaterialPageRoute(builder: (context) => const Contact()));
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               decoration: BoxDecoration(
                 color: primaryBlue,
                 borderRadius: BorderRadius.circular(12),
@@ -676,7 +700,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              child: Text("Get in Touch", style: GoogleFonts.radley(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white)),
+              child: Text(
+                "Get in Touch",
+                style: GoogleFonts.kadwa(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 0.5,
+                ),
+              ),
             ),
           ),
         ],
@@ -726,7 +758,7 @@ class _HomePageState extends State<HomePage> {
             padding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.pink.shade400: Colors.transparent,
+              color: isSelected ? Colors.pink.shade400 : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: isSelected
                   ? null
@@ -775,7 +807,14 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-              "Brands We’re Proud Of", style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
+            "Brands We’re Proud Of",
+            style: GoogleFonts.bebasNeue(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo.shade900,
+              letterSpacing: 0.5,
+            ),
+          ),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -946,7 +985,15 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
       child: Column(
         children: [
-          Text("What We’ve Built", style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
+          Text(
+            "What We’ve Built",
+            style: GoogleFonts.bebasNeue(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo.shade900,
+              letterSpacing: 0.5,
+            ),
+          ),
           const SizedBox(height: 6),
           Container(
             height: 3,
@@ -960,8 +1007,10 @@ class _HomePageState extends State<HomePage> {
           Text(
             "Creative showcases.",
             textAlign: TextAlign.center,
-            style: GoogleFonts.radley(
-              fontSize: 14,
+            style: GoogleFonts.kadwa(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              fontStyle: FontStyle.italic,
               color: Colors.black54,
             ),
           ),
@@ -1041,7 +1090,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: Colors.blue.shade600,
+            color: Colors.indigo.shade500,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
@@ -1085,7 +1134,14 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Contact Info", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text(
+          "Contact Info",
+          style: GoogleFonts.syne(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         const SizedBox(height: 12),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
@@ -1095,7 +1151,14 @@ class _HomePageState extends State<HomePage> {
               const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(addressQuery, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white, height: 1.4)),
+                child: Text(
+                  addressQuery,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: Colors.white,
+                    height: 1.4,
+                  ),
+                ),
               ),
             ],
           ),
@@ -1107,7 +1170,13 @@ class _HomePageState extends State<HomePage> {
             children: [
               const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(phoneNum, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white)),
+              Text(
+                phoneNum,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: Colors.white,
+                ),
+              ),
             ],
           ),
         ),
@@ -1118,7 +1187,13 @@ class _HomePageState extends State<HomePage> {
             children: [
               const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(emailAddr, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white)),
+              Text(
+                emailAddr,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: Colors.white,
+                ),
+              ),
             ],
           ),
         ),
@@ -1130,7 +1205,14 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Follow Us", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text(
+          "Follow Us",
+          style: GoogleFonts.syne(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
@@ -1183,7 +1265,6 @@ class _OurWorkVideoCard extends StatefulWidget {
 
 class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   late VideoPlayerController _controller;
-  bool _initialized = false;
   bool _hasError = false;
 
   @override
@@ -1192,11 +1273,10 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
     _controller = VideoPlayerController.asset(widget.videoPath);
     _controller.setLooping(true);
     _controller.setVolume(0.0);
+    _controller.play();
     _controller.initialize().then((_) {
       if (!mounted) return;
-      setState(() {
-        _initialized = true;
-      });
+      setState(() {});
       _controller.play();
     }).catchError((err) {
       if (!mounted) return;
@@ -1233,7 +1313,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: AspectRatio(
               aspectRatio: 9 / 16,
-              child: _initialized && !_hasError
+              child: !_hasError
                   ? GestureDetector(
                 onTap: () => widget.onExpand(_controller),
                 child: Stack(
@@ -1253,10 +1333,8 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
               )
                   : Container(
                 color: Colors.grey[200],
-                child: Center(
-                  child: _hasError
-                      ? const Icon(Icons.broken_image, color: Colors.grey)
-                      : const SizedBox.shrink(),
+                child: const Center(
+                  child: Icon(Icons.broken_image, color: Colors.grey),
                 ),
               ),
             ),
@@ -1266,7 +1344,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
             child: Text(
               widget.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.kadwa(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,

@@ -523,7 +523,7 @@ class _AboutState extends State<About> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: Colors.blue.shade600,
+            color: Colors.indigo.shade500,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
