@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'About.dart';
 import 'Client_Logos.dart';
@@ -114,32 +117,89 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     }
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isSubmitting = true;
       });
 
-      Future.delayed(const Duration(seconds: 2), () {
-        if (!mounted) return;
-        setState(() {
-          _isSubmitting = false;
-          _serviceDr = null;
-        });
+      // 1. Define category mapping based on selected choice chip index
+      final List<String> categories = ["General Inquiry", "Get Quote", "Support"];
+      final String selectedCategory = categories[_selectedFormCategory];
 
+      // 2. Define API Endpoint URL
+      final Uri apiUrl = Uri.parse("http://192.168.1.103/grow_socialee/send_inquiry.php");
+
+      try {
+        // 3. Prepare Payload matching backend PHP key expectations
+        final Map<String, dynamic> requestData = {
+          "name": _nameController.text.trim(),
+          "phone": _phoneController.text.trim(),
+          "email": _emailController.text.trim(),
+          "category": selectedCategory,
+          "service": _serviceDr ?? '',
+          "message": _messageController.text.trim(),
+        };
+
+        // 4. Send HTTP POST Request
+        final response = await http.post(
+          apiUrl,
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: jsonEncode(requestData),
+        );
+
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        if (!mounted) return;
+
+        if (response.statusCode == 200 && responseData['success'] == true) {
+          // Success Handling
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(responseData['message'] ?? "Thank you! Your inquiry has been dispatched successfully."),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+
+          // Reset form controls
+          _formKey.currentState?.reset();
+          _nameController.clear();
+          _emailController.clear();
+          _phoneController.clear();
+          _messageController.clear();
+          setState(() {
+            _serviceDr = null;
+          });
+        } else {
+          // Failure Handling
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(responseData['message'] ?? "Failed to submit inquiry. Please try again."),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Thank you! Your inquiry has been dispatched successfully."),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: Text("Network error: $e"),
+            backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
           ),
         );
-
-        _nameController.clear();
-        _emailController.clear();
-        _phoneController.clear();
-        _messageController.clear();
-      });
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isSubmitting = false;
+          });
+        }
+      }
     }
   }
 
@@ -303,12 +363,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       ),
       body: CustomScrollView(
         slivers: [
-          // Dynamic Hero Banner Section
           SliverToBoxAdapter(
             child: _buildHeroSection(),
           ),
-
-          // Main Layout Area
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
@@ -349,8 +406,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
-
-          // Footer
           SliverToBoxAdapter(
             child: _buildFooter(context),
           ),
@@ -390,10 +445,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.pink.shade400: Colors.transparent,
+              color: isSelected ? Colors.pink.shade400 : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: isSelected
                   ? null
@@ -424,7 +478,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  // Hero Section
   Widget _buildHeroSection() {
     return Container(
       width: double.infinity,
@@ -465,10 +518,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 ),
               ),
               const SizedBox(height: 14),
-              // Main Title updated to use Radley font
               Text("How Can We Help Grow Your Brand?", textAlign: TextAlign.center, style: GoogleFonts.radley(fontSize: 32, fontWeight: FontWeight.bold, color: primaryBlue, height: 1.2)),
               const SizedBox(height: 10),
-              // Description kept as GoogleFonts.ibmPlexSansThai
               Text(
                 "Have a question, idea, or project in mind? Pick your preferred mode of communication below or drop us a message.",
                 textAlign: TextAlign.center,
@@ -484,7 +535,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  // Interactive Form Component with Filter Pills & Service Dropdown
   Widget _buildInteractiveFormCard() {
     final categories = ["General Inquiry", "Get Quote", "Support"];
 
@@ -514,10 +564,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Subtitle Title inside card uses Radley font
                       Text("Send Us A Message", style: GoogleFonts.radley(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                       const SizedBox(height: 2),
-                      // Subtitle description kept as GoogleFonts.ibmPlexSansThai
                       Text("Fill out the form below and we'll reply shortly.", style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white70)),
                     ],
                   ),
@@ -533,8 +581,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               ],
             ),
             const SizedBox(height: 20),
-
-            // Form Subject Filter Pills
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -566,7 +612,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 20),
-
             _buildInputField(
               controller: _nameController,
               label: "Your Name",
@@ -596,12 +641,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               validator: (v) => v == null || v.isEmpty ? "Please enter your mobile number" : null,
             ),
             const SizedBox(height: 16),
-
-            // Service Choice Dropdown
             DropdownButtonFormField<String>(
               value: _serviceDr,
               isExpanded: true,
-              dropdownColor: Colors.blue.shade600, // Background color for dropdown list items
+              dropdownColor: Colors.blue.shade600,
               style: GoogleFonts.radley(fontSize: 14, color: Colors.black87),
               iconEnabledColor: Colors.blue.shade600,
               decoration: InputDecoration(
@@ -633,8 +676,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   value: service,
                   child: Container(
                     color: Colors.white,
-                    padding: EdgeInsets.only(left: 10, right: 8),
-                    child: Text(service, overflow: TextOverflow.ellipsis, style: GoogleFonts.radley(color: Colors.pink.shade300, fontSize: 14, fontWeight: FontWeight.w500,),),
+                    padding: const EdgeInsets.only(left: 10, right: 8),
+                    child: Text(service, overflow: TextOverflow.ellipsis, style: GoogleFonts.radley(color: Colors.pink.shade300, fontSize: 14, fontWeight: FontWeight.w500)),
                   ),
                 );
               }).toList(),
@@ -646,7 +689,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               validator: (v) => v == null || v.isEmpty ? "Please select a service" : null,
             ),
             const SizedBox(height: 16),
-
             _buildInputField(
               controller: _messageController,
               label: _selectedFormCategory == 1
@@ -687,11 +729,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  // Interactive Contact Details Sidebar
   Widget _buildInteractiveContactSidebar() {
     return Column(
       children: [
-        // Response time guarantee card
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
@@ -744,8 +784,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           ),
         ),
         const SizedBox(height: 20),
-
-        // Interactive Cards for details
         _buildSidebarDetailCard(
           icon: Icons.location_on_rounded,
           title: "Visit Our Agency",
@@ -862,7 +900,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  // Maps Widget with Animated Radar Sweep Visual
   Widget _buildGoogleMapSection() {
     return Container(
       width: double.infinity,
@@ -882,7 +919,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            // Custom Visual Map Canvas with Radar Animation
             AnimatedBuilder(
               animation: _radarAnimationController,
               builder: (context, child) {
@@ -936,8 +972,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 );
               },
             ),
-
-            // Top Floating Business Overlay
             Positioned(
               top: 16,
               left: 16,
@@ -1017,8 +1051,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 ),
               ),
             ),
-
-            // Bottom Map Action Controllers
             Positioned(
               bottom: 16,
               left: 16,
@@ -1225,8 +1257,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             children: [
               const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
               const SizedBox(width: 8),
-              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white),
-              ),
+              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
             ],
           ),
         ),
@@ -1285,7 +1316,6 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
   }
 }
 
-// Map Custom Painter with animated pulse radar effect
 class _MapGridPainter extends CustomPainter {
   final double animationValue;
 
@@ -1298,17 +1328,14 @@ class _MapGridPainter extends CustomPainter {
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
-    // Draw horizontal grid lines
     for (double i = 0; i < size.height; i += 35) {
       canvas.drawLine(Offset(0, i), Offset(size.width, i), gridPaint);
     }
 
-    // Draw vertical grid lines
     for (double i = 0; i < size.width; i += 45) {
       canvas.drawLine(Offset(i, 0), Offset(i, size.height), gridPaint);
     }
 
-    // Draw angled roads
     final roadPaint = Paint()
       ..color = Colors.white.withOpacity(0.8)
       ..strokeWidth = 6.0
@@ -1320,7 +1347,6 @@ class _MapGridPainter extends CustomPainter {
       roadPaint,
     );
 
-    // Draw animated pulse radar wave
     final center = Offset(size.width / 2, size.height / 2);
     final maxRadius = size.width * 0.35;
     final currentRadius = maxRadius * animationValue;
