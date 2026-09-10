@@ -548,7 +548,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       selectedColor: Colors.white,
                       backgroundColor: Colors.grey[100],
                       labelStyle: GoogleFonts.ibmPlexSansThai(
-                        color: isSelected ? Colors.black87 : Colors.pink.shade200,
+                        color: isSelected ? Colors.black87 : Colors.pinkAccent,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         fontSize: 12,
                       ),
