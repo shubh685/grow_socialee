@@ -984,7 +984,6 @@ class _HomePageState extends State<HomePage> {
             textAlign: TextAlign.justify,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 18,
-              fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w500,
               color: Colors.black87,
               height: 1.4,
