@@ -18,10 +18,12 @@ class _ServicesState extends State<Services> {
   int _selectedIndex = 3;
   int _selectedServiceIndex = 0;
 
-  static const Color primaryBlue = Colors.blue;
-  static const Color accentPink = Color(0xFFE91E63);
-  static const Color bgWhite = Colors.white;
-  static const Color lightPink = Color(0xFFFCE4EC);
+  // AG Modern Theme Colors matching home_page.dart
+  static const Color darkBg = Color(0xFF0F172A);
+  static const Color darkCardBg = Color(0xFF1E293B);
+  static const Color accentBlue = Color(0xFF3B82F6);
+  static const Color accentCyan = Color(0xFF06B6D4);
+  static const Color textMuted = Color(0xFF94A3B8);
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -109,6 +111,28 @@ class _ServicesState extends State<Services> {
     },
   ];
 
+  // Unique Reviews Data
+  final List<Map<String, String>> clientReviews = [
+    {
+      "name": "Venisha Chitlia",
+      "company": "Bindu Decorators",
+      "rating": "4.0",
+      "review":
+      "I am pleased with the social media management services provided. They have effectively increased my followers, achieving the target set within the expected timeframe. Their strategic approach delivered great value for money, and their consistent efforts have helped enhance my brand’s online presence. Overall, a satisfactory experience, and I would recommend their services to anyone looking to grow their social media reach.",
+      "tag": "Brand's Product Marketing"
+    },
+    {
+      "name": "Dr. Jinali Modi",
+      "company": "Ved ICU & Healthcare",
+      "rating": "5.0",
+      "review":
+      "Growsocialee has been helping me  for my social media management and Shaily the founder has been extremely professional  , she is very helpful and always available for any questions "
+          "she is   very cooperative in her approach, she has in depth knowledge of how this social media marketing works and knows the right things to do."
+          "She is very creative and her team also brings the vision to life .",
+      "tag": "Hospital's Marketing"
+    },
+  ];
+
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -145,24 +169,16 @@ class _ServicesState extends State<Services> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 900;
+    final bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFCFF),
+      backgroundColor: darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(75),
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Colors.indigo.shade700, Colors.blue.shade400,
-            ]),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blue.shade700.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+          decoration: const BoxDecoration(
+            color: darkBg,
+            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -173,25 +189,25 @@ class _ServicesState extends State<Services> {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
+                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
             ],
           ),
         ),
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: bgWhite,
+        backgroundColor: darkBg,
         child: SafeArea(
           child: Column(
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                color: Colors.blue.shade600,
+                padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
+                color: darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
@@ -200,14 +216,14 @@ class _ServicesState extends State<Services> {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: primaryBlue,
+                        color: accentBlue,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: accentPink),
+              const Divider(height: 1, thickness: 1, color: Colors.white10),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -235,7 +251,10 @@ class _ServicesState extends State<Services> {
                       onTap: () {
                         setState(() => _selectedIndex = 1);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const About()));
                       },
                     ),
                     _buildDrawerItem(
@@ -293,8 +312,8 @@ class _ServicesState extends State<Services> {
                 ),
               ),
               Container(
-                height: 6,
-                color: accentPink,
+                height: 4,
+                color: accentBlue,
               )
             ],
           ),
@@ -302,12 +321,12 @@ class _ServicesState extends State<Services> {
       ),
       body: CustomScrollView(
         slivers: [
-          // Sphinix-style Hero Banner
+          // Dark Modern Hero Banner
           SliverToBoxAdapter(
-            child: _buildSphinixHeroBanner(screenWidth, isDesktop),
+            child: _buildAGHeroBanner(screenWidth, isDesktop),
           ),
 
-          // Services Grid (Sphinix-style cards)
+          // Services Grid
           SliverToBoxAdapter(
             child: _buildServicesGrid(isDesktop),
           ),
@@ -317,22 +336,27 @@ class _ServicesState extends State<Services> {
             child: _buildInteractiveServiceSection(isDesktop),
           ),
 
+          // Unique Testimonials & Reviews Section
+          SliverToBoxAdapter(
+            child: _buildUniqueReviewsSection(isDesktop),
+          ),
+
           // Consultation CTA
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
               child: Center(
                 child: Container(
-                  constraints: const BoxConstraints(maxWidth: 1200),
+                  constraints: const BoxConstraints(maxWidth: 1100),
                   child: _buildConsultationCTA(),
                 ),
               ),
             ),
           ),
 
-          // Footer
+          // Modern Footer Section
           SliverToBoxAdapter(
-            child: _buildFooter(context),
+            child: _buildAGFooter(context),
           ),
         ],
       ),
@@ -341,8 +365,8 @@ class _ServicesState extends State<Services> {
 
   Widget _buildLogoHeader() {
     return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           GestureDetector(
@@ -353,9 +377,16 @@ class _ServicesState extends State<Services> {
               );
             },
             child: SizedBox(
-              height: 38,
-              child: Image.asset("assets/photos/Gro_Soc_Image.png",
-                  color: bgWhite),
+              height: 50,
+              child: Image.asset(
+                "assets/photos/Gro_Soc_Image.png",
+                color: Colors.white,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.business,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
             ),
           ),
         ],
@@ -376,35 +407,34 @@ class _ServicesState extends State<Services> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.pink.shade400: Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+              color: isSelected ? accentBlue : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
               border: isSelected
                   ? null
-                  : Border.all(color: Colors.black12, width: 0.5),
+                  : Border.all(color: Colors.white12, width: 0.5),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
+                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.ibmPlexSansThai(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? bgWhite : Colors.black87,
-                      letterSpacing: 1.1,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: bgWhite),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white),
               ],
             ),
           ),
@@ -413,118 +443,100 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Sphinix-style Hero Banner
-  Widget _buildSphinixHeroBanner(double screenWidth, bool isDesktop) {
+  // Dark Modern Hero Banner
+  Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.indigo.shade700,
-            Colors.blue.shade500,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      color: darkBg,
       child: Stack(
         children: [
-          // Background pattern
           Positioned.fill(
             child: Opacity(
-              opacity: 0.1,
-              child: CustomPaint(
-                painter: _HeroPatternPainter(),
+              opacity: 0.12,
+              child: Image.asset(
+                "assets/photos/image.png",
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const SizedBox(),
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 80 : 50,
-              horizontal: isDesktop ? 60 : 24,
+              vertical: isDesktop ? 100 : 60,
+              horizontal: isDesktop ? 80 : 24,
             ),
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: const BoxConstraints(maxWidth: 950),
                 child: Column(
                   children: [
-                    // Badge
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: accentBlue.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                        border: Border.all(color: accentBlue.withOpacity(0.3)),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.auto_awesome_rounded,
-                              size: 16, color: Colors.white),
-                          const SizedBox(width: 8),
-                          Text(
-                            "OUR SERVICES",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        "OUR DIGITAL CAPABILITIES",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: accentCyan,
+                          letterSpacing: 2.0,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // Main Headline - Sphinix style
                     Text(
-                      "Getting your name on top is our #1 priority.",
+                      "Getting your name on top is our No.1 priority.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.bebasNeue(
-                        fontSize: isDesktop ? 48 : 32,
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: isDesktop ? 52 : 28,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w800,
                         color: Colors.white,
-                        height: 1.2,
-                        letterSpacing: 1.0,
+                        height: 1.15,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Subheadline
                     Text(
-                      "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
+                      "We make sure you receive the attention your business deserves. We are not just a social media agency — we provide a multi-channel variance of services tailored for growth.",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: isDesktop ? 18 : 15,
-                        color: Colors.white.withOpacity(0.95),
+                        color: textMuted,
                         height: 1.6,
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    // CTA Buttons
+                    const SizedBox(height: 36),
                     Wrap(
                       spacing: 16,
-                      runSpacing: 12,
+                      runSpacing: 14,
                       alignment: WrapAlignment.center,
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: accentPink,
+                            backgroundColor: accentBlue,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 28,
-                              vertical: 16,
+                              horizontal: 32,
+                              vertical: 20,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            elevation: 4,
+                            elevation: 8,
+                            shadowColor: accentBlue.withOpacity(0.4),
                           ),
-                          icon: const Icon(Icons.rocket_launch_rounded, size: 20),
+                          icon: const Icon(Icons.rocket_launch_rounded, size: 18),
                           label: Text(
-                            "GET STARTED",
+                            "START A PROJECT",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1,
+                              letterSpacing: 1.0,
                             ),
                           ),
                           onPressed: () {
@@ -540,21 +552,21 @@ class _ServicesState extends State<Services> {
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 28,
-                              vertical: 16,
+                              horizontal: 32,
+                              vertical: 20,
                             ),
-                            side: const BorderSide(color: Colors.white, width: 2),
+                            side: const BorderSide(color: Colors.white24, width: 1.5),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          icon: const Icon(Icons.phone_rounded, size: 20),
+                          icon: const Icon(Icons.phone_rounded, size: 18),
                           label: Text(
-                            "CALL US",
+                            "CALL US NOW",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1,
+                              letterSpacing: 1.0,
                             ),
                           ),
                           onPressed: () => _makePhoneCall(phoneNum),
@@ -571,50 +583,50 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Services Grid - Sphinix Style Cards
+  // Services Grid
   Widget _buildServicesGrid(bool isDesktop) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        vertical: 60,
+        vertical: 70,
         horizontal: isDesktop ? 60 : 20,
       ),
-      color: Colors.grey[50],
+      color: darkBg,
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
               Text(
-                "What We Offer",
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 36,
+                "WHAT WE OFFER",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade900,
-                  letterSpacing: 0.5,
+                  color: accentCyan,
+                  letterSpacing: 2.0,
                 ),
               ),
-              const SizedBox(height: 8),
-              Container(
-                height: 4,
-                width: 80,
-                decoration: BoxDecoration(
-                  color: accentPink,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               Text(
-                "Comprehensive digital marketing solutions tailored to your business needs.",
+                "Tailored Growth Solutions",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 16,
-                  color: Colors.black54,
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Comprehensive digital marketing strategies engineered to scale your market influence.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
+                  color: textMuted,
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 40),
-              // Service Cards Grid
+              const SizedBox(height: 48),
               Wrap(
                 spacing: 24,
                 runSpacing: 24,
@@ -641,6 +653,7 @@ class _ServicesState extends State<Services> {
     required bool isDesktop,
   }) {
     final double cardWidth = isDesktop ? 360 : double.infinity;
+    final bool isSelected = _selectedServiceIndex == index;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -649,126 +662,110 @@ class _ServicesState extends State<Services> {
           setState(() {
             _selectedServiceIndex = index;
           });
-          // Scroll to detail section
-          Scrollable.ensureVisible(
-            context,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 250),
           width: cardWidth,
           padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            color: darkCardBg,
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: _selectedServiceIndex == index
-                  ? accentPink
-                  : Colors.black.withOpacity(0.08),
-              width: _selectedServiceIndex == index ? 2 : 1,
+              color: isSelected ? accentBlue : Colors.white10,
+              width: isSelected ? 2 : 1,
             ),
-            boxShadow: _selectedServiceIndex == index
+            boxShadow: isSelected
                 ? [
               BoxShadow(
-                color: accentPink.withOpacity(0.2),
+                color: accentBlue.withOpacity(0.25),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
             ]
                 : [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Icon and Tag Row
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: _selectedServiceIndex == index
-                            ? accentPink
-                            : lightPink,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Icon(
-                        service["icon"],
-                        color: _selectedServiceIndex == index
-                            ? Colors.white
-                            : accentPink,
-                        size: 28,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? accentBlue
+                          : accentBlue.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      service["icon"],
+                      color: isSelected ? Colors.white : accentCyan,
+                      size: 26,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white12),
+                    ),
+                    child: Text(
+                      service["tag"],
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: accentCyan,
+                        letterSpacing: 0.8,
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: primaryBlue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        service["tag"],
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: primaryBlue,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
-              // Title
               Text(
                 service["title"],
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 22,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade900,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 10),
-              // Description
               Text(
                 service["desc"],
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  color: Colors.black54,
+                  fontSize: 13,
+                  color: textMuted,
                   height: 1.5,
                 ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 20),
-              // Learn More Link
               Row(
                 children: [
                   Text(
-                    "Learn More",
+                    "Explore Deliverables",
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: accentPink,
+                      color: isSelected ? accentCyan : accentBlue,
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(
+                  Icon(
                     Icons.arrow_forward_rounded,
                     size: 16,
-                    color: accentPink,
+                    color: isSelected ? accentCyan : accentBlue,
                   ),
                 ],
               ),
@@ -786,45 +783,44 @@ class _ServicesState extends State<Services> {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        vertical: 60,
+        vertical: 70,
         horizontal: isDesktop ? 60 : 20,
       ),
-      color: Colors.white,
+      color: darkCardBg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              // Section Header
               Text(
-                "Service Deep Dive",
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 32,
+                "SERVICE DEEP DIVE",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade900,
+                  color: accentCyan,
+                  letterSpacing: 2.0,
                 ),
               ),
-              const SizedBox(height: 8),
-              Container(
-                height: 4,
-                width: 60,
-                decoration: BoxDecoration(
-                  color: primaryBlue,
-                  borderRadius: BorderRadius.circular(2),
+              const SizedBox(height: 10),
+              Text(
+                "Breakdown & Key Deliverables",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: isDesktop ? 30 : 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 40),
-              // Service Detail Card
+              const SizedBox(height: 36),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: Container(
                   key: ValueKey<int>(_selectedServiceIndex),
                   padding: EdgeInsets.all(isDesktop ? 40 : 24),
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(24),
+                    color: darkBg,
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: primaryBlue.withOpacity(0.15),
+                      color: accentBlue.withOpacity(0.3),
                       width: 1.5,
                     ),
                   ),
@@ -832,7 +828,6 @@ class _ServicesState extends State<Services> {
                       ? Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Left: Icon and Tag
                       Expanded(
                         flex: 1,
                         child: Column(
@@ -840,29 +835,32 @@ class _ServicesState extends State<Services> {
                             Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: lightPink,
+                                color: accentBlue.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                    color: accentBlue.withOpacity(0.2)),
                               ),
                               child: Icon(
                                 activeService["icon"],
-                                color: accentPink,
+                                color: accentCyan,
                                 size: 48,
                               ),
                             ),
                             const SizedBox(height: 20),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
+                                  horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
-                                color: primaryBlue.withOpacity(0.1),
+                                color: Colors.white.withOpacity(0.05),
                                 borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.white12),
                               ),
                               child: Text(
                                 activeService["tag"],
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: primaryBlue,
+                                  color: accentCyan,
                                   letterSpacing: 1.0,
                                 ),
                               ),
@@ -871,7 +869,6 @@ class _ServicesState extends State<Services> {
                         ),
                       ),
                       const SizedBox(width: 40),
-                      // Right: Content
                       Expanded(
                         flex: 3,
                         child: Column(
@@ -879,28 +876,28 @@ class _ServicesState extends State<Services> {
                           children: [
                             Text(
                               activeService["title"],
-                              style: GoogleFonts.bebasNeue(
-                                fontSize: 28,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.indigo.shade900,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               activeService["desc"],
                               style: GoogleFonts.plusJakartaSans(
-                                fontSize: 16,
-                                color: Colors.black87,
+                                fontSize: 15,
+                                color: textMuted,
                                 height: 1.6,
                               ),
                             ),
                             const SizedBox(height: 28),
                             Text(
-                              "KEY DELIVERABLES",
+                              "WHAT WE DELIVER",
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: accentPink,
+                                color: accentCyan,
                                 letterSpacing: 1.2,
                               ),
                             ),
@@ -911,13 +908,16 @@ class _ServicesState extends State<Services> {
                               children: List<String>.from(
                                   activeService["deliverables"])
                                   .map((item) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 10),
+                                padding:
+                                const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
+                                  color: darkCardBg,
+                                  borderRadius:
+                                  BorderRadius.circular(10),
                                   border: Border.all(
-                                      color: Colors.black.withOpacity(0.08)),
+                                      color: Colors.white10),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -925,16 +925,17 @@ class _ServicesState extends State<Services> {
                                     const Icon(
                                       Icons.check_circle_rounded,
                                       size: 16,
-                                      color: accentPink,
+                                      color: accentCyan,
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 10),
                                     Text(
                                       item,
-                                      style:
-                                      GoogleFonts.plusJakartaSans(
+                                      style: GoogleFonts
+                                          .plusJakartaSans(
                                         fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black87,
+                                        fontWeight:
+                                        FontWeight.w600,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ],
@@ -955,12 +956,12 @@ class _ServicesState extends State<Services> {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: lightPink,
+                              color: accentBlue.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Icon(
                               activeService["icon"],
-                              color: accentPink,
+                              color: accentCyan,
                               size: 32,
                             ),
                           ),
@@ -968,10 +969,11 @@ class _ServicesState extends State<Services> {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 6),
+                                  horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
-                                color: primaryBlue.withOpacity(0.1),
+                                color: Colors.white.withOpacity(0.05),
                                 borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.white12),
                               ),
                               child: Text(
                                 activeService["tag"],
@@ -979,7 +981,7 @@ class _ServicesState extends State<Services> {
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: primaryBlue,
+                                  color: accentCyan,
                                   letterSpacing: 0.8,
                                 ),
                               ),
@@ -990,10 +992,10 @@ class _ServicesState extends State<Services> {
                       const SizedBox(height: 20),
                       Text(
                         activeService["title"],
-                        style: GoogleFonts.bebasNeue(
-                          fontSize: 24,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.indigo.shade900,
+                          color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -1001,17 +1003,17 @@ class _ServicesState extends State<Services> {
                         activeService["desc"],
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
-                          color: Colors.black87,
+                          color: textMuted,
                           height: 1.6,
                         ),
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        "KEY DELIVERABLES",
+                        "WHAT WE DELIVER",
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: accentPink,
+                          color: accentCyan,
                           letterSpacing: 1.2,
                         ),
                       ),
@@ -1024,7 +1026,7 @@ class _ServicesState extends State<Services> {
                             const Icon(
                               Icons.check_circle_rounded,
                               size: 16,
-                              color: accentPink,
+                              color: accentCyan,
                             ),
                             const SizedBox(width: 10),
                             Expanded(
@@ -1033,7 +1035,7 @@ class _ServicesState extends State<Services> {
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -1051,23 +1053,174 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Consultation Banner
+  // Unique Testimonials & Reviews Section
+  Widget _buildUniqueReviewsSection(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: 70,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      color: darkBg,
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            children: [
+              Text(
+                "CLIENT FEEDBACK",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: accentCyan,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "What Our Partners Say",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Real stories from business owners who transformed their digital growth with us.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
+                  color: textMuted,
+                ),
+              ),
+              const SizedBox(height: 48),
+              Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                alignment: WrapAlignment.center,
+                children: clientReviews.map((rev) {
+                  double width = isDesktop ? 360 : double.infinity;
+                  return SizedBox(
+                    width: width,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: darkCardBg,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: List.generate(
+                                  5,
+                                      (index) => const Icon(
+                                    Icons.star_rounded,
+                                    color: Colors.amber,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: accentBlue.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  rev["tag"]!,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: accentCyan,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            "\"${rev["review"]!}\"",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 14,
+                              color: Colors.white70,
+                              height: 1.6,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          const Divider(color: Colors.white10, height: 1),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: accentBlue,
+                                radius: 18,
+                                child: Text(
+                                  rev["name"]![0],
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    rev["name"]!,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    rev["company"]!,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 12,
+                                      color: textMuted,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Consultation Banner CTA
   Widget _buildConsultationCTA() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(36),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [primaryBlue, Color(0xFF1976D2)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: darkCardBg,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: accentBlue.withOpacity(0.3), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: primaryBlue.withOpacity(0.3),
+            color: accentBlue.withOpacity(0.15),
             blurRadius: 20,
-            offset: const Offset(0, 10),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -1079,29 +1232,30 @@ class _ServicesState extends State<Services> {
             Text(
               "Ready to Scale Your Online Brand Presence?",
               textAlign: TextAlign.center,
-              style: GoogleFonts.ibmPlexSansThai(
+              style: GoogleFonts.plusJakartaSans(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: bgWhite,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
-              "Get in touch with our team in Bhavnagar today for a complimentary strategy session.",
+              "Get in touch with our team in Bhavnagar today for a complimentary growth session.",
               textAlign: TextAlign.center,
-              style: GoogleFonts.ibmPlexSansThai(
+              style: GoogleFonts.plusJakartaSans(
                 fontSize: 13,
-                color: bgWhite.withOpacity(0.9),
+                color: textMuted,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: accentPink,
+                backgroundColor: accentBlue,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 28, vertical: 14),
+                    horizontal: 28, vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               onPressed: () {
@@ -1113,11 +1267,10 @@ class _ServicesState extends State<Services> {
               },
               child: Text(
                 "GET IN TOUCH",
-                style: GoogleFonts.ibmPlexSansThai(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: bgWhite,
-                  letterSpacing: 1.1,
+                  letterSpacing: 1.0,
                 ),
               ),
             ),
@@ -1131,31 +1284,32 @@ class _ServicesState extends State<Services> {
                 children: [
                   Text(
                     "Ready to Scale Your Online Brand Presence?",
-                    style: GoogleFonts.ibmPlexSansThai(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: bgWhite,
+                      color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Text(
-                    "Get in touch with our team in Bhavnagar today for a complimentary strategy session.",
-                    style: GoogleFonts.ibmPlexSansThai(
+                    "Get in touch with our team in Bhavnagar today for a complimentary growth session.",
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
-                      color: bgWhite.withOpacity(0.9),
+                      color: textMuted,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 24),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: accentPink,
+                backgroundColor: accentBlue,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 28, vertical: 16),
+                    horizontal: 32, vertical: 18),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 elevation: 4,
               ),
@@ -1166,7 +1320,14 @@ class _ServicesState extends State<Services> {
                       builder: (context) => const Contact()),
                 );
               },
-              child: Text("GET IN TOUCH", style: GoogleFonts.ibmPlexSansThai(fontSize: 13, fontWeight: FontWeight.bold, color: bgWhite, letterSpacing: 1.1)),
+              child: Text(
+                "GET IN TOUCH",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.0,
+                ),
+              ),
             ),
           ],
         );
@@ -1174,23 +1335,19 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Footer Component
-  Widget _buildFooter(BuildContext context) {
+  // Modern Footer Component
+  Widget _buildAGFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      color: Colors.indigo.shade500,
+      color: darkBg,
       child: Column(
         children: [
-          Container(
-            height: 5,
-            width: double.infinity,
-            color: Colors.blue.shade600,
-          ),
+          const Divider(height: 1, thickness: 1, color: Colors.white10),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -1209,9 +1366,9 @@ class _ServicesState extends State<Services> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFooterBrandSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterContactSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterSocialSection(),
                   ],
                 ),
@@ -1219,14 +1376,14 @@ class _ServicesState extends State<Services> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: Colors.indigo.shade500,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            color: darkCardBg,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: Colors.white,
+                  fontSize: 13,
+                  color: textMuted,
                 ),
               ),
             ),
@@ -1247,13 +1404,13 @@ class _ServicesState extends State<Services> {
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.ibmPlexSansThai(
-            fontSize: 13,
-            color: Colors.white,
-            height: 1.5,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            color: textMuted,
+            height: 1.6,
           ),
         ),
       ],
@@ -1264,41 +1421,67 @@ class _ServicesState extends State<Services> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Contact Info", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-        const SizedBox(height: 12),
+        Text(
+          "CONTACT INFO",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.0,
+          ),
+        ),
+        const SizedBox(height: 16),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.location_on_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Expanded(
-                child: Text(addressQuery, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white, height: 1.4)),
+                child: Text(
+                  addressQuery,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: textMuted,
+                    height: 1.4,
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
-              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white),
+              const Icon(Icons.phone_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
+              Text(
+                phoneNum,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: textMuted,
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
-              Text(emailAddr, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
+              const Icon(Icons.email_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
+              Text(
+                emailAddr,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: textMuted,
+                ),
+              ),
             ],
           ),
         ),
@@ -1310,61 +1493,33 @@ class _ServicesState extends State<Services> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Follow Us on", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.white70,
-              borderRadius: BorderRadius.circular(12)
+        Text(
+          "CONNECT WITH US",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.0,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(facebookUrl),
-              ),
-              const SizedBox(
-                  height: 15,
-                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
-                onPressed: () => _launchUrlString(instagramUrl),
-              ),
-              const SizedBox(
-                  height: 15,
-                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(linkedInUrl),
-              ),
-            ],
-          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(facebookUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(instagramUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(linkedInUrl),
+            ),
+          ],
         ),
       ],
     );
   }
-}
-
-// Custom Painter for Hero Background Pattern
-class _HeroPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
-    // Draw diagonal lines pattern
-    for (double i = -size.height; i < size.width + size.height; i += 40) {
-      canvas.drawLine(
-        Offset(i, 0),
-        Offset(i + size.height, size.height),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
