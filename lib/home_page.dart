@@ -27,16 +27,16 @@ class UniformLogoCard extends StatelessWidget {
       width: width,
       height: width / 2.7,
       decoration: BoxDecoration(
-        color: isWhiteLogo ? const Color(0xFF2C3E50) : Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        color: isWhiteLogo ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isWhiteLogo ? Colors.transparent : const Color(0xFFF06292),
-          width: 2,
+          color: isWhiteLogo ? Colors.white10 : const Color(0xFF3B82F6),
+          width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFF06292).withOpacity(0.15),
-            blurRadius: 12,
+            color: const Color(0xFF3B82F6).withOpacity(0.1),
+            blurRadius: 16,
             offset: const Offset(0, 4),
           ),
         ],
@@ -74,6 +74,7 @@ class _HomePageState extends State<HomePage> {
   late PageController _clientPageController;
   Timer? _carouselTimer;
   int _currentLogoPage = 0;
+  final GlobalKey<_StatsSectionState> _statsKey = GlobalKey<_StatsSectionState>();
 
   // FAQ expansion states
   final List<bool> _faqExpanded = List.generate(6, (index) => false);
@@ -106,6 +107,34 @@ class _HomePageState extends State<HomePage> {
     {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
   ];
 
+  // Service States Data
+  final List<Map<String, dynamic>> statesServed = [
+    {
+      "state": "Gujarat",
+      "cities": "Bhavnagar, Ahmedabad, Surat, Vadodara, Rajkot",
+      "clients": "15+ Brands Served",
+      "icon": Icons.location_city_rounded,
+    },
+    {
+      "state": "Maharashtra",
+      "cities": "Mumbai, Pune, Nagpur, Thane",
+      "clients": "8+ Brands Served",
+      "icon": Icons.business_rounded,
+    },
+    {
+      "state": "Rajasthan",
+      "cities": "Jaipur, Udaipur, Jodhpur",
+      "clients": "5+ Brands Served",
+      "icon": Icons.fort_rounded,
+    },
+    {
+      "state": "Delhi NCR",
+      "cities": "New Delhi, Gurugram, Noida",
+      "clients": "4+ Brands Served",
+      "icon": Icons.account_balance_rounded,
+    },
+  ];
+
   // FAQ Data
   final List<Map<String, String>> faqs = [
     {
@@ -134,11 +163,12 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-
-  static const Color primaryBlue = Colors.blue;
-  static const Color accentPink = Color(0xFFE91E63);
-  static const Color bgWhite = Colors.white;
-  static const Color lightPink = Color(0xFFFCE4EC);
+  // AG Modern Design Theme Colors
+  static const Color darkBg = Color(0xFF0F172A);
+  static const Color darkCardBg = Color(0xFF1E293B);
+  static const Color accentBlue = Color(0xFF3B82F6);
+  static const Color accentCyan = Color(0xFF06B6D4);
+  static const Color textMuted = Color(0xFF94A3B8);
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -162,7 +192,7 @@ class _HomePageState extends State<HomePage> {
   void _initializeClientCarousel() {
     _clientPageController = PageController(
       initialPage: 0,
-      viewportFraction: 0.18,
+      viewportFraction: 0.22,
     );
     _startAutoScroll();
   }
@@ -249,6 +279,7 @@ class _HomePageState extends State<HomePage> {
   void _onScrollCheckVideoVisibility() {
     if (mounted) {
       _checkAndControlVideoPlayback();
+      _statsKey.currentState?.checkVisibility();
     }
   }
 
@@ -313,7 +344,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context) {
         final Size deviceSize = MediaQuery.of(context).size;
         return Dialog(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.black.withOpacity(0.9),
           insetPadding: const EdgeInsets.all(10),
           child: Stack(
             alignment: Alignment.center,
@@ -357,22 +388,13 @@ class _HomePageState extends State<HomePage> {
     final bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(75),
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Colors.indigo.shade700,
-              Colors.blue.shade400,
-            ]),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blue.shade700.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+          decoration: const BoxDecoration(
+            color: darkBg,
+            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -383,25 +405,25 @@ class _HomePageState extends State<HomePage> {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
+                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
             ],
           ),
         ),
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: bgWhite,
+        backgroundColor: darkBg,
         child: SafeArea(
           child: Column(
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                color: Colors.blue.shade600,
+                padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
+                color: darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
@@ -410,14 +432,14 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: primaryBlue,
+                        color: accentBlue,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: accentPink),
+              const Divider(height: 1, thickness: 1, color: Colors.white10),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -445,7 +467,7 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 1);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const About()));
                       },
                     ),
                     _buildDrawerItem(
@@ -503,8 +525,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Container(
-                height: 6,
-                color: accentPink,
+                height: 4,
+                color: accentBlue,
               )
             ],
           ),
@@ -513,15 +535,16 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          // Hero Banner with Tagline
+          // Modern Dark Hero Banner Section
           SliverToBoxAdapter(
-            child: _buildHeroBanner(screenWidth, isDesktop),
+            child: _buildAGHeroBanner(screenWidth, isDesktop),
           ),
-          // Video + Agency Description Section
+          // Agency Overview Section
           SliverToBoxAdapter(
             child: Container(
+              color: darkBg,
               padding: EdgeInsets.symmetric(
-                vertical: 40,
+                vertical: 60,
                 horizontal: isDesktop ? 60 : 20,
               ),
               child: isDesktop
@@ -529,137 +552,125 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(child: _buildDirectVideoPlayer(context)),
-                  const SizedBox(width: 40),
-                  Expanded(child: _buildAgencyDescription()),
+                  const SizedBox(width: 50),
+                  Expanded(child: _buildAGAgencyDescription()),
                 ],
               )
                   : Column(
                 children: [
                   _buildDirectVideoPlayer(context),
-                  const SizedBox(height: 30),
-                  _buildAgencyDescription(),
+                  const SizedBox(height: 40),
+                  _buildAGAgencyDescription(),
                 ],
               ),
             ),
           ),
-          // Our Recognition Section
+          // Animated Stats Section Card Row
           SliverToBoxAdapter(
-            child: _buildRecognitionSection(isDesktop),
+            child: StatsSection(key: _statsKey, isDesktop: isDesktop),
+          ),
+          // Process / Workflow Section (AG Style)
+          SliverToBoxAdapter(
+            child: _buildAGProcessSection(isDesktop),
           ),
           // Client Logos Carousel
           SliverToBoxAdapter(
             child: _clientLogo(),
           ),
-          // Our Work Section
+          // Video Showcase / Our Work
           SliverToBoxAdapter(
-            child: _buildOurWorkSection(context),
+            child: _buildAGOurWorkSection(context),
           ),
-
-          // Footer
+          // FAQ Section Accordion
           SliverToBoxAdapter(
-            child: _buildFooter(context),
+            child: _buildAGFaqSection(isDesktop),
+          ),
+          // Modern Footer Section
+          SliverToBoxAdapter(
+            child: _buildAGFooter(context),
           ),
         ],
       ),
     );
   }
 
-  // New: Hero Banner with Tagline (Sphinix style)
-  Widget _buildHeroBanner(double screenWidth, bool isDesktop) {
+  // AG Modern Hero Banner Section
+  Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.indigo.shade700, Colors.blue.shade400],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      color: darkBg,
       child: Stack(
         children: [
-          // Background Image with Overlay
           Positioned.fill(
-            child: Image.asset(
-              "assets/photos/image.png",
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: Colors.indigo.shade700,
+            child: Opacity(
+              opacity: 0.15,
+              child: Image.asset(
+                "assets/photos/image.png",
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const SizedBox(),
               ),
             ),
           ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.indigo.shade900.withOpacity(0.85),
-                    Colors.blue.shade600.withOpacity(0.7),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-            ),
-          ),
-          // Content
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 100 : 60,
+              vertical: isDesktop ? 120 : 70,
               horizontal: isDesktop ? 80 : 24,
             ),
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: const BoxConstraints(maxWidth: 950),
                 child: Column(
                   children: [
-                    Text(
-                      "Getting your name on top is our #1 priority.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.bebasNeue(
-                        fontSize: isDesktop ? 48 : 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        height: 1.2,
-                        letterSpacing: 1.0,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: accentBlue.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: accentBlue.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        "WE MAKE YOUR BUSINESS VISIBLE",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: accentCyan,
+                          letterSpacing: 2.0,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
+                    Text("Getting your name on top is our No.1 priority.", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 60 : 28, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
+                    const SizedBox(height: 20),
                     Text(
-                      "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: isDesktop ? 18 : 15,
-                        color: Colors.white.withOpacity(0.95),
-                        height: 1.6,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    // CTA Buttons
+                        "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
+                        textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 18 : 15, color: textMuted, height: 1.6)),
+                    const SizedBox(height: 36),
                     Wrap(
                       spacing: 16,
-                      runSpacing: 12,
+                      runSpacing: 14,
                       alignment: WrapAlignment.center,
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: accentPink,
+                            backgroundColor: accentBlue,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 32,
-                              vertical: 18,
+                              vertical: 20,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            elevation: 4,
+                            elevation: 8,
+                            shadowColor: accentBlue.withOpacity(0.4),
                           ),
-                          icon: const Icon(Icons.rocket_launch_rounded, size: 20),
+                          icon: const Icon(Icons.rocket_launch_rounded, size: 18),
                           label: Text(
-                            "GET STARTED",
+                            "GET STARTED NOW",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1,
+                              letterSpacing: 1.0,
                             ),
                           ),
                           onPressed: () {
@@ -676,20 +687,20 @@ class _HomePageState extends State<HomePage> {
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 32,
-                              vertical: 18,
+                              vertical: 20,
                             ),
-                            side: const BorderSide(color: Colors.white, width: 2),
+                            side: const BorderSide(color: Colors.white24, width: 1.5),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          icon: const Icon(Icons.play_circle_outline_rounded, size: 20),
+                          icon: const Icon(Icons.grid_view_rounded, size: 18),
                           label: Text(
-                            "OUR SERVICES",
+                            "EXPLORE SERVICES",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1,
+                              letterSpacing: 1.0,
                             ),
                           ),
                           onPressed: () {
@@ -713,77 +724,146 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // New: Recognition Section (Sphinix style)
-  Widget _buildRecognitionSection(bool isDesktop) {
+
+  Widget _buildAGBadgeCard({
+    required String number,
+    required String title,
+    required String subtitle,
+  }) {
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        vertical: 50,
-        horizontal: isDesktop ? 60 : 20,
+      width: 240,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: darkBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white10),
       ),
-      color: Colors.grey[50],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            number,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: accentCyan.withOpacity(0.8),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            subtitle,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              color: textMuted,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // AG Process / Workflow Section
+  Widget _buildAGProcessSection(bool isDesktop) {
+    final steps = [
+      {"step": "01", "title": "Define Your Vision", "desc": "We clarify your goals, audience, offer, and creative direction with clear objectives."},
+      {"step": "02", "title": "Submit Your Strategy", "desc": "Share requirements and timelines through a seamless collaborative roadmap."},
+      {"step": "03", "title": "Create & Refine", "desc": "We design, shoot, build, and polish with structured feedback loops."},
+      {"step": "04", "title": "Project Delivery", "desc": "Your final assets and marketing campaigns go live to drive revenue."},
+    ];
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 80, horizontal: isDesktop ? 60 : 20),
+      color: darkBg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 1000),
+          constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
               Text(
-                "Our Recognition",
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 32,
+                "OUR METHODOLOGY",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade900,
-                  letterSpacing: 0.5,
+                  color: accentCyan,
+                  letterSpacing: 2.0,
                 ),
               ),
-              const SizedBox(height: 6),
-              Container(
-                height: 3,
-                width: 60,
-                decoration: BoxDecoration(
-                  color: accentPink,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 10),
               Text(
-                "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
+                "A Clearer Way to Build & Scale",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: isDesktop ? 18 : 15,
-                  color: Colors.black87,
-                  height: 1.6,
-                  fontStyle: FontStyle.italic,
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 32),
-              // Recognition Badges
-              Wrap(
-                spacing: 24,
-                runSpacing: 24,
-                alignment: WrapAlignment.center,
-                children: [
-                  _buildRecognitionBadge(
-                    icon: Icons.workspace_premium_rounded,
-                    title: "Top Rated",
-                    subtitle: "Social Media Agency",
-                  ),
-                  _buildRecognitionBadge(
-                    icon: Icons.thumb_up_rounded,
-                    title: "99% Retention",
-                    subtitle: "Client Satisfaction",
-                  ),
-                  _buildRecognitionBadge(
-                    icon: Icons.trending_up_rounded,
-                    title: "20+ Brands",
-                    subtitle: "Successfully Scaled",
-                  ),
-                  _buildRecognitionBadge(
-                    icon: Icons.video_library_rounded,
-                    title: "100+ Videos",
-                    subtitle: "Created & Delivered",
-                  ),
-                ],
+              const SizedBox(height: 40),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: steps.map((s) {
+                      double w = isDesktop
+                          ? (constraints.maxWidth - 60) / 4
+                          : (constraints.maxWidth - 20) / 2;
+                      if (w < 220) w = constraints.maxWidth;
+                      return SizedBox(
+                        width: w,
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: darkCardBg,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.white10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                s["step"]!,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: accentBlue,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                s["title"]!,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                s["desc"]!,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  color: textMuted,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ],
           ),
@@ -792,60 +872,106 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildRecognitionBadge({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-  }) {
+  // FAQ Accordion Section
+  Widget _buildAGFaqSection(bool isDesktop) {
     return Container(
-      width: 200,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+      padding: EdgeInsets.symmetric(vertical: 80, horizontal: isDesktop ? 60 : 20),
+      color: darkCardBg,
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Column(
+            children: [
+              Text(
+                "QUESTIONS ANSWERED",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: accentBlue,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Frequently Asked Questions",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 36),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: faqs.length,
+                itemBuilder: (context, index) {
+                  final faq = faqs[index];
+                  final isExpanded = _faqExpanded[index];
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: darkBg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isExpanded ? accentBlue : Colors.white10,
+                        width: 1,
+                      ),
+                    ),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        dividerColor: Colors.transparent,
+                      ),
+                      child: ExpansionTile(
+                        key: Key('faq_$index'),
+                        initiallyExpanded: isExpanded,
+                        onExpansionChanged: (expanded) {
+                          setState(() {
+                            _faqExpanded[index] = expanded;
+                          });
+                        },
+                        iconColor: accentCyan,
+                        collapsedIconColor: textMuted,
+                        title: Text(
+                          faq["question"]!,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: isExpanded ? Colors.white : Colors.white70,
+                          ),
+                        ),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16.0,
+                              right: 16.0,
+                              bottom: 16.0,
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                faq["answer"]!,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 14,
+                                  color: textMuted,
+                                  height: 1.6,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              color: lightPink,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: accentPink, size: 28),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.bebasNeue(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo.shade900,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              color: Colors.black54,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
-
 
   Widget _buildDirectVideoPlayer(BuildContext context) {
     final Size deviceSize = MediaQuery.of(context).size;
@@ -861,8 +987,8 @@ class _HomePageState extends State<HomePage> {
       child: GestureDetector(
         onTap: () => _openZoomableVideoDialog(context, _videoController),
         child: SizedBox(
-          width: playerWidth + 40,
-          height: playerHeight + 40,
+          width: playerWidth + 30,
+          height: playerHeight + 30,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -873,8 +999,8 @@ class _HomePageState extends State<HomePage> {
                   width: playerWidth * 0.8,
                   height: playerHeight * 0.5,
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade600,
-                    borderRadius: BorderRadius.circular(16),
+                    color: accentBlue.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
               ),
@@ -885,17 +1011,18 @@ class _HomePageState extends State<HomePage> {
                   width: playerWidth,
                   height: playerHeight,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white24, width: 1.5),
+                    boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, 4),
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
                       ),
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     child: !_videoError
                         ? AspectRatio(
                       aspectRatio: _videoController.value.isInitialized
@@ -904,16 +1031,16 @@ class _HomePageState extends State<HomePage> {
                       child: VideoPlayer(_videoController),
                     )
                         : Container(
-                      color: Colors.grey[200],
+                      color: darkCardBg,
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.videocam_off, color: Colors.grey, size: 40),
+                            const Icon(Icons.videocam_off, color: textMuted, size: 40),
                             const SizedBox(height: 8),
                             Text("Video format unsupported",
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.plusJakartaSans(color: Colors.grey, fontSize: 12)),
+                                style: GoogleFonts.plusJakartaSans(color: textMuted, fontSize: 12)),
                           ],
                         ),
                       ),
@@ -928,109 +1055,109 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildAgencyDescription() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Grow Socialee",
-            textAlign: TextAlign.justify,
-            style: GoogleFonts.bebasNeue(
-              fontSize: 36,
+  Widget _buildAGAgencyDescription() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "ABOUT GROW SOCIALEE",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: accentCyan,
+            letterSpacing: 2.0,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          "Grow Socialee",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 36,
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+            height: 1.2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            color: textMuted,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            color: textMuted,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          "Let's build your digital success together! 📩 Contact Grow Socialee today!",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: accentBlue,
+            height: 1.5,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          "We understand social behaviours within online communities, cultures and subcultures.",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.white70,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => const Contact()));
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: accentBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: Text(
+            "Get in Touch",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Colors.indigo.shade900,
-              height: 1.25,
+              letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
-            textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: Colors.black87,
-              height: 1.6,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
-            textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: Colors.black87,
-              height: 1.6,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "Let's build your digital success together! 📩 Contact Grow Socialee today!",
-            textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: Colors.blue.shade800,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            "We understand social behaviours within online communities, cultures and subcultures.",
-            textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 20),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const Contact()));
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              decoration: BoxDecoration(
-                color: primaryBlue,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Text("Get in Touch", style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.5),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildLogoHeader() {
     return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           SizedBox(
-            height: 55,
+            height: 50,
             child: Image.asset(
               "assets/photos/Gro_Soc_Image.png",
-              color: bgWhite,
+              color: Colors.white,
               errorBuilder: (context, error, stackTrace) => const Icon(
                 Icons.business,
-                color: bgWhite,
+                color: Colors.white,
                 size: 30,
               ),
             ),
@@ -1053,21 +1180,20 @@ class _HomePageState extends State<HomePage> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.pink.shade400 : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+              color: isSelected ? accentBlue : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
               border: isSelected
                   ? null
-                  : Border.all(color: Colors.black12, width: 0.5),
+                  : Border.all(color: Colors.white12, width: 0.5),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
+                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
@@ -1075,13 +1201,13 @@ class _HomePageState extends State<HomePage> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? bgWhite : Colors.black87,
-                      letterSpacing: 1.1,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: bgWhite),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white),
               ],
             ),
           ),
@@ -1093,44 +1219,35 @@ class _HomePageState extends State<HomePage> {
   Widget _clientLogo() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
-      decoration: BoxDecoration(
-        color: bgWhite,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
+      color: darkBg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "The Brands We're Working With",
-            style: GoogleFonts.bebasNeue(
-              fontSize: 30,
+            "TRUSTED PARTNERSHIPS",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: Colors.indigo.shade900,
-              letterSpacing: 0.5,
+              color: accentCyan,
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 6),
-          Container(
-            height: 3,
-            width: 60,
-            decoration: BoxDecoration(
-              color: accentPink,
-              borderRadius: BorderRadius.circular(2),
+          const SizedBox(height: 10),
+          Text(
+            "The Brands We're Working With",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 36),
           MouseRegion(
             onEnter: (_) => _stopAutoScroll(),
             onExit: (_) => _startAutoScroll(),
             child: SizedBox(
-              height: 150,
+              height: 140,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -1170,29 +1287,20 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                           child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 6),
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
                             child: Container(
                               width: 220,
                               height: 110,
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
                                 color: (clientLogos[index]["isWhite"] ?? false)
-                                    ? const Color(0xFF2C3E50)
+                                    ? darkCardBg
                                     : Colors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: (clientLogos[index]["isWhite"] ?? false)
-                                      ? Colors.transparent
-                                      : Colors.grey.shade200,
+                                  color: Colors.white12,
                                   width: 1,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
                               ),
                               child: Center(
                                 child: Image.asset(
@@ -1210,40 +1318,40 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Positioned(
-                    left: 6,
+                    left: 0,
                     child: Material(
-                      color: Colors.white,
+                      color: darkCardBg,
                       shape: const CircleBorder(),
-                      elevation: 3,
+                      elevation: 4,
                       child: InkWell(
                         onTap: _previousPage,
                         customBorder: const CircleBorder(),
                         child: Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(10),
                           child: const Icon(
                             Icons.arrow_back_ios_rounded,
                             size: 14,
-                            color: primaryBlue,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
                   ),
                   Positioned(
-                    right: 6,
+                    right: 0,
                     child: Material(
-                      color: Colors.white,
+                      color: darkCardBg,
                       shape: const CircleBorder(),
-                      elevation: 3,
+                      elevation: 4,
                       child: InkWell(
                         onTap: _nextPage,
                         customBorder: const CircleBorder(),
                         child: Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(10),
                           child: const Icon(
                             Icons.arrow_forward_ios_rounded,
                             size: 14,
-                            color: primaryBlue,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -1253,19 +1361,19 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               clientLogos.length,
                   (index) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 2),
-                width: _currentLogoPage == index ? 10 : 5,
-                height: 5,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                width: _currentLogoPage == index ? 14 : 6,
+                height: 6,
                 decoration: BoxDecoration(
                   color: _currentLogoPage == index
-                      ? accentPink
-                      : Colors.grey.shade300,
+                      ? accentBlue
+                      : Colors.white24,
                   borderRadius: BorderRadius.circular(3),
                 ),
               ),
@@ -1276,29 +1384,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildOurWorkSection(BuildContext context) {
+  Widget _buildAGOurWorkSection(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      color: Colors.grey[50],
-      padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+      color: darkCardBg,
+      padding: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 20.0),
       child: Column(
         children: [
-          Text("What We've Built", style: GoogleFonts.bebasNeue(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.indigo.shade900, letterSpacing: 0.5)),
-          const SizedBox(height: 6),
-          Container(
-            height: 3,
-            width: 60,
-            decoration: BoxDecoration(
-              color: primaryBlue,
-              borderRadius: BorderRadius.circular(2),
+          Text(
+            "SELECTED WORK",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: accentCyan,
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 12),
-          Text("Creative showcases.", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 18, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic, color: Colors.black54)),
-          const SizedBox(height: 28),
+          const SizedBox(height: 10),
+          Text(
+            "What We've Built",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Creative showcases & production reels.",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 15,
+              color: textMuted,
+            ),
+          ),
+          const SizedBox(height: 36),
           LayoutBuilder(
             builder: (context, constraints) {
               return Wrap(
@@ -1329,22 +1451,18 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildFooter(BuildContext context) {
+  Widget _buildAGFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      color: Colors.indigo.shade500,
+      color: darkBg,
       child: Column(
         children: [
-          Container(
-            height: 5,
-            width: double.infinity,
-            color: Colors.blue.shade600,
-          ),
+          const Divider(height: 1, thickness: 1, color: Colors.white10),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -1363,9 +1481,9 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFooterBrandSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterContactSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterSocialSection(),
                   ],
                 ),
@@ -1373,14 +1491,14 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: Colors.indigo.shade500,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            color: darkCardBg,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: Colors.white,
+                  fontSize: 13,
+                  color: textMuted,
                 ),
               ),
             ),
@@ -1401,13 +1519,13 @@ class _HomePageState extends State<HomePage> {
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
-            color: Colors.white,
-            height: 1.5,
+            fontSize: 14,
+            color: textMuted,
+            height: 1.6,
           ),
         ),
       ],
@@ -1419,27 +1537,28 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Contact Info",
-          style: GoogleFonts.syne(
-            fontSize: 16,
+          "CONTACT INFO",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            letterSpacing: 1.0,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.location_on_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   addressQuery,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: Colors.white,
+                    color: textMuted,
                     height: 1.4,
                   ),
                 ),
@@ -1447,35 +1566,35 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.phone_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Text(
                 phoneNum,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: Colors.white,
+                  color: textMuted,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.email_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Text(
                 emailAddr,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: Colors.white,
+                  color: textMuted,
                 ),
               ),
             ],
@@ -1490,42 +1609,30 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Follow Us",
-          style: GoogleFonts.syne(
-            fontSize: 16,
+          "CONNECT WITH US",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            letterSpacing: 1.0,
           ),
         ),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.white70,
-              borderRadius: BorderRadius.circular(12)
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(facebookUrl),
-              ),
-              const SizedBox(
-                  height: 15,
-                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
-                onPressed: () => _launchUrlString(instagramUrl),
-              ),
-              const SizedBox(
-                  height: 15,
-                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(linkedInUrl),
-              ),
-            ],
-          ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(facebookUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(instagramUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(linkedInUrl),
+            ),
+          ],
         ),
       ],
     );
@@ -1579,21 +1686,15 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 3),
-          ),
-        ],
+        color: const Color(0xFF0F172A),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: AspectRatio(
               aspectRatio: 9 / 16,
               child: !_hasError
@@ -1607,7 +1708,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                 ),
               )
                   : Container(
-                color: Colors.grey[200],
+                color: const Color(0xFF1E293B),
                 child: const Center(
                   child: Icon(Icons.broken_image, color: Colors.grey),
                 ),
@@ -1615,8 +1716,233 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(widget.title, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
+            padding: const EdgeInsets.all(14.0),
+            child: Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Stats Data Model
+class StatData {
+  final double endValue;
+  final String suffix;
+  final String label;
+  final bool isDecimal;
+
+  StatData({
+    required this.endValue,
+    required this.suffix,
+    required this.label,
+    this.isDecimal = false,
+  });
+}
+
+// Animated Statistics Component
+class StatsSection extends StatefulWidget {
+  final bool isDesktop;
+
+  const StatsSection({super.key, required this.isDesktop});
+
+  @override
+  State<StatsSection> createState() => _StatsSectionState();
+}
+
+class _StatsSectionState extends State<StatsSection>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  final ScrollController _scrollController = ScrollController();
+  Timer? _autoScrollTimer;
+
+  bool _hasAnimated = false;
+
+  final List<StatData> _stats = [
+    StatData(endValue: 20, suffix: "+", label: "BRANDS SCALED"),
+    StatData(endValue: 100, suffix: "+", label: "VIDEOS CREATED"),
+    StatData(endValue: 99, suffix: "%", label: "CLIENT RETENTION"),
+    StatData(endValue: 4.9, suffix: "★", label: "GOOGLE RATING", isDecimal: true),
+    StatData(endValue: 12, suffix: "", label: "DEDICATED TEAM"),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.fastOutSlowIn,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkVisibility();
+      if (!widget.isDesktop) {
+        _startAutoScroll();
+      }
+    });
+  }
+
+  void checkVisibility() {
+    if (_hasAnimated) return;
+
+    final RenderObject? renderObject = context.findRenderObject();
+    if (renderObject is RenderBox && renderObject.hasSize) {
+      final position = renderObject.localToGlobal(Offset.zero);
+      final screenHeight = MediaQuery.of(context).size.height;
+
+      if (position.dy < screenHeight - 50 && (position.dy + renderObject.size.height) > 0) {
+        _hasAnimated = true;
+        _controller.forward();
+      }
+    }
+  }
+
+  void _startAutoScroll() {
+    _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
+      if (_scrollController.hasClients) {
+        double maxScroll = _scrollController.position.maxScrollExtent;
+        double currentScroll = _scrollController.position.pixels;
+        if (currentScroll >= maxScroll) {
+          _scrollController.jumpTo(0);
+        } else {
+          _scrollController.jumpTo(currentScroll + 1.2);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _autoScrollTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: _HomePageState.darkBg,
+      padding: EdgeInsets.symmetric(
+        vertical: 60,
+        horizontal: widget.isDesktop ? 60 : 20,
+      ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: widget.isDesktop
+              ? LayoutBuilder(
+            builder: (context, constraints) {
+              return Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                alignment: WrapAlignment.center,
+                children: List.generate(_stats.length, (index) {
+                  final item = _stats[index];
+                  double cardWidth = (constraints.maxWidth - (16 * (_stats.length - 1))) / _stats.length;
+                  if (cardWidth < 180) cardWidth = 180;
+                  return SizedBox(
+                    width: cardWidth,
+                    child: AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return _buildStatCard(item, _animation.value);
+                      },
+                    ),
+                  );
+                }),
+              );
+            },
+          )
+              : SizedBox(
+            height: 120,
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: _stats.length * 10,
+                  itemBuilder: (context, index) {
+                    final item = _stats[index % _stats.length];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: SizedBox(
+                        width: 170,
+                        child: _buildStatCard(item, _animation.value),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatCard(StatData item, double progress) {
+    double currentValue = item.endValue * progress;
+    String formattedValue = item.isDecimal
+        ? currentValue.toStringAsFixed(1)
+        : currentValue.toInt().toString();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      decoration: BoxDecoration(
+        color: _HomePageState.darkCardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white10,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "$formattedValue${item.suffix}",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: widget.isDesktop ? 32 : 26,
+              fontWeight: FontWeight.w800,
+              color: _HomePageState.accentCyan,
+              height: 1.0,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            item.label.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: widget.isDesktop ? 12 : 11,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.0,
+            ),
           ),
         ],
       ),

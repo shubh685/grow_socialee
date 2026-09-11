@@ -18,14 +18,15 @@ class About extends StatefulWidget {
 class _AboutState extends State<About> {
   int _selectedIndex = 1;
 
-  final GlobalKey<_StatsSectionState> _statsKey = GlobalKey<_StatsSectionState>();
   final GlobalKey<_ValuesSectionState> _valuesKey = GlobalKey<_ValuesSectionState>();
   final GlobalKey<_TeamSectionState> _teamKey = GlobalKey<_TeamSectionState>();
 
-  static const Color primaryBlue = Colors.blue;
-  static const Color accentPink = Color(0xFFE91E63);
-  static const Color bgWhite = Colors.white;
-  static const Color lightPink = Color(0xFFFCE4EC);
+  // AG Modern Theme Color Palette
+  static const Color darkBg = Color(0xFF0F172A);
+  static const Color darkCardBg = Color(0xFF1E293B);
+  static const Color accentBlue = Color(0xFF3B82F6);
+  static const Color accentCyan = Color(0xFF06B6D4);
+  static const Color textMuted = Color(0xFF94A3B8);
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -77,22 +78,13 @@ class _AboutState extends State<About> {
     final bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(75),
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Colors.indigo.shade700,
-              Colors.blue.shade400,
-            ]),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blue.shade700.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+          decoration: const BoxDecoration(
+            color: darkBg,
+            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -103,25 +95,25 @@ class _AboutState extends State<About> {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
+                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
             ],
           ),
         ),
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: bgWhite,
+        backgroundColor: darkBg,
         child: SafeArea(
           child: Column(
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                color: Colors.blue.shade600,
+                padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
+                color: darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
@@ -130,14 +122,14 @@ class _AboutState extends State<About> {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: primaryBlue,
+                        color: accentBlue,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: accentPink),
+              const Divider(height: 1, thickness: 1, color: Colors.white10),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -228,8 +220,8 @@ class _AboutState extends State<About> {
                 ),
               ),
               Container(
-                height: 6,
-                color: accentPink,
+                height: 4,
+                color: accentBlue,
               )
             ],
           ),
@@ -237,23 +229,23 @@ class _AboutState extends State<About> {
       ),
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
-          _statsKey.currentState?.checkVisibility();
           _valuesKey.currentState?.checkVisibility();
           _teamKey.currentState?.checkVisibility();
           return false;
         },
         child: CustomScrollView(
           slivers: [
-            // Sphinix-style Hero Banner
+            // AG Modern Creative Hero Banner
             SliverToBoxAdapter(
-              child: _buildSphinixHeroBanner(screenWidth, isDesktop),
+              child: _buildAGHeroBanner(screenWidth, isDesktop),
             ),
 
-            // Overview & Vision Section
+            // Detailed Overview & Vision Section
             SliverToBoxAdapter(
               child: Container(
+                color: darkBg,
                 padding: EdgeInsets.symmetric(
-                  vertical: 40,
+                  vertical: 60,
                   horizontal: isDesktop ? 60 : 20,
                 ),
                 child: isDesktop
@@ -261,36 +253,36 @@ class _AboutState extends State<About> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(child: _buildAboutImageCard()),
-                    const SizedBox(width: 40),
+                    const SizedBox(width: 50),
                     Expanded(child: _buildAboutDescription()),
                   ],
                 )
                     : Column(
                   children: [
                     _buildAboutImageCard(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 40),
                     _buildAboutDescription(),
                   ],
                 ),
               ),
             ),
 
-            // Statistics Counter Bar
+            // Core Capabilities & Expertise Grid Section
             SliverToBoxAdapter(
-              child: StatsSection(key: _statsKey, isDesktop: isDesktop),
+              child: _buildCapabilitiesSection(isDesktop),
             ),
 
-            // Core Value Cards Section
+            // Core Values & Pillars Cards Section (Stats Cards Removed)
             SliverToBoxAdapter(
               child: ValuesSection(key: _valuesKey, isDesktop: isDesktop),
             ),
 
-            // Team Details Cards Section
+            // Leadership Team Section
             SliverToBoxAdapter(
               child: TeamSection(key: _teamKey, isDesktop: isDesktop),
             ),
 
-            // Footer
+            // Footer Section
             SliverToBoxAdapter(
               child: _buildFooter(context),
             ),
@@ -302,19 +294,17 @@ class _AboutState extends State<About> {
 
   Widget _buildLogoHeader() {
     return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: 36,
+            height: 50,
             child: Image.asset(
               "assets/photos/Gro_Soc_Image.png",
-              color: bgWhite,
-              fit: BoxFit.contain,
+              color: Colors.white,
               errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.business, color: bgWhite, size: 30),
+              const Icon(Icons.business, color: Colors.white, size: 30),
             ),
           ),
         ],
@@ -335,29 +325,37 @@ class _AboutState extends State<About> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.pink.shade400 : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+              color: isSelected ? accentBlue : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
               border: isSelected
                   ? null
-                  : Border.all(color: Colors.black12, width: 0.5),
+                  : Border.all(color: Colors.white12, width: 0.5),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
+                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.bold, color: isSelected ? bgWhite : Colors.black87, letterSpacing: 1.1)),
+                  child: Text(
+                    label,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
                 ),
                 if (isSelected)
                   const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: bgWhite,
+                    color: Colors.white,
                   ),
               ],
             ),
@@ -367,25 +365,16 @@ class _AboutState extends State<About> {
     );
   }
 
-  // Sphinix-style Hero Banner
-  Widget _buildSphinixHeroBanner(double screenWidth, bool isDesktop) {
+  // AG Dark Creative Hero Banner
+  Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.indigo.shade700,
-            Colors.blue.shade500,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      color: darkBg,
       child: Stack(
         children: [
           Positioned.fill(
             child: Opacity(
-              opacity: 0.1,
+              opacity: 0.12,
               child: CustomPaint(
                 painter: _AboutHeroPatternPainter(),
               ),
@@ -393,34 +382,34 @@ class _AboutState extends State<About> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 80 : 50,
-              horizontal: isDesktop ? 60 : 24,
+              vertical: isDesktop ? 100 : 60,
+              horizontal: isDesktop ? 80 : 24,
             ),
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: const BoxConstraints(maxWidth: 950),
                 child: Column(
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: accentBlue.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                        border: Border.all(color: accentBlue.withOpacity(0.3)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.auto_awesome_rounded,
-                              size: 16, color: Colors.white),
+                              size: 16, color: accentCyan),
                           const SizedBox(width: 8),
                           Text(
                             "WHO WE ARE",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1.5,
+                              color: accentCyan,
+                              letterSpacing: 2.0,
                             ),
                           ),
                         ],
@@ -428,23 +417,23 @@ class _AboutState extends State<About> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "Getting your name on top is our #1 priority.",
+                      "Crafting Digital Legacies Through Strategic Innovation.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.bebasNeue(
-                        fontSize: isDesktop ? 48 : 32,
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: isDesktop ? 48 : 28,
+                        fontWeight: FontWeight.w800,
                         color: Colors.white,
                         height: 1.2,
-                        letterSpacing: 1.0,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
+                      "Getting your brand on top is our primary purpose. We deliver data-driven strategies, immersive content, and performance marketing designed to convert visitors into loyal advocates.",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: isDesktop ? 18 : 15,
-                        color: Colors.white.withOpacity(0.95),
+                        color: textMuted,
                         height: 1.6,
                       ),
                     ),
@@ -458,30 +447,31 @@ class _AboutState extends State<About> {
     );
   }
 
-  // About Image Section
+  // Styled Image Card
   Widget _buildAboutImageCard() {
     return Center(
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 450),
+        constraints: const BoxConstraints(maxWidth: 480),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white10),
           boxShadow: [
             BoxShadow(
-              color: Colors.indigo.shade200.withOpacity(0.4),
-              blurRadius: 15,
-              offset: const Offset(0, 6),
+              color: accentBlue.withOpacity(0.15),
+              blurRadius: 25,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           child: Image.asset(
             "assets/photos/image.png",
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => Container(
-              height: 280,
-              color: Colors.grey[200],
-              child: const Icon(Icons.business, size: 60, color: Colors.grey),
+              height: 320,
+              color: darkCardBg,
+              child: const Icon(Icons.business_rounded, size: 60, color: textMuted),
             ),
           ),
         ),
@@ -489,24 +479,207 @@ class _AboutState extends State<About> {
     );
   }
 
-  // About Text Content
+  // Detailed Text Description
   Widget _buildAboutDescription() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("Grow Socialee", textAlign: TextAlign.justify, style: GoogleFonts.bebasNeue(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.blue.shade600, height: 1.25)),
-        const SizedBox(height: 12),
-        Text("We are Grow Socialee, a dedicated social media marketing agency in Bhavnagar, focused on helping small "
-            "and medium-sized businesses build their online presence", textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
-        const SizedBox(height: 12),
-        Text("In today's digital landscape, having a strong online identity is essential for business success, and we are here to simplify that journey for you.", textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
-        const SizedBox(height: 12),
-        Text("At Grow Socialee, we understand that the digital world can be complicated, but we make it easy for businesses to navigate. Our expertise lies in various areas, including branding, content creation, creative design, social media management, & digital advertising campaigns. We are committed to helping you reach your goals and ensuring your business stands out from the crowd. Start your digital marketing journey with us!", textAlign: TextAlign.justify,
-            style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87, height: 1.2)),
+        Text(
+          "ABOUT GROW SOCIALEE",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: accentCyan,
+            letterSpacing: 2.0,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          "Innovating Digital Excellence in Bhavnagar",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+            height: 1.25,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "We are Grow Socialee—a full-suite digital marketing agency based in Bhavnagar committed to scaling small and medium enterprises. Modern market dynamics demand more than an online presence; they require digital dominance.",
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            color: textMuted,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          "From custom social media strategies and video editing production to conversion-focused ad campaigns and brand identity design, our tailored solutions eliminate complexity and generate sustainable revenue growth.",
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            color: textMuted,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton.icon(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Contact()),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: accentBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+          label: Text(
+            "WORK WITH US",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.0,
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  // Expanded Capabilities & Service Highlights Section
+  Widget _buildCapabilitiesSection(bool isDesktop) {
+    final capabilities = [
+      {
+        "title": "Brand Strategy & Design",
+        "desc": "Positioning your business with robust brand identities, logo assets, and visual guidelines.",
+        "icon": Icons.palette_outlined,
+      },
+      {
+        "title": "Social Media Growth",
+        "desc": "End-to-end community management, content curation, and data analytics across all platforms.",
+        "icon": Icons.share_rounded,
+      },
+      {
+        "title": "High-Impact Video Production",
+        "desc": "Short-form video editing, brand reels, and promo ads designed to maximize audience engagement.",
+        "icon": Icons.movie_filter_outlined,
+      },
+      {
+        "title": "Targeted Performance Ads",
+        "desc": "Precision advertising campaigns across Google & Meta to drive measurable ROI.",
+        "icon": Icons.ads_click_rounded,
+      },
+    ];
+
+    return Container(
+      color: darkCardBg,
+      padding: EdgeInsets.symmetric(
+        vertical: 70,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1100),
+          child: Column(
+            children: [
+              Text(
+                "WHAT WE BRING TO THE TABLE",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: accentBlue,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Integrated Digital Expertise",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 40),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: capabilities.map((cap) {
+                      double cardWidth = isDesktop
+                          ? (constraints.maxWidth - 20) / 2
+                          : constraints.maxWidth;
+                      return SizedBox(
+                        width: cardWidth,
+                        child: Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: darkBg,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.white10),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: accentBlue.withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  cap["icon"] as IconData,
+                                  color: accentCyan,
+                                  size: 28,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      cap["title"] as String,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      cap["desc"] as String,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 14,
+                                        color: textMuted,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -517,16 +690,12 @@ class _AboutState extends State<About> {
 
     return Container(
       width: double.infinity,
-      color: Colors.indigo.shade500,
+      color: darkBg,
       child: Column(
         children: [
-          Container(
-            height: 5,
-            width: double.infinity,
-            color: Colors.blue.shade600,
-          ),
+          const Divider(height: 1, thickness: 1, color: Colors.white10),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -545,9 +714,9 @@ class _AboutState extends State<About> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFooterBrandSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterContactSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterSocialSection(),
                   ],
                 ),
@@ -555,14 +724,14 @@ class _AboutState extends State<About> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: Colors.indigo.shade500,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            color: darkCardBg,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: Colors.white,
+                  fontSize: 13,
+                  color: textMuted,
                 ),
               ),
             ),
@@ -583,13 +752,13 @@ class _AboutState extends State<About> {
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
-            color: Colors.white,
-            height: 1.5,
+            fontSize: 14,
+            color: textMuted,
+            height: 1.6,
           ),
         ),
       ],
@@ -601,27 +770,28 @@ class _AboutState extends State<About> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Contact Info",
+          "CONTACT INFO",
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
+            letterSpacing: 1.0,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.location_on_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   addressQuery,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: Colors.white,
+                    color: textMuted,
                     height: 1.4,
                   ),
                 ),
@@ -629,35 +799,35 @@ class _AboutState extends State<About> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.phone_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Text(
                 phoneNum,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: Colors.white,
+                  color: textMuted,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.email_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Text(
                 emailAddr,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: Colors.white,
+                  color: textMuted,
                 ),
               ),
             ],
@@ -671,55 +841,47 @@ class _AboutState extends State<About> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Follow Us", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(12),
+        Text(
+          "CONNECT WITH US",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.0,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(facebookUrl),
-              ),
-              const SizedBox(
-                height: 15,
-                child: VerticalDivider(color: Colors.black87, thickness: 2.5),
-              ),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
-                onPressed: () => _launchUrlString(instagramUrl),
-              ),
-              const SizedBox(
-                height: 15,
-                child: VerticalDivider(color: Colors.black87, thickness: 2.5),
-              ),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(linkedInUrl),
-              ),
-            ],
-          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(facebookUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(instagramUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(linkedInUrl),
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
-// Custom Painter for About Hero Pattern
+// Background Grid Painter for Hero Banner
 class _AboutHeroPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withOpacity(0.08)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 1.0;
 
-    // Draw diagonal lines pattern
-    for (double i = -size.height; i < size.width + size.height; i += 50) {
+    for (double i = -size.height; i < size.width + size.height; i += 40) {
       canvas.drawLine(
         Offset(i, 0),
         Offset(i + size.height, size.height),
@@ -732,7 +894,7 @@ class _AboutHeroPatternPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// State Management for Values Section Animations with Visibility Detection
+// Mission, Vision & Pillars Cards
 class ValuesSection extends StatefulWidget {
   final bool isDesktop;
 
@@ -760,17 +922,17 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
     );
 
     _leftToRightAnimation = Tween<Offset>(
-      begin: const Offset(-1.0, 0.0),
+      begin: const Offset(-0.3, 0.0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
 
     _topToBottomAnimation = Tween<Offset>(
-      begin: const Offset(0.0, -1.0),
+      begin: const Offset(0.0, -0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
 
     _rightToLeftAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
+      begin: const Offset(0.3, 0.0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
 
@@ -804,57 +966,63 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    const Color accentPink = Color(0xFFE91E63);
-
     final missionCard = _buildCard(
       icon: Icons.trending_up_rounded,
       title: "Our Mission",
       content: Text(
-        "To simplify digital growth for local businesses by delivering impactful branding, creative design, engaging content, strategic social media management, and data-driven advertising campaigns that drive real results.",
-        style: GoogleFonts.plusJakartaSans(fontSize: 15, color: Colors.black87, height: 1.4),
+        "To simplify digital growth for businesses by delivering impactful branding, creative visual design, strategic social media engagement, and revenue-focused advertising campaigns.",
+        style: GoogleFonts.plusJakartaSans(fontSize: 14, color: const Color(0xFF94A3B8), height: 1.5),
       ),
     );
 
     final visionCard = _buildCard(
-      icon: Icons.movie_creation_outlined,
+      icon: Icons.visibility_outlined,
       title: "Our Vision",
       content: Text(
-        "To empower small and medium-sized businesses to build strong, distinct online identities and confidently succeed in an ever-evolving digital world.",
-        style: GoogleFonts.plusJakartaSans(fontSize: 15, color: Colors.black87, height: 1.4),
+        "To empower small and medium enterprises to establish distinct online identities and gain competitive advantages in an ever-evolving digital world.",
+        style: GoogleFonts.plusJakartaSans(fontSize: 14, color: const Color(0xFF94A3B8), height: 1.5),
       ),
     );
 
     final pillarsCard = _buildCard(
-      icon: Icons.movie_creation_outlined,
-      title: "Our Brand Pillars",
+      icon: Icons.workspace_premium_outlined,
+      title: "Brand Pillars",
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildPillarPoint("1. Simplicity First:", " We demystify the complex digital marketing landscape so business owners can focus on running their operations."),
-          const SizedBox(height: 6),
-          _buildPillarPoint("2. Tailored Digital Growth:", " We craft customized solutions across creative content, management, and ads to make your business stand out."),
-          const SizedBox(height: 6),
-          _buildPillarPoint("3. Dedicated Partnership:", " We are committed to guiding you every step of the way on your journey toward long-term digital success."),
+          _buildPillarPoint("1. Clarity First: ", "Demystifying complex marketing avenues for actionable execution."),
+          const SizedBox(height: 8),
+          _buildPillarPoint("2. Tailored Growth: ", "Custom strategies engineered around your exact commercial goals."),
+          const SizedBox(height: 8),
+          _buildPillarPoint("3. Dedicated Focus: ", "Hands-on partnership supporting every step of your digital scale."),
         ],
       ),
     );
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      color: const Color(0xFF0F172A),
       child: Column(
         children: [
-          Text("Why Choose Us", style: GoogleFonts.bebasNeue(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
-          const SizedBox(height: 6),
-          Container(
-            height: 3,
-            width: 60,
-            decoration: BoxDecoration(
-              color: accentPink,
-              borderRadius: BorderRadius.circular(2),
+          Text(
+            "CORE PHILOSOPHY",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF06B6D4),
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
+          Text(
+            "Driven by Strategy & Purpose",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: widget.isDesktop ? 32 : 24,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 40),
           Center(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 1100),
@@ -914,11 +1082,11 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
   Widget _buildPillarPoint(String boldTitle, String text) {
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.black87, height: 1.4),
+        style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF94A3B8), height: 1.4),
         children: [
           TextSpan(
             text: boldTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo),
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
           TextSpan(text: text),
         ],
@@ -931,23 +1099,13 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
     required String title,
     required Widget content,
   }) {
-    const Color lightPink = Color(0xFFFCE4EC);
-    const Color accentPink = Color(0xFFE91E63);
-
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: const Color(0xFF1E293B),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        border: Border.all(color: Colors.white10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -956,15 +1114,22 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
         children: [
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              color: lightPink,
-              shape: BoxShape.circle,
+            decoration: BoxDecoration(
+              color: const Color(0xFF3B82F6).withOpacity(0.15),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: accentPink, size: 28),
+            child: Icon(icon, color: const Color(0xFF06B6D4), size: 26),
           ),
-          const SizedBox(height: 16),
-          Text(title, style: GoogleFonts.bebasNeue(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 12),
           content,
         ],
       ),
@@ -972,7 +1137,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
   }
 }
 
-// State Management for Team Section Animations with Matching Motion Rules
+// Leadership Team Component
 class TeamSection extends StatefulWidget {
   final bool isDesktop;
 
@@ -1000,17 +1165,17 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
     );
 
     _leftToRightAnimation = Tween<Offset>(
-      begin: const Offset(-1.0, 0.0),
+      begin: const Offset(-0.3, 0.0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
 
     _topToBottomAnimation = Tween<Offset>(
-      begin: const Offset(0.0, -1.0),
+      begin: const Offset(0.0, -0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
 
     _rightToLeftAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
+      begin: const Offset(0.3, 0.0),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
 
@@ -1044,8 +1209,6 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    const Color accentPink = Color(0xFFE91E63);
-
     final founderCard = _buildTeamCard(
       name: "Shaily Shah",
       designation: "Founder",
@@ -1062,21 +1225,29 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
     );
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-      color: Colors.grey[50],
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      color: const Color(0xFF1E293B),
       child: Column(
         children: [
-          Text("Meet Our Leadership", style: GoogleFonts.bebasNeue(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
-          const SizedBox(height: 6),
-          Container(
-            height: 3,
-            width: 60,
-            decoration: BoxDecoration(
-              color: accentPink,
-              borderRadius: BorderRadius.circular(2),
+          Text(
+            "MEET OUR LEADERSHIP",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF3B82F6),
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
+          Text(
+            "The Minds Behind the Agency",
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: widget.isDesktop ? 32 : 24,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 40),
           Center(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 1100),
@@ -1137,234 +1308,47 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
     required String name,
     required String designation,
   }) {
-    const Color lightPink = Color(0xFFFCE4EC);
-
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF0F172A),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 40,
+            backgroundColor: const Color(0xFF3B82F6).withOpacity(0.15),
+            child: const Icon(Icons.person_rounded, size: 45, color: Color(0xFF06B6D4)),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            designation.toUpperCase(),
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF06B6D4),
+              letterSpacing: 1.2,
+            ),
           ),
         ],
       ),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: lightPink,
-              child: Icon(Icons.person_rounded, size: 45, color: Colors.indigo.shade700),
-            ),
-            const SizedBox(height: 16),
-            Text(name, textAlign: TextAlign.center, style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.indigo.shade900)),
-            const SizedBox(height: 6),
-            Text(designation, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.pink.shade600, letterSpacing: 0.8)),
-          ]
-      ),
-    );
-  }
-}
-
-// Stats Data Model
-class StatData {
-  final double endValue;
-  final String suffix;
-  final String label;
-  final bool isDecimal;
-
-  StatData({
-    required this.endValue,
-    required this.suffix,
-    required this.label,
-    this.isDecimal = false,
-  });
-}
-
-// Animated Statistics Component
-class StatsSection extends StatefulWidget {
-  final bool isDesktop;
-
-  const StatsSection({super.key, required this.isDesktop});
-
-  @override
-  State<StatsSection> createState() => _StatsSectionState();
-}
-
-class _StatsSectionState extends State<StatsSection>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  final ScrollController _scrollController = ScrollController();
-  Timer? _autoScrollTimer;
-
-  bool _hasAnimated = false;
-
-  final List<StatData> _stats = [
-    StatData(endValue: 20, suffix: "+", label: "BRANDS SCALED"),
-    StatData(endValue: 100, suffix: "+", label: "VIDEOS CREATED"),
-    StatData(endValue: 99, suffix: "%", label: "CLIENT RETENTION"),
-    StatData(endValue: 4.9, suffix: "★", label: "GOOGLE RATING", isDecimal: true),
-    StatData(endValue: 12, suffix: "", label: "DEDICATED TEAM"),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2200),
-    );
-
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.fastOutSlowIn,
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkVisibility();
-      if (!widget.isDesktop) {
-        _startAutoScroll();
-      }
-    });
-  }
-
-  void checkVisibility() {
-    if (_hasAnimated) return;
-
-    final RenderObject? renderObject = context.findRenderObject();
-    if (renderObject is RenderBox && renderObject.hasSize) {
-      final position = renderObject.localToGlobal(Offset.zero);
-      final screenHeight = MediaQuery.of(context).size.height;
-
-      if (position.dy < screenHeight - 50 && (position.dy + renderObject.size.height) > 0) {
-        _hasAnimated = true;
-        _controller.forward();
-      }
-    }
-  }
-
-  void _startAutoScroll() {
-    _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_scrollController.hasClients) {
-        double maxScroll = _scrollController.position.maxScrollExtent;
-        double currentScroll = _scrollController.position.pixels;
-        if (currentScroll >= maxScroll) {
-          _scrollController.jumpTo(0);
-        } else {
-          _scrollController.jumpTo(currentScroll + 1.2);
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _autoScrollTimer?.cancel();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.blue.shade600,
-            Colors.indigo.shade500,
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 10),
-      child: widget.isDesktop
-          ? Container(
-        constraints: const BoxConstraints(maxWidth: 1200),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(_stats.length, (index) {
-            final item = _stats[index];
-            return Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: AnimatedBuilder(
-                      animation: _animation,
-                      builder: (context, child) {
-                        return _buildStatColumn(item, _animation.value);
-                      },
-                    ),
-                  ),
-                  if (index != _stats.length - 1)
-                    Container(
-                      height: 50,
-                      width: 1,
-                      color: Colors.white30,
-                    ),
-                ],
-              ),
-            );
-          }),
-        ),
-      )
-          : SizedBox(
-        height: 100,
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: _stats.length * 10,
-              itemBuilder: (context, index) {
-                final item = _stats[index % _stats.length];
-                return Row(
-                  children: [
-                    SizedBox(
-                        width: 180,
-                        child: _buildStatColumn(item, _animation.value)
-                    ),
-                    Container(
-                      height: 45,
-                      width: 1,
-                      color: Colors.white30,
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatColumn(StatData item, double progress) {
-    double currentValue = item.endValue * progress;
-    String formattedValue = item.isDecimal
-        ? currentValue.toStringAsFixed(1)
-        : currentValue.toInt().toString();
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("$formattedValue${item.suffix}", style: GoogleFonts.bebasNeue(fontSize: widget.isDesktop ? 38 : 30, fontWeight: FontWeight.bold, color: Colors.white, height: 1.0)),
-        const SizedBox(height: 6),
-        Text(item.label.toUpperCase(), textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: widget.isDesktop ? 12 : 10, color: Colors.white.withOpacity(0.85), fontWeight: FontWeight.w600, letterSpacing: 1.1)),
-      ],
     );
   }
 }
