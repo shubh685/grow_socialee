@@ -724,54 +724,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-  Widget _buildAGBadgeCard({
-    required String number,
-    required String title,
-    required String subtitle,
-  }) {
-    return Container(
-      width: 240,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: darkBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            number,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-              color: accentCyan.withOpacity(0.8),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            subtitle,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              color: textMuted,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // AG Process / Workflow Section
   Widget _buildAGProcessSection(bool isDesktop) {
     final steps = [
@@ -1870,7 +1822,7 @@ class _StatsSectionState extends State<StatsSection>
             },
           )
               : SizedBox(
-            height: 120,
+            height: 140, // Increased height to prevent overflow
             child: AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
@@ -1905,7 +1857,7 @@ class _StatsSectionState extends State<StatsSection>
         : currentValue.toInt().toString();
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
         color: _HomePageState.darkCardBg,
         borderRadius: BorderRadius.circular(16),
@@ -1923,20 +1875,26 @@ class _StatsSectionState extends State<StatsSection>
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            "$formattedValue${item.suffix}",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: widget.isDesktop ? 32 : 26,
-              fontWeight: FontWeight.w800,
-              color: _HomePageState.accentCyan,
-              height: 1.0,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "$formattedValue${item.suffix}",
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: widget.isDesktop ? 32 : 24,
+                fontWeight: FontWeight.w800,
+                color: _HomePageState.accentCyan,
+                height: 1.0,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             item.label.toUpperCase(),
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: GoogleFonts.plusJakartaSans(
               fontSize: widget.isDesktop ? 12 : 11,
               fontWeight: FontWeight.bold,
