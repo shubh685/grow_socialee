@@ -1008,14 +1008,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              child: Text(
-                "Get in Touch",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 0.5,
-                ),
+              child: Text("Get in Touch", style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.5),
               ),
             ),
           ),
