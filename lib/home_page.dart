@@ -339,6 +339,7 @@ class _HomePageState extends State<HomePage> {
 
   void _openZoomableVideoDialog(
       BuildContext context, VideoPlayerController controller) {
+    controller.play();
     showDialog(
       context: context,
       builder: (context) {
@@ -1806,7 +1807,9 @@ class _StatsSectionState extends State<StatsSection>
                 alignment: WrapAlignment.center,
                 children: List.generate(_stats.length, (index) {
                   final item = _stats[index];
-                  double cardWidth = (constraints.maxWidth - (16 * (_stats.length - 1))) / _stats.length;
+                  double cardWidth =
+                      (constraints.maxWidth - (16 * (_stats.length - 1))) /
+                          _stats.length;
                   if (cardWidth < 180) cardWidth = 180;
                   return SizedBox(
                     width: cardWidth,
@@ -1850,60 +1853,60 @@ class _StatsSectionState extends State<StatsSection>
     );
   }
 
-  Widget _buildStatCard(StatData item, double progress) {
-    double currentValue = item.endValue * progress;
-    String formattedValue = item.isDecimal
-        ? currentValue.toStringAsFixed(1)
-        : currentValue.toInt().toString();
+Widget _buildStatCard(StatData item, double progress) {
+  double currentValue = item.endValue * progress;
+  String formattedValue = item.isDecimal
+      ? currentValue.toStringAsFixed(1)
+      : currentValue.toInt().toString();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      decoration: BoxDecoration(
-        color: _HomePageState.darkCardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white10,
-          width: 1,
+  return Container(
+    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+    decoration: BoxDecoration(
+      color: _HomePageState.darkCardBg,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(
+        color: Colors.white10,
+        width: 1,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              "$formattedValue${item.suffix}",
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: widget.isDesktop ? 32 : 24,
-                fontWeight: FontWeight.w800,
-                color: _HomePageState.accentCyan,
-                height: 1.0,
-              ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            item.label.toUpperCase(),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+      ],
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            "$formattedValue${item.suffix}",
             style: GoogleFonts.plusJakartaSans(
-              fontSize: widget.isDesktop ? 12 : 11,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 1.0,
+              fontSize: widget.isDesktop ? 32 : 24,
+              fontWeight: FontWeight.w800,
+              color: _HomePageState.accentCyan,
+              height: 1.0,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 6),
+        Text(
+          item.label.toUpperCase(),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: widget.isDesktop ? 12 : 11,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.0,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 }
