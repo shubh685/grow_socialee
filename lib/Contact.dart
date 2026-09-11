@@ -20,10 +20,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
   int _selectedIndex = 5;
   int _selectedFormCategory = 0;
 
-  static const Color primaryBlue = Colors.blue;
-  static const Color accentPink = Color(0xFFE91E63);
-  static const Color bgWhite = Colors.white;
-  static const Color lightPink = Color(0xFFFCE4EC);
+  // Theme constants consistent with home_page.dart
+  static const Color darkBg = Color(0xFF0F172A);
+  static const Color darkCardBg = Color(0xFF1E293B);
+  static const Color accentBlue = Color(0xFF3B82F6);
+  static const Color accentCyan = Color(0xFF06B6D4);
+  static const Color textMuted = Color(0xFF94A3B8);
 
   final _formKey = GlobalKey<FormState>();
   String? _serviceDr;
@@ -193,21 +195,13 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     final bool isDesktop = screenWidth > 850;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(75),
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Colors.indigo.shade700, Colors.blue.shade400,
-            ]),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blue.shade700.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+          decoration: const BoxDecoration(
+            color: darkBg,
+            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -218,25 +212,25 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: bgWhite, size: 28),
+                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
             ],
           ),
         ),
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: bgWhite,
+        backgroundColor: darkBg,
         child: SafeArea(
           child: Column(
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-                color: Colors.blue.shade600,
+                padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
+                color: darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
@@ -245,14 +239,14 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: primaryBlue,
+                        color: accentBlue,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: accentPink),
+              const Divider(height: 1, thickness: 1, color: Colors.white10),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -280,7 +274,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       onTap: () {
                         setState(() => _selectedIndex = 1);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const About()));
                       },
                     ),
                     _buildDrawerItem(
@@ -328,18 +322,14 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       onTap: () {
                         setState(() => _selectedIndex = 5);
                         Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Contact()));
                       },
                     ),
                   ],
                 ),
               ),
               Container(
-                height: 6,
-                color: accentPink,
+                height: 4,
+                color: accentBlue,
               )
             ],
           ),
@@ -347,15 +337,18 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       ),
       body: CustomScrollView(
         slivers: [
-          // Sphinix-style Hero Banner
+          // Hero Banner (Home Page Dark Style)
           SliverToBoxAdapter(
-            child: _buildSphinixHeroBanner(screenWidth, isDesktop),
+            child: _buildAGHeroBanner(screenWidth, isDesktop),
           ),
 
-          // Contact Content
+          // Main Contact Body Content
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                vertical: 60,
+                horizontal: isDesktop ? 60 : 20,
+              ),
               child: Center(
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 1150),
@@ -368,7 +361,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                         child: Column(
                           children: [
                             _buildInteractiveFormCard(),
-                            const SizedBox(height: 28),
+                            const SizedBox(height: 32),
                             _buildGoogleMapSection(),
                           ],
                         ),
@@ -383,9 +376,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       : Column(
                     children: [
                       _buildInteractiveContactSidebar(),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 32),
                       _buildInteractiveFormCard(),
-                      const SizedBox(height: 28),
+                      const SizedBox(height: 32),
                       _buildGoogleMapSection(),
                     ],
                   ),
@@ -394,9 +387,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             ),
           ),
 
-          // Footer
+          // Footer (Home Page Dark Style)
           SliverToBoxAdapter(
-            child: _buildFooter(context),
+            child: _buildAGFooter(context),
           ),
         ],
       ),
@@ -405,13 +398,21 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
 
   Widget _buildLogoHeader() {
     return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           SizedBox(
-            height: 40,
-            child: Image.asset("assets/photos/Gro_Soc_Image.png", color: bgWhite),
+            height: 50,
+            child: Image.asset(
+              "assets/photos/Gro_Soc_Image.png",
+              color: Colors.white,
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.business,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
           ),
         ],
       ),
@@ -431,34 +432,34 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.pink.shade400 : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+              color: isSelected ? accentBlue : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
               border: isSelected
                   ? null
-                  : Border.all(color: Colors.black12, width: 0.5),
+                  : Border.all(color: Colors.white12, width: 0.5),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 22, color: isSelected ? Colors.white : Colors.blue.shade600),
+                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.ibmPlexSansThai(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? bgWhite : Colors.black87,
-                      letterSpacing: 1.1,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: bgWhite),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white),
               ],
             ),
           ),
@@ -467,34 +468,27 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  // Sphinix-style Hero Banner
-  Widget _buildSphinixHeroBanner(double screenWidth, bool isDesktop) {
+  // Hero Banner adapted to HomePage style
+  Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.indigo.shade700,
-            Colors.blue.shade500,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      color: darkBg,
       child: Stack(
         children: [
           Positioned.fill(
             child: Opacity(
-              opacity: 0.1,
-              child: CustomPaint(
-                painter: _ContactHeroPatternPainter(),
+              opacity: 0.15,
+              child: Image.asset(
+                "assets/photos/image.png",
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const SizedBox(),
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 80 : 50,
-              horizontal: isDesktop ? 60 : 24,
+              vertical: isDesktop ? 90 : 50,
+              horizontal: isDesktop ? 80 : 24,
             ),
             child: Center(
               child: Container(
@@ -504,23 +498,23 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: accentBlue.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                        border: Border.all(color: accentBlue.withOpacity(0.3)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.chat_bubble_outline_rounded,
-                              size: 16, color: Colors.white),
+                              size: 14, color: accentCyan),
                           const SizedBox(width: 8),
                           Text(
-                            "GET IN TOUCH",
+                            "GET IN TOUCH WITH US",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1.5,
+                              color: accentCyan,
+                              letterSpacing: 2.0,
                             ),
                           ),
                         ],
@@ -528,28 +522,27 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "Let's Build Something Great Together",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.bebasNeue(
-                        fontSize: isDesktop ? 48 : 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        height: 1.2,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      "Get prompt responses from a friendly, professional and knowledgeable support team.",
+                      "Let's Build Something Great Together.",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: isDesktop ? 18 : 15,
-                        color: Colors.white.withOpacity(0.95),
+                        fontSize: isDesktop ? 52 : 30,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.2,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "Get prompt responses from a friendly, professional and knowledgeable team.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: isDesktop ? 17 : 14,
+                        color: textMuted,
                         height: 1.6,
                       ),
                     ),
                     const SizedBox(height: 32),
-                    // Quick Contact Buttons
                     Wrap(
                       spacing: 16,
                       runSpacing: 12,
@@ -557,15 +550,16 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: accentPink,
+                            backgroundColor: accentBlue,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 14,
+                              horizontal: 28,
+                              vertical: 16,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(12),
                             ),
+                            elevation: 6,
                           ),
                           icon: const Icon(Icons.phone_rounded, size: 18),
                           label: Text(
@@ -573,7 +567,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1,
+                              letterSpacing: 1.0,
                             ),
                           ),
                           onPressed: () => _makePhoneCall(phoneNum),
@@ -582,12 +576,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 14,
+                              horizontal: 28,
+                              vertical: 16,
                             ),
-                            side: const BorderSide(color: Colors.white, width: 2),
+                            side: const BorderSide(color: Colors.white24, width: 1.5),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           icon: const Icon(Icons.email_rounded, size: 18),
@@ -596,7 +590,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1,
+                              letterSpacing: 1.0,
                             ),
                           ),
                           onPressed: () => _sendEmail(emailAddr),
@@ -613,19 +607,19 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
+  // Redesigned Form Card using Dark Theme
   Widget _buildInteractiveFormCard() {
     final categories = ["General Inquiry", "Get Quote", "Support"];
 
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.blue.shade600, Colors.indigo.shade500
-        ]),
+        color: darkCardBg,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white10),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -642,23 +636,37 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Send Us A Message", style: GoogleFonts.bebasNeue(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-                      const SizedBox(height: 2),
-                      Text("Fill out the form below and we'll reply shortly.", style: GoogleFonts.plusJakartaSans(fontSize: 13, color: Colors.white70)),
+                      Text(
+                        "Send Us A Message",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Fill out the form below and we'll reply shortly.",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          color: textMuted,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: lightPink,
-                    borderRadius: BorderRadius.circular(10),
+                    color: accentBlue.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: accentBlue.withOpacity(0.3)),
                   ),
-                  child: const Icon(Icons.send_rounded, color: accentPink, size: 22),
+                  child: const Icon(Icons.send_rounded, color: accentCyan, size: 22),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -669,15 +677,18 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     child: ChoiceChip(
                       label: Text(categories[index]),
                       selected: isSelected,
-                      selectedColor: Colors.white,
-                      backgroundColor: Colors.grey[100],
-                      labelStyle: GoogleFonts.ibmPlexSansThai(
-                        color: isSelected ? Colors.black87 : Colors.pinkAccent,
+                      selectedColor: accentBlue,
+                      backgroundColor: darkBg,
+                      labelStyle: GoogleFonts.plusJakartaSans(
+                        color: isSelected ? Colors.white : textMuted,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         fontSize: 12,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: isSelected ? accentBlue : Colors.white10,
+                        ),
                       ),
                       onSelected: (bool selected) {
                         if (selected) {
@@ -693,7 +704,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             _buildInputField(
               controller: _nameController,
               label: "Your Name",
-              icon: Icons.person_outline,
+              icon: Icons.person_outline_rounded,
               validator: (v) => v == null || v.isEmpty ? "Please enter your name" : null,
             ),
             const SizedBox(height: 16),
@@ -722,40 +733,40 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             DropdownButtonFormField<String>(
               value: _serviceDr,
               isExpanded: true,
-              dropdownColor: Colors.blue.shade600,
-              style: GoogleFonts.radley(fontSize: 14, color: Colors.black87),
-              iconEnabledColor: Colors.blue.shade600,
+              dropdownColor: darkCardBg,
+              style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.white),
+              iconEnabledColor: accentCyan,
               decoration: InputDecoration(
                 labelText: "Select Service",
-                labelStyle: GoogleFonts.ibmPlexSansThai(color: Colors.black54, fontSize: 14),
-                prefixIcon: const Icon(Icons.cleaning_services_outlined, color: primaryBlue, size: 20),
+                labelStyle: GoogleFonts.plusJakartaSans(color: textMuted, fontSize: 14),
+                prefixIcon: const Icon(Icons.cleaning_services_outlined, color: accentCyan, size: 20),
                 filled: true,
-                fillColor: bgWhite,
+                fillColor: darkBg,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.black12),
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.white10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: primaryBlue, width: 1.5),
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: accentBlue, width: 1.5),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(10),
                   borderSide: const BorderSide(color: Colors.redAccent),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(10),
                   borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
                 ),
               ),
               items: _servicesList.map((String service) {
                 return DropdownMenuItem<String>(
                   value: service,
-                  child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.only(left: 10, right: 8),
-                    child: Text(service, overflow: TextOverflow.ellipsis, style: GoogleFonts.radley(color: Colors.pink.shade300, fontSize: 14, fontWeight: FontWeight.w500)),
+                  child: Text(
+                    service,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
                   ),
                 );
               }).toList(),
@@ -772,31 +783,39 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               label: _selectedFormCategory == 1
                   ? "Describe your project requirements..."
                   : "How can we help you?",
-              icon: Icons.chat_bubble_outline,
+              icon: Icons.chat_bubble_outline_rounded,
               maxLines: 4,
               validator: (v) => v == null || v.isEmpty ? "Please enter your message" : null,
             ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
-              height: 50,
+              height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: lightPink,
-                  elevation: 2,
+                  backgroundColor: accentBlue,
+                  elevation: 4,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 onPressed: _isSubmitting ? null : _handleSubmit,
                 child: _isSubmitting
-                    ? const CircularProgressIndicator(color: bgWhite)
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.near_me_rounded, color: accentPink, size: 22),
+                    const Icon(Icons.near_me_rounded, color: Colors.white, size: 20),
                     const SizedBox(width: 8),
-                    Text("SUBMIT INQUIRY", style: GoogleFonts.plusJakartaSans(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.blue.shade600, letterSpacing: 1.1)),
+                    Text(
+                      "SUBMIT INQUIRY",
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -814,11 +833,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: primaryBlue,
+            color: darkCardBg,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: accentBlue.withOpacity(0.3)),
             boxShadow: [
               BoxShadow(
-                color: primaryBlue.withOpacity(0.25),
+                color: Colors.black.withOpacity(0.2),
                 blurRadius: 15,
                 offset: const Offset(0, 6),
               ),
@@ -829,28 +849,36 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: bgWhite.withOpacity(0.2),
+                  color: accentBlue.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.timer_rounded, color: bgWhite, size: 28),
+                child: const Icon(Icons.timer_rounded, color: accentCyan, size: 26),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Fast Response Guarantee", style: GoogleFonts.radley(fontSize: 17, fontWeight: FontWeight.bold, color: bgWhite)),
-                    const SizedBox(height: 2),
                     Text(
-                        "We usually respond within 2 working hours during business times.",
-                        style: GoogleFonts.ibmPlexSansThai(fontSize: 12, color: bgWhite.withOpacity(0.9))),
+                      "Fast Response Guarantee",
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "We usually respond within 2 working hours during business times.",
+                      style: GoogleFonts.plusJakartaSans(fontSize: 12, color: textMuted),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         _buildSidebarDetailCard(
           icon: Icons.location_on_rounded,
           title: "Visit Our Agency",
@@ -862,7 +890,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         _buildSidebarDetailCard(
           icon: Icons.phone_in_talk_rounded,
           title: "Call Direct",
-          subtitle: "+91 94085 18168",
+          subtitle: phoneNum,
           actionLabel: "Dial Now",
           onTap: () => _makePhoneCall(phoneNum),
         ),
@@ -896,7 +924,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     bool isStatusBadge = false,
   }) {
     return Material(
-      color: bgWhite,
+      color: darkCardBg,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
@@ -905,18 +933,19 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.black.withOpacity(0.06)),
+            border: Border.all(color: Colors.white10),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: lightPink,
+                decoration: BoxDecoration(
+                  color: darkBg,
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white10),
                 ),
-                child: Icon(icon, color: accentPink, size: 22),
+                child: Icon(icon, color: accentCyan, size: 22),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -925,19 +954,19 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.radley(
-                        fontSize: 16,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: primaryBlue,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: GoogleFonts.ibmPlexSansThai(
+                      style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
-                        color: Colors.black87,
-                        height: 1.3,
+                        color: textMuted,
+                        height: 1.4,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -945,15 +974,15 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       children: [
                         Text(
                           actionLabel,
-                          style: GoogleFonts.ibmPlexSansThai(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: isStatusBadge ? Colors.green[700] : accentPink,
+                            color: isStatusBadge ? Colors.greenAccent : accentBlue,
                           ),
                         ),
                         if (!isStatusBadge) ...[
                           const SizedBox(width: 4),
-                          const Icon(Icons.arrow_forward_rounded, size: 14, color: accentPink),
+                          const Icon(Icons.arrow_forward_rounded, size: 14, color: accentBlue),
                         ]
                       ],
                     ),
@@ -972,11 +1001,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       width: double.infinity,
       height: 380,
       decoration: BoxDecoration(
-        color: bgWhite,
+        color: darkCardBg,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white10),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -992,13 +1022,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 return Container(
                   width: double.infinity,
                   height: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFE5E9EE), Color(0xFFCCD6E0)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
+                  color: darkBg,
                   child: Stack(
                     children: [
                       Positioned.fill(
@@ -1015,19 +1039,19 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: accentPink.withOpacity(0.2),
+                                color: accentBlue.withOpacity(0.25),
                                 shape: BoxShape.circle,
                               ),
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: const BoxDecoration(
-                                  color: accentPink,
+                                  color: accentBlue,
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
                                   Icons.location_on_rounded,
                                   size: 28,
-                                  color: bgWhite,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -1046,11 +1070,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: bgWhite.withOpacity(0.95),
+                  color: darkCardBg.withOpacity(0.95),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white10),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withOpacity(0.3),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
@@ -1061,12 +1086,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: lightPink,
+                        color: darkBg,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.storefront_rounded,
-                        color: primaryBlue,
+                        color: accentCyan,
                         size: 24,
                       ),
                     ),
@@ -1079,10 +1104,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                             children: [
                               Text(
                                 "Grow Socialee",
-                                style: GoogleFonts.radley(
-                                  fontSize: 16,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                  color: Colors.white,
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -1093,10 +1118,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                               ),
                               Text(
                                 "4.9 (13)",
-                                style: GoogleFonts.ibmPlexSansThai(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black54,
+                                  color: textMuted,
                                 ),
                               ),
                             ],
@@ -1106,9 +1131,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                             "Leela Efcee, Waghawadi Rd, Bhavnagar",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.ibmPlexSansThai(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
-                              color: Colors.black54,
+                              color: textMuted,
                             ),
                           ),
                         ],
@@ -1127,18 +1152,18 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   Expanded(
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryBlue,
-                        foregroundColor: bgWhite,
+                        backgroundColor: darkCardBg,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
+                          side: const BorderSide(color: Colors.white24),
                         ),
-                        elevation: 3,
                       ),
-                      icon: const Icon(Icons.map_rounded, size: 18),
+                      icon: const Icon(Icons.map_rounded, size: 18, color: accentCyan),
                       label: Text(
                         "View Map",
-                        style: GoogleFonts.ibmPlexSansThai(
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1150,16 +1175,21 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   Expanded(
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: accentPink,
-                        foregroundColor: bgWhite,
+                        backgroundColor: accentBlue,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        elevation: 3,
                       ),
                       icon: const Icon(Icons.directions_rounded, size: 18),
-                      label: Text("Get Directions", style: GoogleFonts.radley(fontSize: 13, fontWeight: FontWeight.bold)),
+                      label: Text(
+                        "Get Directions",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       onPressed: () => _launchUrlString(googleDirectionsUrl),
                     ),
                   ),
@@ -1185,50 +1215,46 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       maxLines: maxLines,
       keyboardType: keyboardType,
       validator: validator,
-      style: GoogleFonts.radley(fontSize: 14, color: Colors.black87),
+      style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.plusJakartaSans(color: Colors.black54, fontSize: 14),
-        prefixIcon: Icon(icon, color: primaryBlue, size: 20),
+        labelStyle: GoogleFonts.plusJakartaSans(color: textMuted, fontSize: 14),
+        prefixIcon: Icon(icon, color: accentCyan, size: 20),
         filled: true,
-        fillColor: Colors.grey[50],
+        fillColor: darkBg,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.black12),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.white10),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: primaryBlue, width: 1.5),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: accentBlue, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: Colors.redAccent),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
         ),
       ),
     );
   }
 
-  Widget _buildFooter(BuildContext context) {
+  Widget _buildAGFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      color: Colors.indigo.shade500,
+      color: darkBg,
       child: Column(
         children: [
-          Container(
-            height: 5,
-            width: double.infinity,
-            color: Colors.blue.shade600,
-          ),
+          const Divider(height: 1, thickness: 1, color: Colors.white10),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -1247,9 +1273,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFooterBrandSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterContactSection(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 36),
                     _buildFooterSocialSection(),
                   ],
                 ),
@@ -1257,14 +1283,14 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            color: Colors.blue.shade600,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            color: darkCardBg,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.ibmPlexSansThai(
-                  fontSize: 12,
-                  color: Colors.white,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: textMuted,
                 ),
               ),
             ),
@@ -1285,13 +1311,13 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.ibmPlexSansThai(
-            fontSize: 13,
-            color: Colors.white,
-            height: 1.5,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            color: textMuted,
+            height: 1.6,
           ),
         ),
       ],
@@ -1302,40 +1328,67 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Contact Info", style: GoogleFonts.ibmPlexSansThai(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-        const SizedBox(height: 12),
+        Text(
+          "CONTACT INFO",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.0,
+          ),
+        ),
+        const SizedBox(height: 16),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
+              const Icon(Icons.location_on_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
               Expanded(
-                child: Text(addressQuery, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white, height: 1.4)),
+                child: Text(
+                  addressQuery,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: textMuted,
+                    height: 1.4,
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
-              Text(phoneNum, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
+              const Icon(Icons.phone_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
+              Text(
+                phoneNum,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: textMuted,
+                ),
+              ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         InkWell(
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white70),
-              const SizedBox(width: 8),
-              Text(emailAddr, style: GoogleFonts.ibmPlexSansThai(fontSize: 13, color: Colors.white)),
+              const Icon(Icons.email_outlined, size: 18, color: accentCyan),
+              const SizedBox(width: 10),
+              Text(
+                emailAddr,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: textMuted,
+                ),
+              ),
             ],
           ),
         ),
@@ -1347,36 +1400,31 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Follow Us", style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.white70,
-              borderRadius: BorderRadius.circular(12)
+        Text(
+          "CONNECT WITH US",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.0,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(facebookUrl),
-              ),
-              const SizedBox(
-                  height: 15,
-                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: accentPink),
-                onPressed: () => _launchUrlString(instagramUrl),
-              ),
-              const SizedBox(
-                  height: 15,
-                  child: VerticalDivider(color: Colors.black87, thickness: 2.5)),
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: primaryBlue),
-                onPressed: () => _launchUrlString(linkedInUrl),
-              ),
-            ],
-          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(facebookUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(instagramUrl),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: Colors.white),
+              onPressed: () => _launchUrlString(linkedInUrl),
+            ),
+          ],
         ),
       ],
     );
@@ -1391,8 +1439,8 @@ class _MapGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = Colors.white.withOpacity(0.4)
-      ..strokeWidth = 1.5
+      ..color = Colors.white.withOpacity(0.08)
+      ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
     for (double i = 0; i < size.height; i += 35) {
@@ -1404,8 +1452,8 @@ class _MapGridPainter extends CustomPainter {
     }
 
     final roadPaint = Paint()
-      ..color = Colors.white.withOpacity(0.8)
-      ..strokeWidth = 6.0
+      ..color = const Color(0xFF3B82F6).withOpacity(0.3)
+      ..strokeWidth = 4.0
       ..style = PaintingStyle.stroke;
 
     canvas.drawLine(
@@ -1419,7 +1467,7 @@ class _MapGridPainter extends CustomPainter {
     final currentRadius = maxRadius * animationValue;
 
     final radarPaint = Paint()
-      ..color = const Color(0xFFE91E63).withOpacity((1 - animationValue) * 0.4)
+      ..color = const Color(0xFF06B6D4).withOpacity((1 - animationValue) * 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
@@ -1430,24 +1478,4 @@ class _MapGridPainter extends CustomPainter {
   bool shouldRepaint(covariant _MapGridPainter oldDelegate) {
     return oldDelegate.animationValue != animationValue;
   }
-}
-
-// Custom Painter for Contact Hero Pattern
-class _ContactHeroPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
-    // Draw circles pattern
-    final center = Offset(size.width / 2, size.height / 2);
-    for (double radius = 50; radius < size.width; radius += 80) {
-      canvas.drawCircle(center, radius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
