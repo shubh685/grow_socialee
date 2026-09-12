@@ -19,12 +19,12 @@ class ClientLogoPage extends StatefulWidget {
 class _ClientLogoPageState extends State<ClientLogoPage> {
   int _selectedIndex = 2;
 
-  // Theme Constants matching home_page.dart
-  static const Color darkBg = Color(0xFF0F172A);
-  static const Color darkCardBg = Color(0xFF1E293B);
-  static const Color accentBlue = Color(0xFF3B82F6);
-  static const Color accentCyan = Color(0xFF06B6D4);
-  static const Color textMuted = Color(0xFF94A3B8);
+  // Color Palette aligned with About.dart
+  static const Color brandBlue = Color(0xFF1B64B1);
+  static const Color darkBg = Color(0xFF144F8E);
+  static const Color darkCardBg = Color(0xFF0F3E72);
+  static const Color accentWhite = Colors.white;
+  static const Color textMuted = Color(0xFFD0E1F9);
 
   final List<Map<String, dynamic>> clientLogos = const [
     {"path": "assets/photos/aroma.png", "isWhite": true},
@@ -57,6 +57,23 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   final String facebookUrl = "https://www.facebook.com/growsocialeeofficial/";
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
   final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
+
+  // Keys to trigger scroll visibility detection
+  final List<GlobalKey<_DirectionalAnimatedLogoCardState>> _cardKeys = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _cardKeys.addAll(
+      List.generate(clientLogos.length, (_) => GlobalKey<_DirectionalAnimatedLogoCardState>()),
+    );
+  }
+
+  void _checkCardsVisibility() {
+    for (var key in _cardKeys) {
+      key.currentState?.checkVisibility();
+    }
+  }
 
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
@@ -103,7 +120,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         child: Container(
           decoration: const BoxDecoration(
             color: darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
+            border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -141,14 +158,14 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: accentBlue,
+                        color: Colors.white,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white10),
+              const Divider(height: 1, thickness: 1, color: Colors.white24),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -176,7 +193,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 1);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const About()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const About(),
+                          ),
+                        );
                       },
                     ),
                     _buildDrawerItem(
@@ -210,7 +232,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 4);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Reviews()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Reviews(),
+                          ),
+                        );
                       },
                     ),
                     _buildDrawerItem(
@@ -233,39 +260,46 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               ),
               Container(
                 height: 4,
-                color: accentBlue,
+                color: Colors.white,
               )
             ],
           ),
         ),
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: _buildHeroSection(isDesktop),
-          ),
-          SliverToBoxAdapter(
-            child: _buildAllLogosGrid(context),
-          ),
-          SliverToBoxAdapter(
-            child: AnimatedFooter(
-              addressQuery: addressQuery,
-              phoneNum: phoneNum,
-              emailAddr: emailAddr,
-              googleMapsUrl: googleMapsUrl,
-              facebookUrl: facebookUrl,
-              instagramUrl: instagramUrl,
-              linkedInUrl: linkedInUrl,
-              onLaunchUrl: _launchUrlString,
-              onMakeCall: _makePhoneCall,
-              onSendEmail: _sendEmail,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notification) {
+          _checkCardsVisibility();
+          return false;
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: _buildHeroSection(isDesktop),
             ),
-          ),
-        ],
+            SliverToBoxAdapter(
+              child: _buildAllLogosGrid(context),
+            ),
+            SliverToBoxAdapter(
+              child: AnimatedFooter(
+                addressQuery: addressQuery,
+                phoneNum: phoneNum,
+                emailAddr: emailAddr,
+                googleMapsUrl: googleMapsUrl,
+                facebookUrl: facebookUrl,
+                instagramUrl: instagramUrl,
+                linkedInUrl: linkedInUrl,
+                onLaunchUrl: _launchUrlString,
+                onMakeCall: _makePhoneCall,
+                onSendEmail: _sendEmail,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
+  // Exact Logo Header from About.dart
   Widget _buildLogoHeader() {
     return Container(
       height: 45,
@@ -274,7 +308,14 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         children: [
           SizedBox(
             height: 50,
-            child: Text("We are Grow Socialee", style: GoogleFonts.aleo(fontSize: 45, fontWeight: FontWeight.bold, color: Colors.blue)),
+            child: Text(
+              "We are \n Grow Socialee",
+              style: GoogleFonts.aleo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
@@ -299,26 +340,30 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? accentBlue : Colors.transparent,
+              color: isSelected ? Colors.white : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
+                Icon(icon, size: 20, color: isSelected ? darkBg : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.montserrat(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: isSelected ? darkBg : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: darkBg,
+                  ),
               ],
             ),
           ),
@@ -331,31 +376,34 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     return Container(
       width: double.infinity,
       color: darkBg,
-      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 24),
+      padding: EdgeInsets.symmetric(
+        vertical: isDesktop ? 80 : 50,
+        horizontal: 24,
+      ),
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 800),
+          constraints: const BoxConstraints(maxWidth: 850),
           child: Column(
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: accentBlue.withOpacity(0.15),
+                  color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: accentBlue.withOpacity(0.3)),
+                  border: Border.all(color: Colors.white30),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.people_alt_rounded, size: 16, color: accentCyan),
+                    const Icon(Icons.people_alt_rounded, size: 16, color: Colors.white),
                     const SizedBox(width: 8),
                     Text(
                       "OUR CLIENTS",
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.cinzel(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: accentCyan,
-                        letterSpacing: 1.5,
+                        color: Colors.white,
+                        letterSpacing: 2.0,
                       ),
                     ),
                   ],
@@ -365,8 +413,8 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Text(
                 "The Brands We're Working With",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: isDesktop ? 44 : 30,
+                style: GoogleFonts.aleo(
+                  fontSize: isDesktop ? 44 : 28,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
                   height: 1.2,
@@ -376,8 +424,8 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Text(
                 "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 16,
+                style: GoogleFonts.alexandria(
+                  fontSize: 15,
                   color: textMuted,
                   height: 1.6,
                 ),
@@ -399,7 +447,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
 
     return Container(
       color: darkBg,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -415,6 +463,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           final isFirstThreeColumns = columnIndex < (crossAxisCount / 2).ceil();
 
           return DirectionalAnimatedLogoCard(
+            key: _cardKeys[index],
             imagePath: clientLogos[index]["path"]!,
             isWhiteLogo: clientLogos[index]["isWhite"] ?? false,
             index: index,
@@ -451,6 +500,7 @@ class _DirectionalAnimatedLogoCardState
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   late Animation<double> _fadeAnimation;
+  bool _hasAnimated = false;
 
   @override
   void initState() {
@@ -462,8 +512,8 @@ class _DirectionalAnimatedLogoCardState
     );
 
     Offset startOffset = widget.fromLeftToRight
-        ? const Offset(-0.8, 0.0) // Left to Right
-        : const Offset(0.8, 0.0);  // Right to Left
+        ? const Offset(-0.8, 0.0)
+        : const Offset(0.8, 0.0);
 
     _offsetAnimation = Tween<Offset>(
       begin: startOffset,
@@ -481,11 +531,28 @@ class _DirectionalAnimatedLogoCardState
       curve: Curves.easeIn,
     ));
 
-    Future.delayed(Duration(milliseconds: (widget.index % 6) * 80), () {
-      if (mounted) {
-        _controller.forward();
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkVisibility();
     });
+  }
+
+  void checkVisibility() {
+    if (_hasAnimated) return;
+
+    final RenderObject? renderObject = context.findRenderObject();
+    if (renderObject is RenderBox && renderObject.hasSize) {
+      final position = renderObject.localToGlobal(Offset.zero);
+      final screenHeight = MediaQuery.of(context).size.height;
+
+      if (position.dy < screenHeight - 50 && (position.dy + renderObject.size.height) > 0) {
+        _hasAnimated = true;
+        Future.delayed(Duration(milliseconds: (widget.index % 6) * 60), () {
+          if (mounted) {
+            _controller.forward();
+          }
+        });
+      }
+    }
   }
 
   @override
@@ -503,17 +570,17 @@ class _DirectionalAnimatedLogoCardState
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: widget.isWhiteLogo ? const Color(0xFF1E293B) : Colors.white,
+            color: widget.isWhiteLogo ? const Color(0xFF0F3E72) : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: widget.isWhiteLogo
-                  ? Colors.white10
-                  : const Color(0xFF3B82F6).withOpacity(0.4),
+                  ? Colors.white24
+                  : Colors.white,
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF3B82F6).withOpacity(0.1),
+                color: Colors.black.withOpacity(0.15),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -596,7 +663,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
 
     return Container(
       width: double.infinity,
-      color: const Color(0xFF0F172A),
+      color: const Color(0xFF144F8E),
       child: Column(
         children: [
           AnimatedBuilder(
@@ -608,14 +675,14 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      const Color(0xFF3B82F6).withOpacity(_glowAnimation.value),
-                      const Color(0xFF06B6D4).withOpacity(_glowAnimation.value),
-                      const Color(0xFF3B82F6).withOpacity(_glowAnimation.value),
+                      Colors.white.withOpacity(_glowAnimation.value),
+                      const Color(0xFFD0E1F9).withOpacity(_glowAnimation.value),
+                      Colors.white.withOpacity(_glowAnimation.value),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF06B6D4).withOpacity(_glowAnimation.value),
+                      color: Colors.white.withOpacity(_glowAnimation.value),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),
@@ -655,13 +722,13 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF1E293B),
+            color: const Color(0xFF0F3E72),
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: const Color(0xFF94A3B8),
+                  color: const Color(0xFFD0E1F9),
                 ),
               ),
             ),
@@ -687,7 +754,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.plusJakartaSans(
             fontSize: 14,
-            color: const Color(0xFF94A3B8),
+            color: const Color(0xFFD0E1F9),
             height: 1.6,
           ),
         ),
@@ -701,7 +768,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -714,14 +781,14 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Color(0xFF06B6D4)),
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   widget.addressQuery,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: const Color(0xFF94A3B8),
+                    color: const Color(0xFFD0E1F9),
                     height: 1.4,
                   ),
                 ),
@@ -734,13 +801,13 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           onTap: () => widget.onMakeCall(widget.phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Color(0xFF06B6D4)),
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 widget.phoneNum,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: const Color(0xFF94A3B8),
+                  color: const Color(0xFFD0E1F9),
                 ),
               ),
             ],
@@ -751,13 +818,13 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           onTap: () => widget.onSendEmail(widget.emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Color(0xFF06B6D4)),
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 widget.emailAddr,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: const Color(0xFF94A3B8),
+                  color: const Color(0xFFD0E1F9),
                 ),
               ),
             ],
@@ -773,7 +840,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
