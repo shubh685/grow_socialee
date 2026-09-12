@@ -114,7 +114,7 @@ class _ServicesState extends State<Services> {
   // Unique Reviews Data
   final List<Map<String, String>> clientReviews = [
     {
-      "name": "Venisha Chitlia",
+      "name": "Venisha Chitalia",
       "company": "Bindu Decorators",
       "rating": "4.0",
       "review":
@@ -123,7 +123,7 @@ class _ServicesState extends State<Services> {
     },
     {
       "name": "Dr. Jinali Modi",
-      "company": "Ved ICU & Healthcare",
+      "company": "Body Mind Soul",
       "rating": "5.0",
       "review":
       "Growsocialee has been helping me  for my social media management and Shaily the founder has been extremely professional  , she is very helpful and always available for any questions "
