@@ -22,12 +22,12 @@ class _AboutState extends State<About> {
   final GlobalKey<_ValuesSectionState> _valuesKey = GlobalKey<_ValuesSectionState>();
   final GlobalKey<_TeamSectionState> _teamKey = GlobalKey<_TeamSectionState>();
 
-  // AG Modern Theme Color Palette
-  static const Color darkBg = Color(0xFF0F172A);
-  static const Color darkCardBg = Color(0xFF1E293B);
-  static const Color accentBlue = Color(0xFF3B82F6);
-  static const Color accentCyan = Color(0xFF06B6D4);
-  static const Color textMuted = Color(0xFF94A3B8);
+  // Color Palette aligned with HomePage theme
+  static const Color brandBlue = Color(0xFF1B64B1);
+  static const Color darkBg = Color(0xFF144F8E);
+  static const Color darkCardBg = Color(0xFF0F3E72);
+  static const Color accentWhite = Colors.white;
+  static const Color textMuted = Color(0xFFD0E1F9);
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -85,7 +85,7 @@ class _AboutState extends State<About> {
         child: Container(
           decoration: const BoxDecoration(
             color: darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
+            border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -123,14 +123,14 @@ class _AboutState extends State<About> {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: accentBlue,
+                        color: Colors.white,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white10),
+              const Divider(height: 1, thickness: 1, color: Colors.white24),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -220,7 +220,7 @@ class _AboutState extends State<About> {
               ),
               Container(
                 height: 4,
-                color: accentBlue,
+                color: Colors.white,
               )
             ],
           ),
@@ -271,7 +271,7 @@ class _AboutState extends State<About> {
               child: _buildCapabilitiesSection(isDesktop),
             ),
 
-            // Core Values & Pillars Cards Section (Stats Cards Removed)
+            // Core Values & Pillars Cards Section
             SliverToBoxAdapter(
               child: ValuesSection(key: _valuesKey, isDesktop: isDesktop),
             ),
@@ -299,7 +299,14 @@ class _AboutState extends State<About> {
         children: [
           SizedBox(
             height: 50,
-            child: Text("We are Grow Socialee", style: GoogleFonts.aleo(fontSize: 45, fontWeight: FontWeight.bold, color: Colors.blue)),
+            child: Text(
+              "We are \n Grow Socialee",
+              style: GoogleFonts.aleo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
@@ -324,23 +331,20 @@ class _AboutState extends State<About> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? accentBlue : Colors.transparent,
+              color: isSelected ? Colors.white : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
-              border: isSelected
-                  ? null
-                  : Border.all(color: Colors.white12, width: 0.5),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
+                Icon(icon, size: 20, color: isSelected ? darkBg : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.montserrat(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: isSelected ? darkBg : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
@@ -349,7 +353,7 @@ class _AboutState extends State<About> {
                   const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: Colors.white,
+                    color: darkBg,
                   ),
               ],
             ),
@@ -387,22 +391,22 @@ class _AboutState extends State<About> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: accentBlue.withOpacity(0.15),
+                        color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: accentBlue.withOpacity(0.3)),
+                        border: Border.all(color: Colors.white30),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.auto_awesome_rounded,
-                              size: 16, color: accentCyan),
+                              size: 16, color: Colors.white),
                           const SizedBox(width: 8),
                           Text(
                             "WHO WE ARE",
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.cinzel(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: accentCyan,
+                              color: Colors.white,
                               letterSpacing: 2.0,
                             ),
                           ),
@@ -413,7 +417,7 @@ class _AboutState extends State<About> {
                     Text(
                       "Crafting Digital Legacies Through Strategic Innovation.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.aleo(
                         fontSize: isDesktop ? 48 : 28,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
@@ -421,14 +425,6 @@ class _AboutState extends State<About> {
                         letterSpacing: -0.5,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Wrap(
-                        children: [
-                          Text("Getting your name on top is our", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 60 : 28, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
-                          Align(
-                            alignment: Alignment.center,
-                              child: Text("No.1 priority.", style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 68 : 32, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)))
-                        ]),
                   ],
                 ),
               ),
@@ -446,10 +442,10 @@ class _AboutState extends State<About> {
         constraints: const BoxConstraints(maxWidth: 480),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white10),
+          border: Border.all(color: Colors.white24),
           boxShadow: [
             BoxShadow(
-              color: accentBlue.withOpacity(0.15),
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 25,
               offset: const Offset(0, 10),
             ),
@@ -479,17 +475,17 @@ class _AboutState extends State<About> {
       children: [
         Text(
           "ABOUT GROW SOCIALEE",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.cinzel(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: accentCyan,
+            color: Colors.white,
             letterSpacing: 2.0,
           ),
         ),
         const SizedBox(height: 10),
         Text(
           "Innovating Digital Excellence in Bhavnagar",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.aleo(
             fontSize: 32,
             fontWeight: FontWeight.w800,
             color: Colors.white,
@@ -500,7 +496,7 @@ class _AboutState extends State<About> {
         Text(
           "We are Grow Socialee—a full-suite digital marketing agency based in Bhavnagar committed to scaling small and medium enterprises. Modern market dynamics demand more than an online presence; they require digital dominance.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.alexandria(
             fontSize: 15,
             color: textMuted,
             height: 1.6,
@@ -510,7 +506,17 @@ class _AboutState extends State<About> {
         Text(
           "From custom social media strategies and video editing production to conversion-focused ad campaigns and brand identity design, our tailored solutions eliminate complexity and generate sustainable revenue growth.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.alexandria(
+            fontSize: 15,
+            color: textMuted,
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          "At Grow Socialee, we believe every brand has a unique story waiting to be told. We combine creative thinking, strategic planning, and digital technology to transform ideas into impactful brand experiences that connect with the right audience and build lasting relationships.",
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.alexandria(
             fontSize: 15,
             color: textMuted,
             height: 1.6,
@@ -525,8 +531,8 @@ class _AboutState extends State<About> {
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: accentBlue,
-            foregroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            foregroundColor: darkBg,
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -535,7 +541,7 @@ class _AboutState extends State<About> {
           icon: const Icon(Icons.arrow_forward_rounded, size: 18),
           label: Text(
             "WORK WITH US",
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.aleo(
               fontSize: 13,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.0,
@@ -572,7 +578,7 @@ class _AboutState extends State<About> {
     ];
 
     return Container(
-      color: darkCardBg,
+      color: Colors.white70,
       padding: EdgeInsets.symmetric(
         vertical: 70,
         horizontal: isDesktop ? 60 : 20,
@@ -582,25 +588,9 @@ class _AboutState extends State<About> {
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              Text(
-                "WHAT WE BRING TO THE TABLE",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: accentBlue,
-                  letterSpacing: 2.0,
-                ),
-              ),
+              Text("WHAT WE BRING TO THE TABLE", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: darkBg, letterSpacing: 2.0)),
               const SizedBox(height: 10),
-              Text(
-                "Integrated Digital Expertise",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: isDesktop ? 32 : 24,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
-              ),
+              Text("Integrated Digital Expertise", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: darkCardBg)),
               const SizedBox(height: 40),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -616,9 +606,9 @@ class _AboutState extends State<About> {
                         child: Container(
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: darkBg,
+                            color: darkCardBg,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white10),
+                            border: Border.all(color: Colors.white24),
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -626,37 +616,19 @@ class _AboutState extends State<About> {
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: accentBlue.withOpacity(0.12),
+                                  color: darkCardBg.withOpacity(0.12),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Icon(
-                                  cap["icon"] as IconData,
-                                  color: accentCyan,
-                                  size: 28,
-                                ),
+                                child: Icon(cap["icon"] as IconData, color: Colors.white, size: 28)
                               ),
                               const SizedBox(width: 16),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      cap["title"] as String,
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    Text(cap["title"] as String, style: GoogleFonts.aleo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                                     const SizedBox(height: 6),
-                                    Text(
-                                      cap["desc"] as String,
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 14,
-                                        color: textMuted,
-                                        height: 1.5,
-                                      ),
-                                    ),
+                                    Text(cap["desc"] as String, style: GoogleFonts.alexandria(fontSize: 14, color: Colors.white70, height: 1.5)),
                                   ],
                                 ),
                               ),
@@ -685,7 +657,7 @@ class _AboutState extends State<About> {
       color: darkBg,
       child: Column(
         children: [
-          const Divider(height: 1, thickness: 1, color: Colors.white10),
+          const Divider(height: 1, thickness: 1, color: Colors.white24),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -763,7 +735,7 @@ class _AboutState extends State<About> {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -776,7 +748,7 @@ class _AboutState extends State<About> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -796,7 +768,7 @@ class _AboutState extends State<About> {
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 phoneNum,
@@ -813,7 +785,7 @@ class _AboutState extends State<About> {
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 emailAddr,
@@ -835,7 +807,7 @@ class _AboutState extends State<About> {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -963,7 +935,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       title: "Our Mission",
       content: Text(
         "To simplify digital growth for businesses by delivering impactful branding, creative visual design, strategic social media engagement, and revenue-focused advertising campaigns.",
-        style: GoogleFonts.plusJakartaSans(fontSize: 14, color: const Color(0xFF94A3B8), height: 1.5),
+        style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400),
       ),
     );
 
@@ -972,7 +944,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       title: "Our Vision",
       content: Text(
         "To empower small and medium enterprises to establish distinct online identities and gain competitive advantages in an ever-evolving digital world.",
-        style: GoogleFonts.plusJakartaSans(fontSize: 14, color: const Color(0xFF94A3B8), height: 1.5),
+        style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400),
       ),
     );
 
@@ -993,22 +965,22 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      color: const Color(0xFF0F172A),
+      color: const Color(0xFF144F8E),
       child: Column(
         children: [
           Text(
             "CORE PHILOSOPHY",
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.cinzel(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF06B6D4),
+              color: Colors.white,
               letterSpacing: 2.0,
             ),
           ),
           const SizedBox(height: 10),
           Text(
             "Driven by Strategy & Purpose",
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.aleo(
               fontSize: widget.isDesktop ? 32 : 24,
               fontWeight: FontWeight.w800,
               color: Colors.white,
@@ -1074,13 +1046,13 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
   Widget _buildPillarPoint(String boldTitle, String text) {
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF94A3B8), height: 1.4),
+        style: GoogleFonts.alexandria(fontSize: 13, color: const Color(0xFFD0E1F9), height: 1.4, fontWeight: FontWeight.bold),
         children: [
           TextSpan(
             text: boldTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkCardBg, height: 1.5, fontWeight: FontWeight.bold),
           ),
-          TextSpan(text: text),
+          TextSpan(text: text,   style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400)),
         ],
       ),
     );
@@ -1095,9 +1067,9 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       width: double.infinity,
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: Colors.white70,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: Colors.white24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1107,20 +1079,13 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF3B82F6).withOpacity(0.15),
+              color: Colors.white.withOpacity(0.15),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: const Color(0xFF06B6D4), size: 26),
+            child: Icon(icon, color: _AboutState.darkCardBg, size: 26),
           ),
           const SizedBox(height: 20),
-          Text(
-            title,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          Text(title, style: GoogleFonts.aleo(fontSize: 20, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
           const SizedBox(height: 12),
           content,
         ],
@@ -1218,27 +1183,14 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      color: const Color(0xFF1E293B),
+      color: Colors.white70,
       child: Column(
         children: [
           Text(
-            "MEET OUR LEADERSHIP",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF3B82F6),
-              letterSpacing: 2.0,
-            ),
-          ),
+            "MEET OUR LEADERSHIP", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: _AboutState.darkBg, letterSpacing: 2.0,)),
           const SizedBox(height: 10),
           Text(
-            "The Minds Behind the Agency",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: widget.isDesktop ? 32 : 24,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-            ),
-          ),
+            "The Minds Behind the Agency", style: GoogleFonts.aleo(fontSize: widget.isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: HomePage.darkCardBg)),
           const SizedBox(height: 40),
           Center(
             child: Container(
@@ -1304,9 +1256,9 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
       width: double.infinity,
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: const Color(0xFF144F8E),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: Colors.white24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1315,14 +1267,14 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: const Color(0xFF3B82F6).withOpacity(0.15),
-            child: const Icon(Icons.person_rounded, size: 45, color: Color(0xFF06B6D4)),
+            backgroundColor: Colors.white.withOpacity(0.15),
+            child: const Icon(Icons.person_rounded, size: 45, color: Colors.white),
           ),
           const SizedBox(height: 18),
           Text(
             name,
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.aleo(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -1332,10 +1284,10 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
           Text(
             designation.toUpperCase(),
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.cinzel(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF06B6D4),
+              color: const Color(0xFFD0E1F9),
               letterSpacing: 1.2,
             ),
           ),
