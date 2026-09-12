@@ -274,15 +274,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         children: [
           SizedBox(
             height: 50,
-            child: Image.asset(
-              "assets/photos/Gro_Soc_Image.png",
-              color: Colors.white,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.business,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
+            child: Text("We are Grow Socialee", style: GoogleFonts.aleo(fontSize: 45, fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
         ],
       ),
