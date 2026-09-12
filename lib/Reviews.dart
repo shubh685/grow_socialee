@@ -342,7 +342,6 @@ class _ReviewsState extends State<Reviews> {
             decoration: BoxDecoration(
               color: isSelected ? accentBlue : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
-              border: isSelected ? null : Border.all(color: Colors.white12, width: 0.5),
             ),
             child: Row(
               children: [
