@@ -28,15 +28,15 @@ class UniformLogoCard extends StatelessWidget {
       width: width,
       height: width / 2.7,
       decoration: BoxDecoration(
-        color: isWhiteLogo ? const Color(0xFF1E293B) : Colors.white,
+        color: isWhiteLogo ? HomePage.darkCardBg : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isWhiteLogo ? Colors.white10 : const Color(0xFF3B82F6),
+          color: isWhiteLogo ? Colors.white24 : HomePage.brandBlue,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF3B82F6).withOpacity(0.1),
+            color: Colors.black.withOpacity(0.15),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -59,6 +59,13 @@ class UniformLogoCard extends StatelessWidget {
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  // Updated Brand Color Theme from Image
+  static const Color brandBlue = Color(0xFF1B64B1);     // Primary Brand Blue from Post
+  static const Color darkBg = Color(0xFF144F8E);        // Rich Blue Background
+  static const Color darkCardBg = Color(0xFF0F3E72);    // Darker Blue for Cards
+  static const Color accentWhite = Colors.white;         // White Contrast Accent
+  static const Color textMuted = Color(0xFFD0E1F9);     // Soft Blue Tint for Subtexts
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -164,13 +171,6 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  // AG Modern Design Theme Colors
-  static const Color darkBg = Color(0xFF0F172A);
-  static const Color darkCardBg = Color(0xFF1E293B);
-  static const Color accentBlue = Color(0xFF3B82F6);
-  static const Color accentCyan = Color(0xFF06B6D4);
-  static const Color textMuted = Color(0xFF94A3B8);
-
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
   void _initializeClientCarousel() {
     _clientPageController = PageController(
       initialPage: 0,
-      viewportFraction: 0.22,
+      viewportFraction: 0.15,
     );
     _startAutoScroll();
   }
@@ -390,13 +390,13 @@ class _HomePageState extends State<HomePage> {
     final bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      backgroundColor: darkBg,
+      backgroundColor: HomePage.darkBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(75),
         child: Container(
           decoration: const BoxDecoration(
-            color: darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
+            color: HomePage.darkBg,
+            border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -418,14 +418,14 @@ class _HomePageState extends State<HomePage> {
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: darkBg,
+        backgroundColor: HomePage.darkBg,
         child: SafeArea(
           child: Column(
             children: [
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
-                color: darkCardBg,
+                color: HomePage.darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
@@ -434,14 +434,14 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: accentBlue,
+                        color: Colors.white,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white10),
+              const Divider(height: 1, thickness: 1, color: Colors.white24),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -526,7 +526,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Container(
                 height: 4,
-                color: accentBlue,
+                color: Colors.white,
               )
             ],
           ),
@@ -542,7 +542,7 @@ class _HomePageState extends State<HomePage> {
           // Agency Overview Section
           SliverToBoxAdapter(
             child: Container(
-              color: darkBg,
+              color: HomePage.darkBg,
               padding: EdgeInsets.symmetric(
                 vertical: 60,
                 horizontal: isDesktop ? 60 : 20,
@@ -598,12 +598,12 @@ class _HomePageState extends State<HomePage> {
   Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      color: darkBg,
+      color: HomePage.darkBg,
       child: Stack(
         children: [
           Positioned.fill(
             child: Opacity(
-              opacity: 0.15,
+              opacity: 0.12,
               child: Image.asset(
                 "assets/photos/image.png",
                 fit: BoxFit.cover,
@@ -622,34 +622,28 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                       decoration: BoxDecoration(
-                        color: accentBlue.withOpacity(0.15),
+                        color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: accentBlue.withOpacity(0.3)),
+                        border: Border.all(color: Colors.white30),
                       ),
                       child: Text(
-                        "WE MAKE YOUR BUSINESS VISIBLE",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: accentCyan,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
+                          "WE MAKE YOUR BUSINESS VISIBLE",
+                          style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
                     ),
                     const SizedBox(height: 24),
                     Wrap(
                         children: [
-                          Text("Getting your name on top is our", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 60 : 28, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
+                          Text("Getting your name on top is our ", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w900, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
                           Align(
                               alignment: Alignment.center,
-                              child: Text("No.1 priority.", style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 68 : 32, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)))
+                              child: Text("No.1 priority.", style: GoogleFonts.aleo(fontSize: isDesktop ? 62 : 32, fontWeight: FontWeight.w900, color: Colors.white, height: 1.15, letterSpacing: -0.5)))
                         ]),
                     const SizedBox(height: 20),
                     Text(
                         "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
-                        textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 18 : 15, color: textMuted, height: 1.6)),
+                        textAlign: TextAlign.center, style: GoogleFonts.alexandria(fontSize: isDesktop ? 18 : 15, color: HomePage.textMuted, height: 1.6)),
                     const SizedBox(height: 36),
                     Wrap(
                       spacing: 16,
@@ -658,8 +652,8 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: accentBlue,
-                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.white,
+                            foregroundColor: HomePage.darkBg,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 32,
                               vertical: 20,
@@ -668,24 +662,12 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             elevation: 8,
-                            shadowColor: accentBlue.withOpacity(0.4),
+                            shadowColor: Colors.black26,
                           ),
-                          icon: const Icon(Icons.rocket_launch_rounded, size: 18),
-                          label: Text(
-                            "GET STARTED NOW",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
+                          icon: const Icon(Icons.rocket_launch_rounded, size: 18, color: HomePage.darkBg),
+                          label: Text("GET STARTED NOW", style: GoogleFonts.aleo(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Contact(),
-                              ),
-                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Contact()),);
                           },
                         ),
                         OutlinedButton.icon(
@@ -695,27 +677,15 @@ class _HomePageState extends State<HomePage> {
                               horizontal: 32,
                               vertical: 20,
                             ),
-                            side: const BorderSide(color: Colors.white24, width: 1.5),
+                            side: const BorderSide(color: Colors.white, width: 1.8),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           icon: const Icon(Icons.grid_view_rounded, size: 18),
-                          label: Text(
-                            "EXPLORE SERVICES",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
+                          label: Text("EXPLORE SERVICES", style: GoogleFonts.aleo(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Services(),
-                              ),
-                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Services()));
                           },
                         ),
                       ],
@@ -741,31 +711,16 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 80, horizontal: isDesktop ? 60 : 20),
-      color: darkBg,
+      color: HomePage.darkBg,
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              Text(
-                "OUR METHODOLOGY",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: accentCyan,
-                  letterSpacing: 2.0,
-                ),
-              ),
+              Text("OUR METHODOLOGY", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               const SizedBox(height: 10),
               Text(
-                "A Clearer Way to Build & Scale",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: isDesktop ? 32 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+                  "A Clearer Way to Build & Scale", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white)),
               const SizedBox(height: 40),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -782,39 +737,18 @@ class _HomePageState extends State<HomePage> {
                         child: Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: darkCardBg,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white10),
+                            border: Border.all(color: Colors.white24),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                s["step"]!,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w800,
-                                  color: accentBlue,
-                                ),
-                              ),
+                              Text(s["step"]!, style: GoogleFonts.aleo(fontSize: 28, fontWeight: FontWeight.w900, color: HomePage.darkCardBg)),
                               const SizedBox(height: 12),
-                              Text(
-                                s["title"]!,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              Text(s["title"]!, style: GoogleFonts.aleo(fontSize: 16, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
                               const SizedBox(height: 8),
-                              Text(
-                                s["desc"]!,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  color: textMuted,
-                                  height: 1.5,
-                                ),
-                              ),
+                              Text(s["desc"]!, style: GoogleFonts.alexandria(fontSize: 13, color: HomePage.darkBg, height: 1.5)),
                             ],
                           ),
                         ),
@@ -834,30 +768,17 @@ class _HomePageState extends State<HomePage> {
   Widget _buildAGFaqSection(bool isDesktop) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 80, horizontal: isDesktop ? 60 : 20),
-      color: darkCardBg,
+      color: HomePage.darkCardBg,
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 900),
           child: Column(
             children: [
-              Text(
-                "QUESTIONS ANSWERED",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: accentBlue,
-                  letterSpacing: 2.0,
-                ),
-              ),
+              Text("QUESTIONS ANSWERED", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               const SizedBox(height: 10),
               Text(
-                "Frequently Asked Questions",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: isDesktop ? 32 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+                  "Frequently Asked Questions",
+                  style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white)),
               const SizedBox(height: 36),
               ListView.builder(
                 shrinkWrap: true,
@@ -870,10 +791,10 @@ class _HomePageState extends State<HomePage> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
-                      color: darkBg,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isExpanded ? accentBlue : Colors.white10,
+                        color: isExpanded ? Colors.white : Colors.white24,
                         width: 1,
                       ),
                     ),
@@ -889,16 +810,9 @@ class _HomePageState extends State<HomePage> {
                             _faqExpanded[index] = expanded;
                           });
                         },
-                        iconColor: accentCyan,
-                        collapsedIconColor: textMuted,
-                        title: Text(
-                          faq["question"]!,
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: isExpanded ? Colors.white : Colors.white70,
-                          ),
-                        ),
+                        iconColor: Colors.white,
+                        collapsedIconColor: HomePage.textMuted,
+                        title: Text(faq["question"]!, style: GoogleFonts.aleo(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87)),
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(
@@ -908,14 +822,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(
-                                faq["answer"]!,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  color: textMuted,
-                                  height: 1.6,
-                                ),
-                              ),
+                              child: Text(faq["answer"]!, style: GoogleFonts.alexandria(fontSize: 14, color: HomePage.darkCardBg, height: 1.6)),
                             ),
                           ),
                         ],
@@ -957,7 +864,7 @@ class _HomePageState extends State<HomePage> {
                   width: playerWidth * 0.8,
                   height: playerHeight * 0.5,
                   decoration: BoxDecoration(
-                    color: accentBlue.withOpacity(0.3),
+                    color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
@@ -970,10 +877,10 @@ class _HomePageState extends State<HomePage> {
                   height: playerHeight,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white24, width: 1.5),
+                    border: Border.all(color: Colors.white38, width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withOpacity(0.4),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -989,16 +896,16 @@ class _HomePageState extends State<HomePage> {
                       child: VideoPlayer(_videoController),
                     )
                         : Container(
-                      color: darkCardBg,
+                      color: HomePage.darkCardBg,
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.videocam_off, color: textMuted, size: 40),
+                            const Icon(Icons.videocam_off, color: HomePage.textMuted, size: 40),
                             const SizedBox(height: 8),
                             Text("Video format unsupported",
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.plusJakartaSans(color: textMuted, fontSize: 12)),
+                                style: GoogleFonts.plusJakartaSans(color: HomePage.textMuted, fontSize: 12)),
                           ],
                         ),
                       ),
@@ -1018,85 +925,43 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          "ABOUT GROW SOCIALEE",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: accentCyan,
-            letterSpacing: 2.0,
-          ),
-        ),
+        Text("About Grow Socialee", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0,)),
         const SizedBox(height: 10),
-        Text(
-          "Grow Socialee",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 36,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            height: 1.2,
-          ),
-        ),
+        Text("Grow Socialee", style: GoogleFonts.aleo(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2)),
         const SizedBox(height: 16),
         Text(
           "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 15,
-            color: textMuted,
-            height: 1.6,
-          ),
+          style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted, height: 1.6),
         ),
         const SizedBox(height: 16),
         Text(
           "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 15,
-            color: textMuted,
-            height: 1.6,
-          ),
+          style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted, height: 1.6),
         ),
         const SizedBox(height: 18),
         Text(
           "Let's build your digital success together! 📩 Contact Grow Socialee today!",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: accentBlue,
-            height: 1.5,
-          ),
+          style: GoogleFonts.alexandria(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white, height: 1.5),
         ),
         const SizedBox(height: 14),
         Text(
           "We understand social behaviours within online communities, cultures and subcultures.",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.white70,
-            height: 1.4,
-          ),
+          style: GoogleFonts.alexandria(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white70, height: 1.4),
         ),
         const SizedBox(height: 24),
         ElevatedButton(
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const Contact()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const Contact()));
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: accentBlue,
-            foregroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            foregroundColor: HomePage.darkBg,
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          child: Text(
-            "Get in Touch",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
-          ),
+          child: Text("Get in Touch", style: GoogleFonts.aleo(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
         ),
       ],
     );
@@ -1110,7 +975,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           SizedBox(
             height: 50,
-            child: Text("We are \n Grow Socialee", style: GoogleFonts.aleo(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+            child: Text("We are \n Grow Socialee", style: GoogleFonts.aleo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
           ),
         ],
       ),
@@ -1135,18 +1000,18 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? accentBlue : Colors.transparent,
+              color: isSelected ? Colors.white : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
+                Icon(icon, size: 20, color: isSelected ? HomePage.darkBg : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.0)),
+                  child: Text(label, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold, color: isSelected ? HomePage.darkBg : Colors.white, letterSpacing: 1.0)),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: HomePage.darkBg),
               ],
             ),
           ),
@@ -1156,170 +1021,202 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _clientLogo() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
-      color: darkBg,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            "TRUSTED PARTNERSHIPS",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: accentCyan,
-              letterSpacing: 2.0,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            "The Brands We're Working With",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 36),
-          MouseRegion(
-            onEnter: (_) => _stopAutoScroll(),
-            onExit: (_) => _startAutoScroll(),
-            child: SizedBox(
-              height: 140,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  NotificationListener<ScrollNotification>(
-                    onNotification: (ScrollNotification notification) {
-                      if (notification is ScrollStartNotification) {
-                        _stopAutoScroll();
-                      } else if (notification is ScrollEndNotification) {
-                        _startAutoScroll();
-                      }
-                      return false;
-                    },
-                    child: PageView.builder(
-                      controller: _clientPageController,
-                      onPageChanged: (int index) {
-                        if (mounted) {
-                          setState(() {
-                            _currentLogoPage = index;
-                          });
-                        }
-                      },
-                      itemCount: clientLogos.length,
-                      itemBuilder: (context, index) {
-                        return AnimatedBuilder(
-                          animation: _clientPageController,
-                          builder: (context, child) {
-                            double value = 1.0;
-                            if (_clientPageController.position.haveDimensions) {
-                              value = (_clientPageController.page! - index);
-                              value = (1 - (value.abs() * 0.12)).clamp(0.88, 1.0);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double screenWidth = constraints.maxWidth;
+
+        // Dynamically compute card dimensions and viewport fractions for proper responsive scaling
+        double cardWidth;
+        double cardHeight;
+        double viewportFraction;
+
+        if (screenWidth > 1200) {
+          viewportFraction = 0.18;
+          cardWidth = 180;
+          cardHeight = 90;
+        } else if (screenWidth > 800) {
+          viewportFraction = 0.28;
+          cardWidth = 170;
+          cardHeight = 85;
+        } else if (screenWidth > 500) {
+          viewportFraction = 0.42;
+          cardWidth = 160;
+          cardHeight = 80;
+        } else {
+          viewportFraction = 0.65;
+          cardWidth = 150;
+          cardHeight = 75;
+        }
+
+        // Dynamically update the page controller fraction if screen changes size
+        if (_clientPageController.viewportFraction != viewportFraction) {
+          final int currentPage = _clientPageController.hasClients && _clientPageController.page != null
+              ? _clientPageController.page!.round()
+              : _currentLogoPage;
+          _clientPageController = PageController(
+            initialPage: currentPage,
+            viewportFraction: viewportFraction,
+          );
+        }
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("TRUSTED PARTNERSHIPS", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.darkBg, letterSpacing: 2.0)),
+              const SizedBox(height: 10),
+              Text("The Brands We're Working With", style: GoogleFonts.aleo(fontSize: 28, fontWeight: FontWeight.bold, color: HomePage.darkCardBg), textAlign: TextAlign.center),
+              const SizedBox(height: 36),
+              MouseRegion(
+                onEnter: (_) => _stopAutoScroll(),
+                onExit: (_) => _startAutoScroll(),
+                child: SizedBox(
+                  height: cardHeight + 30,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification notification) {
+                          if (notification is ScrollStartNotification) {
+                            _stopAutoScroll();
+                          } else if (notification is ScrollEndNotification) {
+                            _startAutoScroll();
+                          }
+                          return false;
+                        },
+                        child: PageView.builder(
+                          controller: _clientPageController,
+                          onPageChanged: (int index) {
+                            if (mounted) {
+                              setState(() {
+                                _currentLogoPage = index;
+                              });
                             }
-                            return Center(
-                              child: Transform.scale(
-                                scale: value,
-                                child: child,
+                          },
+                          itemCount: clientLogos.length,
+                          itemBuilder: (context, index) {
+                            return AnimatedBuilder(
+                              animation: _clientPageController,
+                              builder: (context, child) {
+                                double value = 1.0;
+                                if (_clientPageController.position.haveDimensions) {
+                                  value = (_clientPageController.page! - index);
+                                  value = (1 - (value.abs() * 0.12)).clamp(0.88, 1.0);
+                                }
+                                return Center(
+                                  child: Transform.scale(
+                                    scale: value,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 6),
+                                width: cardWidth,
+                                height: cardHeight,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: (clientLogos[index]["isWhite"] ?? false)
+                                      ? HomePage.darkCardBg
+                                      : HomePage.accentWhite,
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.white24,
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.12),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    clientLogos[index]["path"]!,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.broken_image_outlined, color: Colors.grey),
+                                  ),
+                                ),
                               ),
                             );
                           },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        child: Material(
+                          color: HomePage.darkCardBg,
+                          shape: const CircleBorder(),
+                          elevation: 4,
+                          child: InkWell(
+                            onTap: _previousPage,
+                            customBorder: const CircleBorder(),
                             child: Container(
-                              width: 220,
-                              height: 110,
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: (clientLogos[index]["isWhite"] ?? false)
-                                    ? darkCardBg
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: Colors.white12,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  clientLogos[index]["path"]!,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.broken_image_outlined,
-                                      color: Colors.grey),
-                                ),
+                              padding: const EdgeInsets.all(10),
+                              child: const Icon(
+                                Icons.arrow_back_ios_rounded,
+                                size: 14,
+                                color: Colors.white,
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    child: Material(
-                      color: darkCardBg,
-                      shape: const CircleBorder(),
-                      elevation: 4,
-                      child: InkWell(
-                        onTap: _previousPage,
-                        customBorder: const CircleBorder(),
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          child: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            size: 14,
-                            color: Colors.white,
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: Material(
+                          color: HomePage.darkCardBg,
+                          shape: const CircleBorder(),
+                          elevation: 4,
+                          child: InkWell(
+                            onTap: _nextPage,
+                            customBorder: const CircleBorder(),
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              child: const Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  Positioned(
-                    right: 0,
-                    child: Material(
-                      color: darkCardBg,
-                      shape: const CircleBorder(),
-                      elevation: 4,
-                      child: InkWell(
-                        onTap: _nextPage,
-                        customBorder: const CircleBorder(),
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          child: const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              clientLogos.length,
-                  (index) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: _currentLogoPage == index ? 14 : 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: _currentLogoPage == index
-                      ? accentBlue
-                      : Colors.white24,
-                  borderRadius: BorderRadius.circular(3),
                 ),
               ),
-            ),
+              const SizedBox(height: 16),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    clientLogos.length,
+                        (index) => Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      width: _currentLogoPage == index ? 14 : 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: _currentLogoPage == index
+                            ? Colors.white
+                            : Colors.white30,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -1329,36 +1226,16 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       width: double.infinity,
-      color: darkCardBg,
+      color: HomePage.darkCardBg,
       padding: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 20.0),
       child: Column(
         children: [
-          Text(
-            "SELECTED WORK",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: accentCyan,
-              letterSpacing: 2.0,
-            ),
-          ),
+          Text("SELECTED WORK", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
           const SizedBox(height: 10),
-          Text(
-            "What We've Built",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          Text("What We've Built", style: GoogleFonts.aleo(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 8),
-          Text(
-            "Creative showcases & production reels.",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
-              color: textMuted,
-            ),
-          ),
+          Text("Creative showcases & production reels.",
+              style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted)),
           const SizedBox(height: 36),
           LayoutBuilder(
             builder: (context, constraints) {
@@ -1396,10 +1273,10 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       width: double.infinity,
-      color: darkBg,
+      color: HomePage.darkBg,
       child: Column(
         children: [
-          const Divider(height: 1, thickness: 1, color: Colors.white10),
+          const Divider(height: 1, thickness: 1, color: Colors.white24),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -1431,13 +1308,13 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: darkCardBg,
+            color: HomePage.darkCardBg,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: textMuted,
+                  color: HomePage.textMuted,
                 ),
               ),
             ),
@@ -1463,7 +1340,7 @@ class _HomePageState extends State<HomePage> {
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.plusJakartaSans(
             fontSize: 14,
-            color: textMuted,
+            color: HomePage.textMuted,
             height: 1.6,
           ),
         ),
@@ -1477,7 +1354,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -1490,14 +1367,14 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   addressQuery,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: textMuted,
+                    color: HomePage.textMuted,
                     height: 1.4,
                   ),
                 ),
@@ -1510,13 +1387,13 @@ class _HomePageState extends State<HomePage> {
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 phoneNum,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: textMuted,
+                  color: HomePage.textMuted,
                 ),
               ),
             ],
@@ -1527,13 +1404,13 @@ class _HomePageState extends State<HomePage> {
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 emailAddr,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: textMuted,
+                  color: HomePage.textMuted,
                 ),
               ),
             ],
@@ -1549,7 +1426,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -1625,9 +1502,9 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: Colors.white24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1647,7 +1524,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                 ),
               )
                   : Container(
-                color: const Color(0xFF1E293B),
+                color: HomePage.darkCardBg,
                 child: const Center(
                   child: Icon(Icons.broken_image, color: Colors.grey),
                 ),
@@ -1656,15 +1533,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(14.0),
-            child: Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            child: Text(widget.title, textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: 14, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
           ),
         ],
       ),
@@ -1776,13 +1645,14 @@ class _StatsSectionState extends State<StatsSection>
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: _HomePageState.darkBg,
+      color: Colors.white,
       padding: EdgeInsets.symmetric(
         vertical: 60,
         horizontal: widget.isDesktop ? 60 : 20,
       ),
       child: Center(
         child: Container(
+          color: Colors.white,
           constraints: const BoxConstraints(maxWidth: 1200),
           child: widget.isDesktop
               ? LayoutBuilder(
@@ -1811,7 +1681,7 @@ class _StatsSectionState extends State<StatsSection>
             },
           )
               : SizedBox(
-            height: 140, // Increased height to prevent overflow
+            height: 140,
             child: AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
@@ -1839,60 +1709,41 @@ class _StatsSectionState extends State<StatsSection>
     );
   }
 
-Widget _buildStatCard(StatData item, double progress) {
-  double currentValue = item.endValue * progress;
-  String formattedValue = item.isDecimal
-      ? currentValue.toStringAsFixed(1)
-      : currentValue.toInt().toString();
+  Widget _buildStatCard(StatData item, double progress) {
+    double currentValue = item.endValue * progress;
+    String formattedValue = item.isDecimal
+        ? currentValue.toStringAsFixed(1)
+        : currentValue.toInt().toString();
 
-  return Container(
-    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-    decoration: BoxDecoration(
-      color: _HomePageState.darkCardBg,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: Colors.white10,
-        width: 1,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      decoration: BoxDecoration(
+        color: HomePage.darkCardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white24,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.2),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            "$formattedValue${item.suffix}",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: widget.isDesktop ? 32 : 24,
-              fontWeight: FontWeight.w800,
-              color: _HomePageState.accentCyan,
-              height: 1.0,
-            ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text("$formattedValue${item.suffix}", style: GoogleFonts.cinzel(fontSize: widget.isDesktop ? 32 : 24, fontWeight: FontWeight.w900, color: Colors.white, height: 1.0)),
           ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          item.label.toUpperCase(),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: widget.isDesktop ? 12 : 11,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            letterSpacing: 1.0,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+          const SizedBox(height: 6),
+          Text(item.label.toUpperCase(), textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: GoogleFonts.aleo(fontSize: widget.isDesktop ? 12 : 11, fontWeight: FontWeight.bold, color: HomePage.textMuted, letterSpacing: 1.0)),
+        ],
+      ),
+    );
+  }
 }
