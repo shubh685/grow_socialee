@@ -487,7 +487,9 @@ class _ServicesState extends State<Services> {
                     Wrap(
                         children: [
                           Text("Getting your name on top is our", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 60 : 28, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
-                          Text("No.1 priority.",  style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 68 : 32, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5))
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text("No.1 priority.", style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 68 : 32, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)))
                         ]),
                     const SizedBox(height: 20),
                     Text(
