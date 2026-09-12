@@ -427,15 +427,11 @@ class _AboutState extends State<About> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      "Getting your brand on top is our primary purpose. We deliver data-driven strategies, immersive content, and performance marketing designed to convert visitors into loyal advocates.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: isDesktop ? 18 : 15,
-                        color: textMuted,
-                        height: 1.6,
-                      ),
-                    ),
+                    Wrap(
+                        children: [
+                          Text("Getting your name on top is our", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 60 : 28, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
+                          Text("No.1 priority.",  style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 68 : 32, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5))
+                        ]),
                   ],
                 ),
               ),

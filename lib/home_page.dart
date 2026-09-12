@@ -639,7 +639,11 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    Text("Getting your name on top is our No.1 priority.", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 60 : 28, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
+                    Wrap(
+                        children: [
+                          Text("Getting your name on top is our", textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 60 : 28, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
+                          Text("No.1 priority.",  style: GoogleFonts.plusJakartaSans(fontSize: isDesktop ? 68 : 32, fontStyle: FontStyle.italic, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5))
+                        ]),
                     const SizedBox(height: 20),
                     Text(
                         "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
@@ -1139,24 +1143,13 @@ class _HomePageState extends State<HomePage> {
             decoration: BoxDecoration(
               color: isSelected ? accentBlue : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
-              border: isSelected
-                  ? null
-                  : Border.all(color: Colors.white12, width: 0.5),
             ),
             child: Row(
               children: [
                 Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(
-                    label,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
+                  child: Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.0)),
                 ),
                 if (isSelected)
                   const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white),
