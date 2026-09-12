@@ -368,25 +368,9 @@ class _ServicesState extends State<Services> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            },
-            child: SizedBox(
-              height: 50,
-              child: Image.asset(
-                "assets/photos/Gro_Soc_Image.png",
-                color: Colors.white,
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.business,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
-            ),
+          SizedBox(
+            height: 50,
+            child: Text("We are Grow Socialee", style: GoogleFonts.aleo(fontSize: 45, fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
         ],
       ),
