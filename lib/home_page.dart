@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grow_socialee/About.dart';
 import 'package:grow_socialee/Client_Logos.dart';
+import 'package:grow_socialee/Reviews.dart';
 import 'package:grow_socialee/Services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -504,9 +505,7 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         setState(() => _selectedIndex = 4);
                         Navigator.pop(context);
-                        _launchUrlString(
-                          "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D",
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Reviews()));
                       },
                     ),
                     _buildDrawerItem(
