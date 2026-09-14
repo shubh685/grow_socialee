@@ -430,7 +430,15 @@ class _ReviewsState extends State<Reviews> {
             runSpacing: 20,
             children: [
               _buildStatItem("4.9 ★", "AVERAGE RATING"),
+              SizedBox(
+                height: 70,
+                child: VerticalDivider(color: Colors.white, thickness: 2),
+              ),
               _buildStatItem("50+", "CAMPAIGNS DELIVERED"),
+              SizedBox(
+                height: 70,
+                child: VerticalDivider(color: Colors.white, thickness: 2),
+              ),
               _buildStatItem("98%", "CLIENT RETENTION"),
             ],
           ),
