@@ -1596,11 +1596,11 @@ class _StatsSectionState extends State<StatsSection>
   bool _hasAnimated = false;
 
   final List<StatData> _stats = [
-    StatData(endValue: 20, suffix: "+", label: "BRANDS SCALED"),
-    StatData(endValue: 100, suffix: "+", label: "VIDEOS CREATED"),
+    StatData(endValue: 50, suffix: "+", label: "BRANDS SCALED"),
+    StatData(endValue: 1000, suffix: "+", label: "VIDEOS CREATED"),
     StatData(endValue: 99, suffix: "%", label: "CLIENT RETENTION"),
     StatData(endValue: 4.9, suffix: "★", label: "GOOGLE RATING", isDecimal: true),
-    StatData(endValue: 12, suffix: "", label: "DEDICATED TEAM"),
+    StatData(endValue: 14, suffix: "", label: "DEDICATED TEAM"),
   ];
 
   @override
