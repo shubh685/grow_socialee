@@ -635,10 +635,12 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 24),
                     Wrap(
                         children: [
-                          Text("Getting your name on top is our ", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w900, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
                           Align(
                               alignment: Alignment.center,
-                              child: Text("No.1 priority.", style: GoogleFonts.aleo(fontSize: isDesktop ? 62 : 32, fontWeight: FontWeight.w900, color: Colors.white, height: 1.15, letterSpacing: -0.5)))
+                              child: Text("Getting your name on top is our ", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts'))),
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text("No.1 priority.", style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')))
                         ]),
                     const SizedBox(height: 20),
                     Text(
@@ -720,7 +722,7 @@ class _HomePageState extends State<HomePage> {
               Text("OUR METHODOLOGY", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               const SizedBox(height: 10),
               Text(
-                  "A Clearer Way to Build & Scale", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                  "A Clearer Way to Build & Scale", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')),
               const SizedBox(height: 40),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -746,7 +748,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(s["step"]!, style: GoogleFonts.aleo(fontSize: 28, fontWeight: FontWeight.w900, color: HomePage.darkCardBg)),
                               const SizedBox(height: 12),
-                              Text(s["title"]!, style: GoogleFonts.aleo(fontSize: 16, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
+                              Text(s["title"]!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: HomePage.darkCardBg, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')),
                               const SizedBox(height: 8),
                               Text(s["desc"]!, style: GoogleFonts.alexandria(fontSize: 13, color: HomePage.darkBg, height: 1.5)),
                             ],
@@ -778,7 +780,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10),
               Text(
                   "Frequently Asked Questions",
-                  style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                  style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
               const SizedBox(height: 36),
               ListView.builder(
                 shrinkWrap: true,
@@ -927,26 +929,26 @@ class _HomePageState extends State<HomePage> {
       children: [
         Text("About Grow Socialee", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0,)),
         const SizedBox(height: 10),
-        Text("Grow Socialee", style: GoogleFonts.aleo(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2)),
+        Text("Grow Socialee", style: TextStyle(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2, fontFamily: "Main Fonts")),
         const SizedBox(height: 16),
         Text(
           "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
-          style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted, height: 1.6),
+          style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted, height: 1.6, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 16),
         Text(
           "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
-          style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted, height: 1.6),
+          style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted, height: 1.6, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 18),
         Text(
           "Let's build your digital success together! 📩 Contact Grow Socialee today!",
-          style: GoogleFonts.alexandria(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white, height: 1.5),
+          textAlign: TextAlign.justify, style: GoogleFonts.alexandria(fontSize: 15,  color: HomePage.textMuted, height: 1.5, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 14),
         Text(
           "We understand social behaviours within online communities, cultures and subcultures.",
-          style: GoogleFonts.alexandria(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white70, height: 1.4),
+          style: GoogleFonts.alexandria(fontSize: 16, fontWeight: FontWeight.w300, color: Colors.white70, height: 1.4),
         ),
         const SizedBox(height: 24),
         ElevatedButton(
@@ -975,7 +977,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           SizedBox(
             height: 50,
-            child: Text("We are \n Grow Socialee", style: GoogleFonts.aleo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+            child: Text("We are \n Grow Socialee", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
           ),
         ],
       ),
@@ -1068,7 +1070,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text("TRUSTED PARTNERSHIPS", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.darkBg, letterSpacing: 2.0)),
               const SizedBox(height: 10),
-              Text("The Brands We're Working With", style: GoogleFonts.aleo(fontSize: 28, fontWeight: FontWeight.bold, color: HomePage.darkCardBg), textAlign: TextAlign.center),
+              Text("The Brands We're Working With", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: HomePage.darkCardBg, fontFamily: "Main Fonts"), textAlign: TextAlign.center),
               const SizedBox(height: 36),
               MouseRegion(
                 onEnter: (_) => _stopAutoScroll(),
@@ -1232,7 +1234,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text("SELECTED WORK", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
           const SizedBox(height: 10),
-          Text("What We've Built", style: GoogleFonts.aleo(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
+          Text("What We've Built", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
           const SizedBox(height: 8),
           Text("Creative showcases & production reels.",
               style: GoogleFonts.alexandria(fontSize: 15, color: HomePage.textMuted)),
@@ -1533,7 +1535,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(14.0),
-            child: Text(widget.title, textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: 14, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
+            child: Text(widget.title, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HomePage.darkCardBg, fontFamily: 'Main Fonts')),
           ),
         ],
       ),

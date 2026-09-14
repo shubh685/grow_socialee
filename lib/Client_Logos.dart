@@ -310,11 +310,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             height: 50,
             child: Text(
               "We are \n Grow Socialee",
-              style: GoogleFonts.aleo(
-                fontSize: 18,
+              style: TextStyle(  fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                color: Colors.white, fontFamily: "Main Fonts")
             ),
           ),
         ],
@@ -413,12 +411,10 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Text(
                 "The Brands We're Working With",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.aleo(
-                  fontSize: isDesktop ? 44 : 28,
+                style: TextStyle( fontSize: isDesktop ? 44 : 28,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
-                  height: 1.2,
-                ),
+                  height: 1.2, fontFamily: 'Main Fonts')
               ),
               const SizedBox(height: 14),
               Text(
