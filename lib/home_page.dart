@@ -748,7 +748,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(s["step"]!, style: GoogleFonts.aleo(fontSize: 28, fontWeight: FontWeight.w900, color: HomePage.darkCardBg)),
                               const SizedBox(height: 12),
-                              Text(s["title"]!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: HomePage.darkCardBg, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')),
+                              Text(s["title"]!, style: GoogleFonts.aleo(fontSize: 16, fontWeight: FontWeight.w900, color: HomePage.darkCardBg, height: 1.15, letterSpacing: -0.5)),
                               const SizedBox(height: 8),
                               Text(s["desc"]!, style: GoogleFonts.alexandria(fontSize: 13, color: HomePage.darkBg, height: 1.5)),
                             ],
