@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +25,9 @@ class _ReviewsState extends State<Reviews> {
   static const Color darkCardBg = Color(0xFF0F3E72);
   static const Color accentWhite = Colors.white;
   static const Color textMuted = Color(0xFFD0E1F9);
+
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey<_StatsSectionState> _statsKey = GlobalKey<_StatsSectionState>();
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -59,6 +63,25 @@ class _ReviewsState extends State<Reviews> {
       "isFeatured": "false"
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScrollCheck);
+  }
+
+  void _onScrollCheck() {
+    if (mounted) {
+      _statsKey.currentState?.checkVisibility();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScrollCheck);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
@@ -239,15 +262,16 @@ class _ReviewsState extends State<Reviews> {
         ),
       ),
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           // Styled Hero Banner matching About.dart
           SliverToBoxAdapter(
             child: _buildHeroBanner(screenWidth, isDesktop),
           ),
 
-          // Highlighting Stats Bar
+          // Highlighting Auto-Scrolling Counter Stats Bar
           SliverToBoxAdapter(
-            child: _buildRatingStatsBar(isDesktop),
+            child: StatsSection(key: _statsKey, isDesktop: isDesktop),
           ),
 
           // Highlighted Featured Review Spotlight
@@ -282,16 +306,26 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
-  // Header Logo matching About.dart exactly
+  // Header Logo matching About.dart with RenderFlow Overflow fix
   Widget _buildLogoHeader() {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
-        children: [
-          SizedBox(
-            height: 50,
-            child: Text("We are \n Grow Socialee", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Flexible(
+            child: Text(
+              "We are \n Grow Socialee",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontFamily: "Main Fonts",
+              ),
+            ),
           ),
         ],
       ),
@@ -324,7 +358,15 @@ class _ReviewsState extends State<Reviews> {
                 Icon(icon, size: 20, color: isSelected ? darkBg : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(label, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold, color: isSelected ? darkBg : Colors.white, letterSpacing: 1.0)),
+                  child: Text(
+                    label,
+                    style: GoogleFonts.montserrat(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? darkBg : Colors.white,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
                 ),
                 if (isSelected)
                   const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: darkBg),
@@ -389,11 +431,14 @@ class _ReviewsState extends State<Reviews> {
                     Text(
                       "Proven Impact & Authentic Client Voices.",
                       textAlign: TextAlign.center,
-                      style: TextStyle( fontSize: isDesktop ? 48 : 28,
+                      style: TextStyle(
+                        fontSize: isDesktop ? 44 : 26,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
                         height: 1.2,
-                        letterSpacing: -0.5, fontFamily: 'Main Fonts')
+                        letterSpacing: -0.5,
+                        fontFamily: 'Main Fonts',
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -412,48 +457,6 @@ class _ReviewsState extends State<Reviews> {
           ),
         ],
       ),
-    );
-  }
-
-  // Highlighting key numbers in dark card style
-  Widget _buildRatingStatsBar(bool isDesktop) {
-    return Container(
-      width: double.infinity,
-      color: darkCardBg,
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1000),
-          child: Wrap(
-            alignment: WrapAlignment.spaceAround,
-            spacing: 30,
-            runSpacing: 20,
-            children: [
-              _buildStatItem("4.9 ★", "AVERAGE RATING"),
-              SizedBox(
-                height: 70,
-                child: VerticalDivider(color: Colors.white, thickness: 2),
-              ),
-              _buildStatItem("50+", "CAMPAIGNS DELIVERED"),
-              SizedBox(
-                height: 70,
-                child: VerticalDivider(color: Colors.white, thickness: 2),
-              ),
-              _buildStatItem("98%", "CLIENT RETENTION"),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatItem(String value, String label) {
-    return Column(
-      children: [
-        Text(value, style: GoogleFonts.aleo(fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white,)),
-        const SizedBox(height: 4),
-        Text(label, style: GoogleFonts.cinzel(fontSize: 11, fontWeight: FontWeight.bold, color: textMuted, letterSpacing: 1.2)),
-      ],
     );
   }
 
@@ -583,9 +586,26 @@ class _ReviewsState extends State<Reviews> {
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              Text("CLIENT STORIES", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: darkBg, letterSpacing: 2.0)),
+              Text(
+                "CLIENT STORIES",
+                style: GoogleFonts.cinzel(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: darkBg,
+                  letterSpacing: 2.0,
+                ),
+              ),
               const SizedBox(height: 10),
-              Text("What People Say About Grow Socialee", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: darkCardBg, fontFamily: 'Main Fonts')),
+              Text(
+                "What People Say About Grow Socialee",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.w800,
+                  color: darkCardBg,
+                  fontFamily: 'Main Fonts',
+                ),
+              ),
               const SizedBox(height: 40),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -628,7 +648,9 @@ class _ReviewsState extends State<Reviews> {
                                   ),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.white70,
                                       borderRadius: BorderRadius.circular(6),
@@ -662,7 +684,13 @@ class _ReviewsState extends State<Reviews> {
                                   CircleAvatar(
                                     backgroundColor: Colors.white,
                                     radius: 20,
-                                    child: Text(rev["name"]![0], style: GoogleFonts.aleo(fontWeight: FontWeight.bold, color: darkCardBg)),
+                                    child: Text(
+                                      rev["name"]![0],
+                                      style: GoogleFonts.aleo(
+                                        fontWeight: FontWeight.bold,
+                                        color: darkCardBg,
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(width: 12),
                                   Column(
@@ -726,12 +754,15 @@ class _ReviewsState extends State<Reviews> {
           children: [
             const Icon(FontAwesomeIcons.google, size: 36, color: Colors.white),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               "Read More Reviews On Google",
               textAlign: TextAlign.center,
-              style: TextStyle(        fontSize: 20,
+              style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.white, fontFamily: 'Main Fonts')
+                color: Colors.white,
+                fontFamily: 'Main Fonts',
+              ),
             ),
             const SizedBox(height: 10),
             Text(
@@ -769,7 +800,7 @@ class _ReviewsState extends State<Reviews> {
           children: [
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: darkBg,
                 shape: BoxShape.circle,
               ),
@@ -826,7 +857,7 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
-  // Identical Footer to About.dart
+  // Identical Footer to About.dart with RenderFlow Overflow fix
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
@@ -934,7 +965,7 @@ class _ReviewsState extends State<Reviews> {
                   addressQuery,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: HomePage.textMuted,
+                    color: textMuted,
                     height: 1.4,
                   ),
                 ),
@@ -955,7 +986,7 @@ class _ReviewsState extends State<Reviews> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: HomePage.textMuted,
+                    color: textMuted,
                   ),
                 ),
               ),
@@ -975,7 +1006,7 @@ class _ReviewsState extends State<Reviews> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: HomePage.textMuted,
+                    color: textMuted,
                   ),
                 ),
               ),
@@ -1017,6 +1048,234 @@ class _ReviewsState extends State<Reviews> {
           ],
         ),
       ],
+    );
+  }
+}
+
+// Stats Data Model
+class StatData {
+  final double endValue;
+  final String suffix;
+  final String label;
+  final bool isDecimal;
+
+  StatData({
+    required this.endValue,
+    required this.suffix,
+    required this.label,
+    this.isDecimal = false,
+  });
+}
+
+// Animated Auto-Scrolling Statistics Component
+class StatsSection extends StatefulWidget {
+  final bool isDesktop;
+
+  const StatsSection({super.key, required this.isDesktop});
+
+  @override
+  State<StatsSection> createState() => _StatsSectionState();
+}
+
+class _StatsSectionState extends State<StatsSection>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  final ScrollController _scrollController = ScrollController();
+  Timer? _autoScrollTimer;
+
+  bool _hasAnimated = false;
+
+  final List<StatData> _stats = [
+    StatData(endValue: 4.9, suffix: "★", label: "AVERAGE RATING", isDecimal: true),
+    StatData(endValue: 50, suffix: "+", label: "CAMPAIGNS DELIVERED"),
+    StatData(endValue: 98, suffix: "%", label: "CLIENT RETENTION"),
+    StatData(endValue: 100, suffix: "+", label: "VIDEOS CREATED"),
+    StatData(endValue: 20, suffix: "+", label: "BRANDS SCALED"),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.fastOutSlowIn,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkVisibility();
+      if (!widget.isDesktop) {
+        _startAutoScroll();
+      }
+    });
+  }
+
+  void checkVisibility() {
+    if (_hasAnimated) return;
+
+    final RenderObject? renderObject = context.findRenderObject();
+    if (renderObject is RenderBox && renderObject.hasSize) {
+      final position = renderObject.localToGlobal(Offset.zero);
+      final screenHeight = MediaQuery.of(context).size.height;
+
+      if (position.dy < screenHeight - 50 &&
+          (position.dy + renderObject.size.height) > 0) {
+        _hasAnimated = true;
+        _controller.forward();
+      }
+    }
+  }
+
+  void _startAutoScroll() {
+    _autoScrollTimer =
+        Timer.periodic(const Duration(milliseconds: 30), (timer) {
+          if (_scrollController.hasClients) {
+            double maxScroll = _scrollController.position.maxScrollExtent;
+            double currentScroll = _scrollController.position.pixels;
+            if (currentScroll >= maxScroll) {
+              _scrollController.jumpTo(0);
+            } else {
+              _scrollController.jumpTo(currentScroll + 1.2);
+            }
+          }
+        });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _autoScrollTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(
+        vertical: 40,
+        horizontal: widget.isDesktop ? 60 : 20,
+      ),
+      child: Center(
+        child: Container(
+          color: Colors.white,
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: widget.isDesktop
+              ? LayoutBuilder(
+            builder: (context, constraints) {
+              return Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                alignment: WrapAlignment.center,
+                children: List.generate(_stats.length, (index) {
+                  final item = _stats[index];
+                  double cardWidth =
+                      (constraints.maxWidth - (16 * (_stats.length - 1))) /
+                          _stats.length;
+                  if (cardWidth < 180) cardWidth = 180;
+                  return SizedBox(
+                    width: cardWidth,
+                    child: AnimatedBuilder(
+                      animation: _animation,
+                      builder: (context, child) {
+                        return _buildStatCard(item, _animation.value);
+                      },
+                    ),
+                  );
+                }),
+              );
+            },
+          )
+              : SizedBox(
+            height: 130,
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: _stats.length * 10,
+                  itemBuilder: (context, index) {
+                    final item = _stats[index % _stats.length];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: SizedBox(
+                        width: 180,
+                        child: _buildStatCard(item, _animation.value),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatCard(StatData item, double progress) {
+    double currentValue = item.endValue * progress;
+    String formattedValue = item.isDecimal
+        ? currentValue.toStringAsFixed(1)
+        : currentValue.toInt().toString();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+      decoration: BoxDecoration(
+        color: _ReviewsState.darkCardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white24,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "$formattedValue${item.suffix}",
+              style: GoogleFonts.cinzel(
+                fontSize: widget.isDesktop ? 32 : 24,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                height: 1.0,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            item.label.toUpperCase(),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.aleo(
+              fontSize: widget.isDesktop ? 12 : 11,
+              fontWeight: FontWeight.bold,
+              color: _ReviewsState.textMuted,
+              letterSpacing: 1.0,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
