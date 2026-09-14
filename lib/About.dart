@@ -300,8 +300,8 @@ class _AboutState extends State<About> {
           SizedBox(
             height: 50,
             child: Text(
-              "We are \n Grow Socialee",
-              style: TextStyle(  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')
+                "We are \n Grow Socialee",
+                style: TextStyle(  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')
             ),
           ),
         ],
@@ -411,13 +411,13 @@ class _AboutState extends State<About> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "Crafting Digital Legacies Through Strategic Innovation.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle( fontSize: isDesktop ? 48 : 28,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        height: 1.2,
-                        letterSpacing: -0.5, fontFamily: "Main Fonts")
+                        "Crafting Digital Legacies Through Strategic Innovation.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle( fontSize: isDesktop ? 48 : 28,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            height: 1.2,
+                            letterSpacing: -0.5, fontFamily: "Main Fonts")
                     ),
                   ],
                 ),
@@ -478,11 +478,11 @@ class _AboutState extends State<About> {
         ),
         const SizedBox(height: 10),
         Text(
-          "Innovating Digital Excellence in Bhavnagar",
-          style: TextStyle( fontSize: 32,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            height: 1.25, fontFamily: 'Main Fonts')
+            "Innovating Digital Excellence in Bhavnagar",
+            style: TextStyle( fontSize: 32,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                height: 1.25, fontFamily: 'Main Fonts')
         ),
         const SizedBox(height: 16),
         Text(
@@ -606,12 +606,12 @@ class _AboutState extends State<About> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: darkCardBg.withOpacity(0.12),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Icon(cap["icon"] as IconData, color: Colors.white, size: 28)
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: darkCardBg.withOpacity(0.12),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(cap["icon"] as IconData, color: Colors.white, size: 28)
                               ),
                               const SizedBox(width: 16),
                               Expanded(
@@ -971,10 +971,10 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
           ),
           const SizedBox(height: 10),
           Text(
-            "Driven by Strategy & Purpose",
-            style: TextStyle( fontSize: widget.isDesktop ? 32 : 24,
-              fontWeight: FontWeight.w800,
-              color: Colors.white, fontFamily: 'Main Fonts')
+              "Driven by Strategy & Purpose",
+              style: TextStyle( fontSize: widget.isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white, fontFamily: 'Main Fonts')
           ),
           const SizedBox(height: 40),
           Center(
@@ -1064,20 +1064,25 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: HomePage.darkCardBg,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: _AboutState.darkCardBg, size: 26),
+            child: Icon(icon, color: Colors.white, size: 26),
           ),
           const SizedBox(height: 20),
           Text(title, style: GoogleFonts.aleo(fontSize: 20, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
           const SizedBox(height: 12),
-          content,
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: content,
+            ),
+          ),
         ],
       ),
     );
@@ -1177,10 +1182,10 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
       child: Column(
         children: [
           Text(
-            "MEET OUR LEADERSHIP", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: _AboutState.darkBg, letterSpacing: 2.0,)),
+              "MEET OUR LEADERSHIP", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: _AboutState.darkBg, letterSpacing: 2.0,)),
           const SizedBox(height: 10),
           Text(
-            "The Minds Behind the Agency", style: TextStyle(fontSize: widget.isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: HomePage.darkCardBg, fontFamily: 'Main Fonts')),
+              "The Minds Behind the Agency", style: TextStyle(fontSize: widget.isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: HomePage.darkCardBg, fontFamily: 'Main Fonts')),
           const SizedBox(height: 40),
           Center(
             child: Container(
