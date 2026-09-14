@@ -197,7 +197,10 @@ class _AboutState extends State<About> {
                       onTap: () {
                         setState(() => _selectedIndex = 4);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Reviews()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Reviews()),
+                        );
                       },
                     ),
                     _buildDrawerItem(
@@ -301,7 +304,7 @@ class _AboutState extends State<About> {
             height: 50,
             child: Text(
                 "We are \n Grow Socialee",
-                style: TextStyle(  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')
             ),
           ),
         ],
@@ -413,7 +416,7 @@ class _AboutState extends State<About> {
                     Text(
                         "Crafting Digital Legacies Through Strategic Innovation.",
                         textAlign: TextAlign.center,
-                        style: TextStyle( fontSize: isDesktop ? 48 : 28,
+                        style: TextStyle(fontSize: isDesktop ? 48 : 28,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
                             height: 1.2,
@@ -479,7 +482,7 @@ class _AboutState extends State<About> {
         const SizedBox(height: 10),
         Text(
             "Innovating Digital Excellence in Bhavnagar",
-            style: TextStyle( fontSize: 32,
+            style: TextStyle(fontSize: 32,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
                 height: 1.25, fontFamily: 'Main Fonts')
@@ -978,7 +981,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
           const SizedBox(height: 10),
           Text(
               "Driven by Strategy & Purpose",
-              style: TextStyle( fontSize: widget.isDesktop ? 32 : 24,
+              style: TextStyle(fontSize: widget.isDesktop ? 32 : 24,
                   fontWeight: FontWeight.w800,
                   color: Colors.white, fontFamily: 'Main Fonts')
           ),
@@ -1048,7 +1051,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
             text: boldTitle,
             style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkCardBg, height: 1.5, fontWeight: FontWeight.bold),
           ),
-          TextSpan(text: text,   style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400)),
+          TextSpan(text: text, style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400)),
         ],
       ),
     );
@@ -1070,7 +1073,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: const EdgeInsets.all(12),
@@ -1083,12 +1086,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
           const SizedBox(height: 20),
           Text(title, style: GoogleFonts.aleo(fontSize: 20, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
           const SizedBox(height: 12),
-          Expanded(
-            child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: content,
-            ),
-          ),
+          content,
         ],
       ),
     );

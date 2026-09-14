@@ -39,75 +39,66 @@ class _ServicesState extends State<Services> {
 
   final List<Map<String, dynamic>> serviceData = [
     {
-      "title": "Social Media Strategy Development",
-      "icon": Icons.alt_route_rounded,
-      "tag": "PLANNING & ROADMAP",
+      "title": "Social Media Marketing",
+      "icon": Icons.campaign,
+      "tag": "SOCIAL MEDIA GROWTH",
       "desc":
-      "We audit your digital touchpoints, identify ideal buyer personas, and build tailor-made growth roadmaps to outshine competitors.",
+      "Grow your brand online with strategic content, targeted campaigns, and performance-driven social media marketing.",
       "deliverables": [
-        "Target Audience & Competitor Analysis",
-        "Platform Selection & Content Pillars",
-        "Growth KPI & Goal Blueprint"
+        "Social Media Strategy",
+        "Audience & Competitor Research",
+        "Content Planning & Creation",
+        "Engagement & Community Management",
+        "Paid Social Media Campaigns",
+        "Analytics & Monthly Performance Reports"
       ],
     },
     {
-      "title": "Content Creation",
-      "icon": Icons.brush_rounded,
-      "tag": "CREATIVE & DESIGN",
+      "title": "S.E.O",
+      "icon": Icons.search,
+      "tag": "SEARCH ENGINE OPTIMIZATION",
       "desc":
-      "Captivate audiences with high-quality graphics, viral short-form videos (Reels/Shorts), engaging copy, and sleek multi-slide carousels.",
+      "Improve search rankings, drive organic traffic, and increase your online visibility with effective SEO strategies.",
       "deliverables": [
-        "High-Impact Graphics & Motion Video",
-        "Persuasive Copywriting & Hashtags",
-        "Brand Visual Identity Consistency"
+        "Keyword Research & On-Page SEO",
+        "Technical SEO & Optimization",
+        "Organic Traffic & Ranking Growth"
       ],
     },
     {
-      "title": "Social Media Account Management",
-      "icon": Icons.manage_accounts_rounded,
-      "tag": "DAILY EXECUTION",
-      "desc":
-      "Focus on running your business while we handle daily content scheduling, active community engagement, and profile optimization.",
-      "deliverables": [
-        "Posting & Automated Scheduling",
-        "Audience Q&A & DM Engagement",
-        "Bio & Highlights Optimization"
-      ],
-    },
-    {
-      "title": "Social Media Advertising",
+      "title": "P.P.C",
       "icon": Icons.campaign_rounded,
-      "tag": "PAID TRAFFIC & ROAS",
+      "tag": "Pay Per Click",
       "desc":
-      "Target qualified leads with hyper-focused ad campaigns on Meta (Facebook & Instagram), maximizing return on ad spend (ROAS).",
+      "Drive targeted traffic and qualified leads through optimized Meta ad campaigns.",
       "deliverables": [
-        "Ad Creative & Copy A/B Testing",
-        "Custom Audience & Retargeting Setup",
-        "Daily Budget & Bidding Optimization"
+        "Ad Creative & Copy Testing",
+        "Audience & Retargeting Setup",
+        "Budget & Bidding Optimization"
       ],
     },
     {
-      "title": "Analytics and Reporting",
-      "icon": Icons.insert_chart_outlined_rounded,
-      "tag": "DATA & INSIGHTS",
+      "title": "Web Development",
+      "icon": Icons.web_rounded,
+      "tag": "Website Development",
       "desc":
-      "Transparent and concise monthly performance reports tracking impression trends, engagement spikes, traffic conversions, and ROI.",
+      "Modern, responsive, and high-performance websites designed to grow your business.",
       "deliverables": [
-        "Comprehensive Monthly Metrics Report",
-        "Audience Demographics Breakdown",
-        "Actionable Strategic Refinements"
+        "Responsive Website Design",
+        "Fast & Secure Development",
+        "Website Maintenance & Support"
       ],
     },
     {
-      "title": "Reputation Management",
+      "title": "Branding",
       "icon": Icons.verified_user_rounded,
-      "tag": "BRAND PROTECTION",
+      "tag": "BRAND TRUST",
       "desc":
-      "Build robust brand credibility by monitoring brand mentions, resolving public customer queries, and nurturing positive reviews.",
+      "Strengthen your brand identity, build trust, and maintain a positive online reputation.",
       "deliverables": [
-        "Social Listening & Sentiment Tracking",
-        "Crisis Management Protocols",
-        "Review Amplification & Trust Building"
+        "Brand Reputation Management",
+        "Social Media Monitoring",
+        "Reviews & Customer Engagement"
       ],
     },
   ];
@@ -327,7 +318,7 @@ class _ServicesState extends State<Services> {
 
           // Services Grid
           SliverToBoxAdapter(
-            child: _buildServicesGrid(isDesktop),
+            child: _buildServicesGrid(screenWidth),
           ),
 
           // Interactive Service Detail Section
@@ -337,7 +328,7 @@ class _ServicesState extends State<Services> {
 
           // Unique Testimonials & Reviews Section
           SliverToBoxAdapter(
-            child: _buildUniqueReviewsSection(isDesktop),
+            child: _buildUniqueReviewsSection(screenWidth),
           ),
 
           // Consultation CTA
@@ -469,13 +460,10 @@ class _ServicesState extends State<Services> {
                     ),
                     const SizedBox(height: 24),
                     Wrap(
+                        alignment: WrapAlignment.center,
                         children: [
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text("Getting your name on top is our ", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts'))),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text("No.1 priority.", style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')))
+                          Text("Getting your name on top is our ", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')),
+                          Text("No.1 priority.", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts'))
                         ]),
                     const SizedBox(height: 20),
                     Text(
@@ -559,8 +547,21 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Services Grid
-  Widget _buildServicesGrid(bool isDesktop) {
+  // Services Grid Component with Responsive Multi-Column Calculations (Fixed RenderFlow Issues)
+  Widget _buildServicesGrid(double screenWidth) {
+    final bool isDesktop = screenWidth >= 1024;
+    final bool isTablet = screenWidth >= 650 && screenWidth < 1024;
+
+    const double gap = 24;
+    const double maxContentWidth = 1200;
+
+    int crossAxisCount = 1;
+    if (isDesktop) {
+      crossAxisCount = 3;
+    } else if (isTablet) {
+      crossAxisCount = 2;
+    }
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
@@ -570,7 +571,7 @@ class _ServicesState extends State<Services> {
       color: darkBg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: maxContentWidth),
           child: Column(
             children: [
               Text("WHAT WE OFFER", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
@@ -587,18 +588,23 @@ class _ServicesState extends State<Services> {
                 ),
               ),
               const SizedBox(height: 48),
-              Wrap(
-                spacing: 24,
-                runSpacing: 24,
-                alignment: WrapAlignment.center,
-                children: List.generate(serviceData.length, (index) {
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: serviceData.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: gap,
+                  mainAxisSpacing: gap,
+                  mainAxisExtent: 260,
+                ),
+                itemBuilder: (context, index) {
                   final service = serviceData[index];
                   return _buildServiceCard(
                     service: service,
                     index: index,
-                    isDesktop: isDesktop,
                   );
-                }),
+                },
               ),
             ],
           ),
@@ -610,9 +616,7 @@ class _ServicesState extends State<Services> {
   Widget _buildServiceCard({
     required Map<String, dynamic> service,
     required int index,
-    required bool isDesktop,
   }) {
-    final double cardWidth = isDesktop ? 360 : double.infinity;
     final bool isSelected = _selectedServiceIndex == index;
 
     return MouseRegion(
@@ -625,13 +629,12 @@ class _ServicesState extends State<Services> {
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          width: cardWidth,
-          padding: const EdgeInsets.all(28),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.white70,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSelected ? Colors.white : Colors.white10,
+              color: isSelected ? Colors.black87 : Colors.black45,
               width: isSelected ? 2 : 1,
             ),
             boxShadow: isSelected
@@ -652,42 +655,54 @@ class _ServicesState extends State<Services> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? HomePage.darkBg
-                          : Colors.black54,
+                      color: isSelected ? HomePage.darkBg : Colors.black54,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(service["icon"], color: Colors.white, size: 26),
+                    child: Icon(service["icon"], color: Colors.white, size: 24),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white12),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white12),
+                        ),
+                        child: Text(
+                          service["tag"],
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.bold, color: darkCardBg, letterSpacing: 0.8),
+                        ),
+                      ),
                     ),
-                    child: Text(service["tag"], style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.bold, color: darkCardBg, letterSpacing: 0.8)),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text(service["title"], style: GoogleFonts.aleo(fontSize: 18, fontWeight: FontWeight.bold, color: darkCardBg)),
-              const SizedBox(height: 10),
-              Text(service["desc"], style: GoogleFonts.alexandria(fontSize: 13, color: darkBg, height: 1.5,), maxLines: 3, overflow: TextOverflow.ellipsis),
-              const SizedBox(height: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(service["title"], maxLines: 1, overflow: TextOverflow.ellipsis, style: GoogleFonts.aleo(fontSize: 18, fontWeight: FontWeight.bold, color: darkCardBg)),
+                  const SizedBox(height: 6),
+                  Text(service["desc"], style: GoogleFonts.alexandria(fontSize: 12, color: darkBg, height: 1.4), maxLines: 2, overflow: TextOverflow.ellipsis),
+                ],
+              ),
               Row(
                 children: [
                   Text("Explore Deliverables", style: GoogleFonts.aleo(fontSize: 13, fontWeight: FontWeight.bold, color: darkCardBg)),
                   const SizedBox(width: 6),
-                  Icon(Icons.arrow_forward_rounded, size: 16, color: darkBg),
+                  const Icon(Icons.arrow_forward_rounded, size: 16, color: darkBg),
                 ],
               ),
             ],
@@ -757,7 +772,7 @@ class _ServicesState extends State<Services> {
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: Colors.white12),
                               ),
-                              child: Text(activeService["tag"], style: GoogleFonts.cinzel(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.0)),
+                              child: Text(activeService["tag"], textAlign: TextAlign.center, style: GoogleFonts.cinzel(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.0)),
                             ),
                           ],
                         ),
@@ -802,16 +817,13 @@ class _ServicesState extends State<Services> {
                               children: List<String>.from(
                                   activeService["deliverables"])
                                   .map((item) => Container(
-                                padding:
-                                const EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 16,
                                     vertical: 12),
                                 decoration: BoxDecoration(
                                   color: darkCardBg,
-                                  borderRadius:
-                                  BorderRadius.circular(10),
-                                  border: Border.all(
-                                      color: Colors.white10),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.white10),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -822,14 +834,14 @@ class _ServicesState extends State<Services> {
                                       color: Colors.white,
                                     ),
                                     const SizedBox(width: 10),
-                                    Text(
-                                      item,
-                                      style: GoogleFonts
-                                          .alexandria(
-                                        fontSize: 13,
-                                        fontWeight:
-                                        FontWeight.w600,
-                                        color: Colors.white,
+                                    Flexible(
+                                      child: Text(
+                                        item,
+                                        style: GoogleFonts.alexandria(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -872,6 +884,7 @@ class _ServicesState extends State<Services> {
                               child: Text(
                                 activeService["tag"],
                                 textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.cinzel(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -948,7 +961,15 @@ class _ServicesState extends State<Services> {
   }
 
   // Unique Testimonials & Reviews Section
-  Widget _buildUniqueReviewsSection(bool isDesktop) {
+  Widget _buildUniqueReviewsSection(double screenWidth) {
+    final bool isDesktop = screenWidth >= 1024;
+    final bool isTablet = screenWidth >= 650 && screenWidth < 1024;
+
+    // Use a 2-column layout for desktop and tablet, and 1-column for mobile
+    final int crossAxisCount = (isDesktop || isTablet) ? 2 : 1;
+    const double gap = 20.0;
+    const double maxContentWidth = 1200.0;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
@@ -958,12 +979,29 @@ class _ServicesState extends State<Services> {
       color: darkBg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: maxContentWidth),
           child: Column(
             children: [
-              Text("CLIENT FEEDBACK", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
+              Text(
+                "CLIENT FEEDBACK",
+                style: GoogleFonts.cinzel(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 2.0,
+                ),
+              ),
               const SizedBox(height: 10),
-              Text("What Our Partners Say", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')),
+              Text(
+                "What Our Partners Say",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontFamily: 'Main Fonts',
+                ),
+              ),
               const SizedBox(height: 12),
               Text(
                 "Real stories from business owners who transformed their digital growth with us.",
@@ -974,75 +1012,135 @@ class _ServicesState extends State<Services> {
                 ),
               ),
               const SizedBox(height: 48),
-              Wrap(
-                spacing: 20,
-                runSpacing: 20,
-                alignment: WrapAlignment.center,
-                children: clientReviews.map((rev) {
-                  double width = isDesktop ? 360 : double.infinity;
-                  return SizedBox(
-                    width: width,
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Colors.white70,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white10),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: List.generate(
-                                  5,
-                                      (index) => const Icon(
-                                    Icons.star_rounded,
-                                    color: Colors.amber,
-                                    size: 18,
+              // Replaced Wrap with GridView.builder using SilverGrid constraints to prevent height overflow
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: clientReviews.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: gap,
+                  mainAxisSpacing: gap,
+                  // Adjust height dynamically for long text entries without clipping
+                  mainAxisExtent: isDesktop ? 320 : 360,
+                ),
+                itemBuilder: (context, index) {
+                  final rev = clientReviews[index];
+                  return Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: List.generate(
+                                    5,
+                                        (i) => const Icon(
+                                      Icons.star_rounded,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: darkCardBg,
-                                  borderRadius: BorderRadius.circular(6),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: darkCardBg,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      rev["tag"]!,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.cinzel(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                child: Text(rev["tag"]!, style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              "\"${rev["review"]!}\"",
+                              style: GoogleFonts.alexandria(
+                                fontSize: 13,
+                                color: darkBg,
+                                fontWeight: FontWeight.w500,
+                                height: 1.5,
+                                fontStyle: FontStyle.italic,
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Text("\"${rev["review"]!}\"", style: GoogleFonts.alexandria(fontSize: 14, color: darkBg, fontWeight: FontWeight.w500, height: 1.6, fontStyle: FontStyle.italic)),
-                          const SizedBox(height: 20),
-                          const Divider(color: Colors.white10, height: 1),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: darkCardBg,
-                                radius: 18,
-                                child: Text(rev["name"]![0], style: GoogleFonts.aleo(fontWeight: FontWeight.bold, color: Colors.white)),
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(rev["name"]!, style: GoogleFonts.aleo(fontSize: 14, fontWeight: FontWeight.bold, color: darkCardBg)),
-                                  Text(rev["company"]!, style: GoogleFonts.alexandria(fontSize: 12,color: darkBg)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                              maxLines: 6,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            const Divider(color: Colors.white24, height: 16),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: darkCardBg,
+                                  radius: 18,
+                                  child: Text(
+                                    rev["name"]![0],
+                                    style: GoogleFonts.aleo(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        rev["name"]!,
+                                        style: GoogleFonts.aleo(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: darkCardBg,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        rev["company"]!,
+                                        style: GoogleFonts.alexandria(
+                                          fontSize: 12,
+                                          color: darkBg,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -1074,11 +1172,11 @@ class _ServicesState extends State<Services> {
             ? Column(
           children: [
             Text(
-              "Ready to Scale Your Online Brand Presence?",
-              textAlign: TextAlign.center,
-              style: TextStyle( fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white, fontFamily: 'Main Fonts')
+                "Ready to Scale Your Online Brand Presence?",
+                textAlign: TextAlign.center,
+                style: TextStyle( fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, fontFamily: 'Main Fonts')
             ),
             const SizedBox(height: 10),
             Text(
