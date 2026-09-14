@@ -1089,9 +1089,9 @@ class _StatsSectionState extends State<StatsSection>
   final List<StatData> _stats = [
     StatData(endValue: 4.9, suffix: "★", label: "AVERAGE RATING", isDecimal: true),
     StatData(endValue: 50, suffix: "+", label: "CAMPAIGNS DELIVERED"),
-    StatData(endValue: 98, suffix: "%", label: "CLIENT RETENTION"),
+    StatData(endValue: 99, suffix: "%", label: "CLIENT RETENTION"),
     StatData(endValue: 100, suffix: "+", label: "VIDEOS CREATED"),
-    StatData(endValue: 20, suffix: "+", label: "BRANDS SCALED"),
+    StatData(endValue: 20, suffix: "+", label: "Reviews"),
   ];
 
   @override
