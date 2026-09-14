@@ -370,14 +370,7 @@ class _ServicesState extends State<Services> {
         children: [
           SizedBox(
             height: 50,
-            child: Text(
-              "We are \n Grow Socialee",
-              style: GoogleFonts.aleo(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            child: Text("We are \n Grow Socialee", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
           ),
         ],
       ),
@@ -478,7 +471,7 @@ class _ServicesState extends State<Services> {
                     Wrap(
                         alignment: WrapAlignment.center,
                         children: [
-                          Text("Getting your name on top is our", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 50 : 28, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)),
+                          Text("Getting your name on top is our", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 50 : 28, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')),
                           Align(
                               alignment: Alignment.center,
                               child: Text("No.1 priority.", style: GoogleFonts.aleo(fontSize: isDesktop ? 54 : 32, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)))
@@ -581,7 +574,7 @@ class _ServicesState extends State<Services> {
             children: [
               Text("WHAT WE OFFER", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               const SizedBox(height: 10),
-              Text("Tailored Growth Solutions", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text("Tailored Growth Solutions", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')),
               const SizedBox(height: 12),
               Text(
                 "Comprehensive digital marketing strategies engineered to scale your market influence.",
@@ -721,7 +714,7 @@ class _ServicesState extends State<Services> {
             children: [
               Text("SERVICE DEEP DIVE", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: darkBg, letterSpacing: 2.0)),
               const SizedBox(height: 10),
-              Text("Breakdown & Key Deliverables", style: GoogleFonts.aleo(fontSize: isDesktop ? 30 : 22, fontWeight: FontWeight.bold, color: darkCardBg)),
+              Text("Breakdown & Key Deliverables", style: TextStyle(fontSize: isDesktop ? 30 : 22, fontWeight: FontWeight.bold, color: darkCardBg, fontFamily: 'Main Fonts')),
               const SizedBox(height: 36),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -977,7 +970,7 @@ class _ServicesState extends State<Services> {
             children: [
               Text("CLIENT FEEDBACK", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               const SizedBox(height: 10),
-              Text("What Our Partners Say", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text("What Our Partners Say", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')),
               const SizedBox(height: 12),
               Text(
                 "Real stories from business owners who transformed their digital growth with us.",
@@ -1090,11 +1083,9 @@ class _ServicesState extends State<Services> {
             Text(
               "Ready to Scale Your Online Brand Presence?",
               textAlign: TextAlign.center,
-              style: GoogleFonts.aleo(
-                fontSize: 20,
+              style: TextStyle( fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                color: Colors.white, fontFamily: 'Main Fonts')
             ),
             const SizedBox(height: 10),
             Text(

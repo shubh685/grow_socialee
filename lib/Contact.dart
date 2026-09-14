@@ -403,14 +403,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         children: [
           SizedBox(
             height: 50,
-            child: Text(
-              "We are \n Grow Socialee",
-              style: GoogleFonts.aleo(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            child: Text("We are \n Grow Socialee", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
           ),
         ],
       ),
@@ -517,13 +510,11 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     Text(
                       "Let's Build Something Great Together.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.aleo(
-                        fontSize: isDesktop ? 48 : 28,
+                      style: TextStyle( fontSize: isDesktop ? 48 : 28,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
                         height: 1.2,
-                        letterSpacing: -0.5,
-                      ),
+                        letterSpacing: -0.5, fontFamily: 'Main Fonts'),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -629,7 +620,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Send Us A Message", style: GoogleFonts.aleo(fontSize: 24, fontWeight: FontWeight.w800, color: Colors.white)),
+                      Text("Send Us A Message", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: Colors.white, fontFamily: 'Main Fonts')),
                       const SizedBox(height: 4),
                       Text("Fill out the form below and we'll reply shortly.", style: GoogleFonts.alexandria(fontSize: 13, color: Colors.white70, fontWeight: FontWeight.w500)),
                     ],
@@ -832,7 +823,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Fast Response Guarantee", style: GoogleFonts.aleo(fontSize: 16, fontWeight: FontWeight.bold, color: darkCardBg)),
+                    Text("Fast Response Guarantee", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: darkCardBg, fontFamily: 'Main Fonts')),
                     const SizedBox(height: 4),
                     Text(
                       "We usually respond within 2 working hours during business times.",
@@ -920,11 +911,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.aleo(
-                        fontSize: 15,
+                      style: TextStyle(  fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: darkCardBg,
-                      ),
+                        color: darkCardBg, fontFamily: 'Main Fonts')
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -937,45 +926,75 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 8),
                     Row(
+                      // Ensures items don't stretch vertically unexpectedly
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // ===== HIGHLIGHTED STATUS BADGE START =====
                         if (isStatusBadge)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.green.withOpacity(0.4),
+                          Flexible(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
                               ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.green,
-                                    shape: BoxShape.circle,
-                                  ),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Colors.green.withOpacity(0.4),
                                 ),
-                                const SizedBox(width: 6),
-                                Text(actionLabel, style: GoogleFonts.alexandria(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.green.shade800)),
-                              ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.green,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      actionLabel,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.alexandria(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green.shade800,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         else ...[
-                          Text(actionLabel, style: GoogleFonts.alexandria(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black87)),
+                          Flexible(
+                            child: Text(
+                              actionLabel,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.alexandria(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.arrow_forward_rounded, size: 14, color: darkCardBg),
+                          const Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 14,
+                            color: darkCardBg,
+                          ),
                         ],
                         // ===== HIGHLIGHTED STATUS BADGE END =====
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -985,6 +1004,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
   Widget _buildGoogleMapSection() {
     return Container(
       width: double.infinity,

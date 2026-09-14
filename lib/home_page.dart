@@ -1535,7 +1535,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(14.0),
-            child: Text(widget.title, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: HomePage.darkCardBg, fontFamily: 'Main Fonts')),
+            child: Text(widget.title, textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: 14, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
           ),
         ],
       ),
