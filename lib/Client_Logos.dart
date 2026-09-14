@@ -632,6 +632,18 @@ class _AnimatedFooterState extends State<AnimatedFooter>
     with SingleTickerProviderStateMixin {
   late AnimationController _glowController;
   late Animation<double> _glowAnimation;
+  final String phoneNum = "+919408518168";
+  final String emailAddr = "growsocialee@gmail.com";
+  final String addressQuery =
+      "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
+  final String googleMapsUrl =
+      "https://maps.google.com/?q=Leela+Efcee+Bhavnagar+Gujarat";
+  final String googleReviewsUrl =
+      "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D";
+
+  final String facebookUrl = "https://www.facebook.com/growsocialeeofficial/";
+  final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
+  final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
   @override
   void initState() {
@@ -758,6 +770,39 @@ class _AnimatedFooterState extends State<AnimatedFooter>
     );
   }
 
+  Future<void> _launchUrlString(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch $url')),
+        );
+      }
+    }
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (!await launchUrl(launchUri)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open phone dialer')),
+        );
+      }
+    }
+  }
+
+  Future<void> _sendEmail(String email) async {
+    final Uri launchUri = Uri(scheme: 'mailto', path: email);
+    if (!await launchUrl(launchUri)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open email client')),
+        );
+      }
+    }
+  }
+
   Widget _buildFooterContactSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -773,7 +818,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         ),
         const SizedBox(height: 16),
         InkWell(
-          onTap: () => widget.onLaunchUrl(widget.googleMapsUrl),
+          onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -781,10 +826,10 @@ class _AnimatedFooterState extends State<AnimatedFooter>
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  widget.addressQuery,
+                  addressQuery,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: const Color(0xFFD0E1F9),
+                    color: HomePage.textMuted,
                     height: 1.4,
                   ),
                 ),
@@ -794,16 +839,19 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         ),
         const SizedBox(height: 12),
         InkWell(
-          onTap: () => widget.onMakeCall(widget.phoneNum),
+          onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
               const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
-              Text(
-                widget.phoneNum,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: const Color(0xFFD0E1F9),
+              Expanded(
+                child: Text(
+                  phoneNum,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: HomePage.textMuted,
+                  ),
                 ),
               ),
             ],
@@ -811,16 +859,19 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         ),
         const SizedBox(height: 12),
         InkWell(
-          onTap: () => widget.onSendEmail(widget.emailAddr),
+          onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
               const Icon(Icons.email_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
-              Text(
-                widget.emailAddr,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: const Color(0xFFD0E1F9),
+              Expanded(
+                child: Text(
+                  emailAddr,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: HomePage.textMuted,
+                  ),
                 ),
               ),
             ],

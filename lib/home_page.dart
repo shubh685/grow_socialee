@@ -969,18 +969,108 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Header Logo with RenderFlow Overflow Fix
   Widget _buildLogoHeader() {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 50,
-            child: Text("We are \n Grow Socialee", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
+          Flexible(
+            child: Text(
+              "We are \n Grow Socialee",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontFamily: "Main Fonts",
+              ),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+// Footer Contact Info Section with Expanded Text Overflow Protection
+  Widget _buildFooterContactSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "CONTACT INFO",
+          style: GoogleFonts.montserrat(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.0,
+          ),
+        ),
+        const SizedBox(height: 16),
+        InkWell(
+          onTap: () => _launchUrlString(googleMapsUrl),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  addressQuery,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: HomePage.textMuted,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        InkWell(
+          onTap: () => _makePhoneCall(phoneNum),
+          child: Row(
+            children: [
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  phoneNum,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: HomePage.textMuted,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        InkWell(
+          onTap: () => _sendEmail(emailAddr),
+          child: Row(
+            children: [
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  emailAddr,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: HomePage.textMuted,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -1344,78 +1434,6 @@ class _HomePageState extends State<HomePage> {
             fontSize: 14,
             color: HomePage.textMuted,
             height: 1.6,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFooterContactSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "CONTACT INFO",
-          style: GoogleFonts.montserrat(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            letterSpacing: 1.0,
-          ),
-        ),
-        const SizedBox(height: 16),
-        InkWell(
-          onTap: () => _launchUrlString(googleMapsUrl),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  addressQuery,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: HomePage.textMuted,
-                    height: 1.4,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        InkWell(
-          onTap: () => _makePhoneCall(phoneNum),
-          child: Row(
-            children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
-              const SizedBox(width: 10),
-              Text(
-                phoneNum,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: HomePage.textMuted,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        InkWell(
-          onTap: () => _sendEmail(emailAddr),
-          child: Row(
-            children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
-              const SizedBox(width: 10),
-              Text(
-                emailAddr,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: HomePage.textMuted,
-                ),
-              ),
-            ],
           ),
         ),
       ],

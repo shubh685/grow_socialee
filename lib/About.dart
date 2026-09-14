@@ -747,7 +747,7 @@ class _AboutState extends State<About> {
                   addressQuery,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
-                    color: textMuted,
+                    color: HomePage.textMuted,
                     height: 1.4,
                   ),
                 ),
@@ -762,11 +762,14 @@ class _AboutState extends State<About> {
             children: [
               const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
-              Text(
-                phoneNum,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: textMuted,
+              Expanded(
+                child: Text(
+                  phoneNum,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: HomePage.textMuted,
+                  ),
                 ),
               ),
             ],
@@ -779,11 +782,14 @@ class _AboutState extends State<About> {
             children: [
               const Icon(Icons.email_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
-              Text(
-                emailAddr,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: textMuted,
+              Expanded(
+                child: Text(
+                  emailAddr,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13,
+                    color: HomePage.textMuted,
+                  ),
                 ),
               ),
             ],
