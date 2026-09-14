@@ -622,7 +622,7 @@ class _ReviewsState extends State<Reviews> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.12),
+                                      color: Colors.white70,
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
@@ -630,7 +630,7 @@ class _ReviewsState extends State<Reviews> {
                                       style: GoogleFonts.cinzel(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: textMuted,
+                                        color: darkCardBg,
                                       ),
                                     ),
                                   ),
@@ -652,15 +652,9 @@ class _ReviewsState extends State<Reviews> {
                               Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: Colors.white.withOpacity(0.15),
+                                    backgroundColor: Colors.white,
                                     radius: 20,
-                                    child: Text(
-                                      rev["name"]![0],
-                                      style: GoogleFonts.aleo(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    child: Text(rev["name"]![0], style: GoogleFonts.aleo(fontWeight: FontWeight.bold, color: darkCardBg)),
                                   ),
                                   const SizedBox(width: 12),
                                   Column(
