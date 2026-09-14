@@ -753,19 +753,11 @@ class _ServicesState extends State<Services> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.05),
+                                color: darkCardBg,
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: Colors.white12),
                               ),
-                              child: Text(
-                                activeService["tag"],
-                                style: GoogleFonts.cinzel(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: textMuted,
-                                  letterSpacing: 1.0,
-                                ),
-                              ),
+                              child: Text(activeService["tag"], style: GoogleFonts.cinzel(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.0)),
                             ),
                           ],
                         ),
@@ -1017,10 +1009,10 @@ class _ServicesState extends State<Services> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.15),
+                                  color: darkCardBg,
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: Text(rev["tag"]!, style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.bold, color: HomePage.darkBg)),
+                                child: Text(rev["tag"]!, style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                             ],
                           ),
@@ -1032,9 +1024,9 @@ class _ServicesState extends State<Services> {
                           Row(
                             children: [
                               CircleAvatar(
-                                backgroundColor: Colors.white.withOpacity(0.2),
+                                backgroundColor: darkCardBg,
                                 radius: 18,
-                                child: Text(rev["name"]![0], style: GoogleFonts.aleo(fontWeight: FontWeight.bold, color: darkCardBg)),
+                                child: Text(rev["name"]![0], style: GoogleFonts.aleo(fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               const SizedBox(width: 12),
                               Column(
