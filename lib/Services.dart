@@ -469,12 +469,13 @@ class _ServicesState extends State<Services> {
                     ),
                     const SizedBox(height: 24),
                     Wrap(
-                        alignment: WrapAlignment.center,
                         children: [
-                          Text("Getting your name on top is our", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 50 : 28, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')),
                           Align(
                               alignment: Alignment.center,
-                              child: Text("No.1 priority.", style: GoogleFonts.aleo(fontSize: isDesktop ? 54 : 32, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15, letterSpacing: -0.5)))
+                              child: Text("Getting your name on top is our ", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts'))),
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text("No.1 priority.", style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')))
                         ]),
                     const SizedBox(height: 20),
                     Text(

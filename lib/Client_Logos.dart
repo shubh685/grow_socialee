@@ -29,7 +29,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   final List<Map<String, dynamic>> clientLogos = const [
     {"path": "assets/photos/aroma.png", "isWhite": true},
     {"path": "assets/photos/aura.png", "isWhite": false},
-    {"path": "assets/photos/bani_thani.png", "isWhite": true},
+    {"path": "assets/photos/bani_thani.png", "isWhite": false},
     {"path": "assets/photos/bindu_decor.png", "isWhite": false},
     {"path": "assets/photos/ella.png", "isWhite": false},
     {"path": "assets/photos/every_child.png", "isWhite": false},

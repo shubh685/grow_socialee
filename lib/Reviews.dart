@@ -291,14 +291,7 @@ class _ReviewsState extends State<Reviews> {
         children: [
           SizedBox(
             height: 50,
-            child: Text(
-              "We are \n Grow Socialee",
-              style: GoogleFonts.aleo(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            child: Text("We are \n Grow Socialee", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
           ),
         ],
       ),
@@ -396,13 +389,11 @@ class _ReviewsState extends State<Reviews> {
                     Text(
                       "Proven Impact & Authentic Client Voices.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.aleo(
-                        fontSize: isDesktop ? 48 : 28,
+                      style: TextStyle( fontSize: isDesktop ? 48 : 28,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
                         height: 1.2,
-                        letterSpacing: -0.5,
-                      ),
+                        letterSpacing: -0.5, fontFamily: 'Main Fonts')
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -586,7 +577,7 @@ class _ReviewsState extends State<Reviews> {
             children: [
               Text("CLIENT STORIES", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: darkBg, letterSpacing: 2.0)),
               const SizedBox(height: 10),
-              Text("What People Say About Grow Socialee", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: darkCardBg)),
+              Text("What People Say About Grow Socialee", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: darkCardBg, fontFamily: 'Main Fonts')),
               const SizedBox(height: 40),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -736,11 +727,9 @@ class _ReviewsState extends State<Reviews> {
             Text(
               "Read More Reviews On Google",
               textAlign: TextAlign.center,
-              style: GoogleFonts.aleo(
-                fontSize: 20,
+              style: TextStyle(        fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                color: Colors.white, fontFamily: 'Main Fonts')
             ),
             const SizedBox(height: 10),
             Text(
