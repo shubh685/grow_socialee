@@ -18,12 +18,12 @@ class Reviews extends StatefulWidget {
 class _ReviewsState extends State<Reviews> {
   int _selectedIndex = 4; // Reviews tab active
 
-  // AG Modern Theme Colors (Matched with Services page)
-  static const Color darkBg = Color(0xFF0F172A);
-  static const Color darkCardBg = Color(0xFF1E293B);
-  static const Color accentBlue = Color(0xFF3B82F6);
-  static const Color accentCyan = Color(0xFF06B6D4);
-  static const Color textMuted = Color(0xFF94A3B8);
+  // Color Palette aligned with About.dart & HomePage theme
+  static const Color brandBlue = Color(0xFF1B64B1);
+  static const Color darkBg = Color(0xFF144F8E);
+  static const Color darkCardBg = Color(0xFF0F3E72);
+  static const Color accentWhite = Colors.white;
+  static const Color textMuted = Color(0xFFD0E1F9);
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -41,36 +41,22 @@ class _ReviewsState extends State<Reviews> {
   // Detailed Client Reviews List
   final List<Map<String, String>> clientReviews = [
     {
-      "name": "Venisha Chitalia",
-      "company": "Bindu Decorators",
-      "rating": "4.0",
-      "review":
-      "I am pleased with the social media management services provided. They have effectively increased my followers, achieving the target set within the expected timeframe. Their strategic approach delivered great value for money, and their consistent efforts have helped enhance my brand’s online presence. Overall, a satisfactory experience, and I would recommend their services to anyone looking to grow their social media reach.",
-      "tag": "Brand's Product Marketing"
-    },
-    {
       "name": "Dr. Jinali Modi",
       "company": "Body Mind Soul",
       "rating": "5.0",
       "review":
       "Growsocialee has been helping me for my social media management and Shaily the founder has been extremely professional, she is very helpful and always available for any questions. She is very cooperative in her approach, she has in depth knowledge of how this social media marketing works and knows the right things to do. She is very creative and her team also brings the vision to life.",
-      "tag": "Hospital's Marketing"
+      "tag": "Hospital Marketing",
+      "isFeatured": "true"
     },
     {
-      "name": "Karan Shah",
-      "company": "Apex Healthcare",
-      "rating": "5.0",
+      "name": "Venisha Chitalia",
+      "company": "Bindu Decorators",
+      "rating": "4.0",
       "review":
-      "Working with Grow Socialee has transformed our brand identity online. Their content strategy and targeted ad campaigns consistently generate valuable leads every single month. Highly strategic and reliable execution!",
-      "tag": "Healthcare Campaign"
-    },
-    {
-      "name": "Pooja Mehta",
-      "company": "Urban Crafts",
-      "rating": "5.0",
-      "review":
-      "The team's creativity is unmatched! From crisp high-converting reels to overall account design, our client engagement metric shot up by 150% within 3 months. Fantastic service and communication.",
-      "tag": "E-Commerce Growth"
+      "I am pleased with the social media management services provided. They have effectively increased my followers, achieving the target set within the expected timeframe. Their strategic approach delivered great value for money, and their consistent efforts have helped enhance my brand’s online presence.",
+      "tag": "Brand Marketing",
+      "isFeatured": "false"
     },
   ];
 
@@ -119,7 +105,7 @@ class _ReviewsState extends State<Reviews> {
         child: Container(
           decoration: const BoxDecoration(
             color: darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white10, width: 1)),
+            border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -157,14 +143,14 @@ class _ReviewsState extends State<Reviews> {
                       color: Colors.white,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.image,
-                        color: accentBlue,
+                        color: Colors.white,
                         size: 40,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white10),
+              const Divider(height: 1, thickness: 1, color: Colors.white24),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -247,29 +233,34 @@ class _ReviewsState extends State<Reviews> {
                   ],
                 ),
               ),
-              Container(height: 4, color: accentBlue)
+              Container(height: 4, color: Colors.white)
             ],
           ),
         ),
       ),
       body: CustomScrollView(
         slivers: [
-          // Hero Section
+          // Styled Hero Banner matching About.dart
           SliverToBoxAdapter(
             child: _buildHeroBanner(screenWidth, isDesktop),
           ),
 
-          // Rating Highlights Bar
+          // Highlighting Stats Bar
           SliverToBoxAdapter(
             child: _buildRatingStatsBar(isDesktop),
           ),
 
-          // All Reviews Grid
+          // Highlighted Featured Review Spotlight
           SliverToBoxAdapter(
-            child: _buildReviewsGrid(isDesktop),
+            child: _buildFeaturedReviewSpotlight(isDesktop),
           ),
 
-          // Google Review Call-To-Action Card
+          // Alternating Card Style Review Showcase
+          SliverToBoxAdapter(
+            child: _buildReviewsSection(isDesktop),
+          ),
+
+          // Google Review Call-To-Action Container
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
@@ -282,15 +273,16 @@ class _ReviewsState extends State<Reviews> {
             ),
           ),
 
-          // Modern Footer Section
+          // About.dart Matching Footer Section
           SliverToBoxAdapter(
-            child: _buildAGFooter(context),
+            child: _buildFooter(context),
           ),
         ],
       ),
     );
   }
 
+  // Header Logo matching About.dart exactly
   Widget _buildLogoHeader() {
     return Container(
       height: 45,
@@ -299,7 +291,14 @@ class _ReviewsState extends State<Reviews> {
         children: [
           SizedBox(
             height: 50,
-            child: Text("We are Grow Socialee", style: GoogleFonts.aleo(fontSize: 45, fontWeight: FontWeight.bold, color: Colors.blue)),
+            child: Text(
+              "We are \n Grow Socialee",
+              style: GoogleFonts.aleo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
@@ -324,26 +323,18 @@ class _ReviewsState extends State<Reviews> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? accentBlue : Colors.transparent,
+              color: isSelected ? Colors.white : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? Colors.white : accentCyan),
+                Icon(icon, size: 20, color: isSelected ? darkBg : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(
-                    label,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
+                  child: Text(label, style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold, color: isSelected ? darkBg : Colors.white, letterSpacing: 1.0)),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: darkBg),
               ],
             ),
           ),
@@ -352,7 +343,7 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
-  // Hero Banner matching Services theme
+  // Hero Banner formatted with About.dart typography & pattern
   Widget _buildHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
@@ -362,10 +353,8 @@ class _ReviewsState extends State<Reviews> {
           Positioned.fill(
             child: Opacity(
               opacity: 0.12,
-              child: Image.asset(
-                "assets/photos/image.png",
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const SizedBox(),
+              child: CustomPaint(
+                painter: _HeroPatternPainter(),
               ),
             ),
           ),
@@ -382,38 +371,45 @@ class _ReviewsState extends State<Reviews> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: accentBlue.withOpacity(0.15),
+                        color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: accentBlue.withOpacity(0.3)),
+                        border: Border.all(color: Colors.white30),
                       ),
-                      child: Text(
-                        "CLIENT TESTIMONIALS",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: accentCyan,
-                          letterSpacing: 2.0,
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.star_rounded, size: 16, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Text(
+                            "CLIENT TESTIMONIALS",
+                            style: GoogleFonts.cinzel(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "Trusted by leading brands & local partners.",
+                      "Proven Impact & Authentic Client Voices.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.aleo(
                         fontSize: isDesktop ? 48 : 28,
-                        fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
-                        height: 1.15,
+                        height: 1.2,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "Explore genuine experiences from business partners who grew their digital authority and revenue through our social media strategies.",
+                      "Discover real experiences from brand owners and business partners who transformed their digital footprint with Grow Socialee.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: isDesktop ? 17 : 14,
+                      style: GoogleFonts.alexandria(
+                        fontSize: isDesktop ? 16 : 14,
                         color: textMuted,
                         height: 1.6,
                       ),
@@ -428,7 +424,7 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
-  // Quick stats highlight bar
+  // Highlighting key numbers in dark card style
   Widget _buildRatingStatsBar(bool isDesktop) {
     return Container(
       width: double.infinity,
@@ -443,7 +439,7 @@ class _ReviewsState extends State<Reviews> {
             runSpacing: 20,
             children: [
               _buildStatItem("4.9 ★", "AVERAGE RATING"),
-              _buildStatItem("50+", "SUCCESSFUL CAMPAIGNS"),
+              _buildStatItem("50+", "CAMPAIGNS DELIVERED"),
               _buildStatItem("98%", "CLIENT RETENTION"),
             ],
           ),
@@ -455,175 +451,117 @@ class _ReviewsState extends State<Reviews> {
   Widget _buildStatItem(String value, String label) {
     return Column(
       children: [
-        Text(
-          value,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
-            color: accentCyan,
-          ),
-        ),
+        Text(value, style: GoogleFonts.aleo(fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white,)),
         const SizedBox(height: 4),
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: textMuted,
-            letterSpacing: 1.2,
-          ),
-        ),
+        Text(label, style: GoogleFonts.cinzel(fontSize: 11, fontWeight: FontWeight.bold, color: textMuted, letterSpacing: 1.2)),
       ],
     );
   }
 
-  // Reviews Cards Grid
-  Widget _buildReviewsGrid(bool isDesktop) {
+  // Spotlight Banner for top review
+  Widget _buildFeaturedReviewSpotlight(bool isDesktop) {
+    final featured = clientReviews.firstWhere((r) => r["isFeatured"] == "true");
+
     return Container(
-      width: double.infinity,
+      color: darkBg,
       padding: EdgeInsets.symmetric(
-        vertical: 60,
+        vertical: 40,
         horizontal: isDesktop ? 60 : 20,
       ),
-      color: darkBg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 1200),
+          constraints: const BoxConstraints(maxWidth: 1100),
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            color: Colors.white70,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "WHAT THEY SAY ABOUT US",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: accentCyan,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Success Stories",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: isDesktop ? 32 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 40),
-              Wrap(
-                spacing: 24,
-                runSpacing: 24,
-                alignment: WrapAlignment.center,
-                children: clientReviews.map((rev) {
-                  double cardWidth = isDesktop ? 360 : double.infinity;
-                  double ratingVal = double.tryParse(rev["rating"] ?? "5.0") ?? 5.0;
-
-                  return SizedBox(
-                    width: cardWidth,
-                    child: Container(
-                      padding: const EdgeInsets.all(28),
-                      decoration: BoxDecoration(
-                        color: darkCardBg,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          )
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: List.generate(
-                                  5,
-                                      (index) => Icon(
-                                    index < ratingVal.floor()
-                                        ? Icons.star_rounded
-                                        : Icons.star_half_rounded,
-                                    color: Colors.amber,
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: accentBlue.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  rev["tag"]!,
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: accentCyan,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 18),
-                          Text(
-                            "\"${rev["review"]!}\"",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              color: Colors.white70,
-                              height: 1.6,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          const Divider(color: Colors.white10, height: 1),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: accentBlue,
-                                radius: 20,
-                                child: Text(
-                                  rev["name"]![0],
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    rev["name"]!,
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    rev["company"]!,
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 12,
-                                      color: textMuted,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: darkCardBg,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      "FEATURED STORY",
+                      style: GoogleFonts.cinzel(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1.5,
                       ),
                     ),
-                  );
-                }).toList(),
+                  ),
+                  Row(
+                    children: List.generate(
+                      5,
+                          (index) => const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "\"${featured["review"]!}\"",
+                style: GoogleFonts.alexandria(
+                  fontSize: isDesktop ? 16 : 14,
+                  fontWeight: FontWeight.w500,
+                  color: darkCardBg,
+                  height: 1.6,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundColor: darkCardBg,
+                    child: Text(
+                      featured["name"]![0],
+                      style: GoogleFonts.aleo(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        featured["name"]!,
+                        style: GoogleFonts.aleo(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: darkBg,
+                        ),
+                      ),
+                      Text(
+                        featured["company"]!,
+                        style: GoogleFonts.alexandria(
+                          fontSize: 13,
+                          color: darkCardBg.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
@@ -632,7 +570,146 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
-  // Direct CTA for external Google Reviews
+  // Reviews Grid View with Light-Background Card styling
+  Widget _buildReviewsSection(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      color: Colors.white60,
+      padding: EdgeInsets.symmetric(
+        vertical: 70,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1100),
+          child: Column(
+            children: [
+              Text("CLIENT STORIES", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: darkBg, letterSpacing: 2.0)),
+              const SizedBox(height: 10),
+              Text("What People Say About Grow Socialee", textAlign: TextAlign.center, style: GoogleFonts.aleo(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: darkCardBg)),
+              const SizedBox(height: 40),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Wrap(
+                    spacing: 24,
+                    runSpacing: 24,
+                    alignment: WrapAlignment.center,
+                    children: clientReviews.map((rev) {
+                      double cardWidth = isDesktop
+                          ? (constraints.maxWidth - 24) / 2
+                          : constraints.maxWidth;
+                      double ratingVal = double.tryParse(rev["rating"] ?? "5.0") ?? 5.0;
+
+                      return SizedBox(
+                        width: cardWidth,
+                        child: Container(
+                          padding: const EdgeInsets.all(28),
+                          decoration: BoxDecoration(
+                            color: darkCardBg,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.white24),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: List.generate(
+                                      5,
+                                          (index) => Icon(
+                                        index < ratingVal.floor()
+                                            ? Icons.star_rounded
+                                            : Icons.star_half_rounded,
+                                        color: Colors.amber,
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.12),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      rev["tag"]!,
+                                      style: GoogleFonts.cinzel(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: textMuted,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 18),
+                              Text(
+                                "\"${rev["review"]!}\"",
+                                style: GoogleFonts.alexandria(
+                                  fontSize: 14,
+                                  color: Colors.white70,
+                                  height: 1.6,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              const Divider(color: Colors.white24, height: 1),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: Colors.white.withOpacity(0.15),
+                                    radius: 20,
+                                    child: Text(
+                                      rev["name"]![0],
+                                      style: GoogleFonts.aleo(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        rev["name"]!,
+                                        style: GoogleFonts.aleo(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        rev["company"]!,
+                                        style: GoogleFonts.alexandria(
+                                          fontSize: 12,
+                                          color: textMuted,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Google Maps Callout Card matching theme
   Widget _buildGoogleReviewCTA() {
     return Container(
       width: double.infinity,
@@ -640,10 +717,10 @@ class _ReviewsState extends State<Reviews> {
       decoration: BoxDecoration(
         color: darkCardBg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accentBlue.withOpacity(0.3), width: 1.5),
+        border: Border.all(color: Colors.white24, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: accentBlue.withOpacity(0.15),
+            color: Colors.black.withOpacity(0.25),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -654,12 +731,12 @@ class _ReviewsState extends State<Reviews> {
         return isMobile
             ? Column(
           children: [
-            const Icon(FontAwesomeIcons.google, size: 36, color: accentCyan),
+            const Icon(FontAwesomeIcons.google, size: 36, color: Colors.white),
             const SizedBox(height: 16),
             Text(
               "Read More Reviews On Google",
               textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.aleo(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -667,9 +744,9 @@ class _ReviewsState extends State<Reviews> {
             ),
             const SizedBox(height: 10),
             Text(
-              "Check out our verified customer feedback and location details on Google Maps.",
+              "Check out our verified customer feedback and location details directly on Google Maps.",
               textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.alexandria(
                 fontSize: 13,
                 color: textMuted,
               ),
@@ -677,8 +754,8 @@ class _ReviewsState extends State<Reviews> {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: accentBlue,
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                foregroundColor: darkBg,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -687,7 +764,7 @@ class _ReviewsState extends State<Reviews> {
               icon: const Icon(Icons.open_in_new_rounded, size: 16),
               label: Text(
                 "VIEW ON GOOGLE MAPS",
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.aleo(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.0,
@@ -700,12 +777,12 @@ class _ReviewsState extends State<Reviews> {
             : Row(
           children: [
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: darkBg,
                 shape: BoxShape.circle,
               ),
-              child: Icon(FontAwesomeIcons.google, size: 32, color: accentCyan),
+              child: const Icon(FontAwesomeIcons.google, size: 32, color: Colors.white),
             ),
             const SizedBox(width: 24),
             Expanded(
@@ -714,7 +791,7 @@ class _ReviewsState extends State<Reviews> {
                 children: [
                   Text(
                     "Read More Reviews On Google",
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.aleo(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -722,8 +799,8 @@ class _ReviewsState extends State<Reviews> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    "Check out our verified customer feedback and location details on Google Maps.",
-                    style: GoogleFonts.plusJakartaSans(
+                    "Check out our verified customer feedback and location details directly on Google Maps.",
+                    style: GoogleFonts.alexandria(
                       fontSize: 14,
                       color: textMuted,
                     ),
@@ -734,8 +811,8 @@ class _ReviewsState extends State<Reviews> {
             const SizedBox(width: 24),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: accentBlue,
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                foregroundColor: darkBg,
                 padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -744,7 +821,7 @@ class _ReviewsState extends State<Reviews> {
               icon: const Icon(Icons.open_in_new_rounded, size: 16),
               label: Text(
                 "VIEW ON GOOGLE MAPS",
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.aleo(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.0,
@@ -758,8 +835,8 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
-  // Footer Component
-  Widget _buildAGFooter(BuildContext context) {
+  // Identical Footer to About.dart
+  Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
@@ -768,7 +845,7 @@ class _ReviewsState extends State<Reviews> {
       color: darkBg,
       child: Column(
         children: [
-          const Divider(height: 1, thickness: 1, color: Colors.white10),
+          const Divider(height: 1, thickness: 1, color: Colors.white24),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -846,7 +923,7 @@ class _ReviewsState extends State<Reviews> {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -859,7 +936,7 @@ class _ReviewsState extends State<Reviews> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -879,7 +956,7 @@ class _ReviewsState extends State<Reviews> {
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 phoneNum,
@@ -896,7 +973,7 @@ class _ReviewsState extends State<Reviews> {
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: accentCyan),
+              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
               const SizedBox(width: 10),
               Text(
                 emailAddr,
@@ -918,7 +995,7 @@ class _ReviewsState extends State<Reviews> {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.montserrat(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -945,4 +1022,26 @@ class _ReviewsState extends State<Reviews> {
       ],
     );
   }
+}
+
+// Background Grid Pattern matching About.dart hero style
+class _HeroPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.08)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    for (double i = -size.height; i < size.width + size.height; i += 40) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
