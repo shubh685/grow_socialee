@@ -1094,7 +1094,7 @@ class _ServicesState extends State<Services> {
                         ),
                         Column(
                           children: [
-                            const Divider(color: Colors.white24, height: 16),
+                            const Divider(color: darkCardBg, height: 16),
                             Row(
                               children: [
                                 CircleAvatar(
@@ -1260,14 +1260,7 @@ class _ServicesState extends State<Services> {
                       builder: (context) => const Contact()),
                 );
               },
-              child: Text(
-                "GET IN TOUCH",
-                style: GoogleFonts.aleo(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                ),
-              ),
+              child: Text("GET IN TOUCH", style: GoogleFonts.aleo(fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
             ),
           ],
         );
