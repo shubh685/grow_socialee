@@ -15,15 +15,18 @@ class Services extends StatefulWidget {
   State<Services> createState() => _ServicesState();
 }
 
-class _ServicesState extends State<Services> {
+class _ServicesState extends State<Services> with TickerProviderStateMixin {
   int _selectedIndex = 3;
   int _selectedServiceIndex = 0;
+
+  late AnimationController _transitionController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
 
   // Colors aligned with home_page.dart
   static const Color brandBlue = Color(0xFF1B64B1);
   static const Color darkBg = Color(0xFF144F8E);
   static const Color darkCardBg = Color(0xFF0F3E72);
-  static const Color accentWhite = Colors.white;
   static const Color textMuted = Color(0xFFD0E1F9);
   static const Color accentGold = Color(0xFFFFB703);
   static const Color accentCyan = Color(0xFF00E5FF);
@@ -44,8 +47,7 @@ class _ServicesState extends State<Services> {
       "title": "Social Media Marketing",
       "icon": Icons.campaign,
       "tag": "SOCIAL MEDIA GROWTH",
-      "desc":
-      "Grow your brand online with strategic content, targeted campaigns, and performance-driven social media marketing.",
+      "desc": "Grow your brand online with strategic content and targeted campaigns.",
       "deliverables": [
         "Social Media Strategy",
         "Audience & Competitor Research",
@@ -59,8 +61,7 @@ class _ServicesState extends State<Services> {
       "title": "S.E.O",
       "icon": Icons.search,
       "tag": "SEARCH ENGINE OPTIMIZATION",
-      "desc":
-      "Improve search rankings, drive organic traffic, and increase your online visibility with effective SEO strategies.",
+      "desc": "Improve search rankings and drive targeted organic traffic.",
       "deliverables": [
         "Keyword Research & On-Page SEO",
         "Technical SEO & Optimization",
@@ -71,8 +72,7 @@ class _ServicesState extends State<Services> {
       "title": "P.P.C",
       "icon": Icons.campaign_rounded,
       "tag": "PAY PER CLICK",
-      "desc":
-      "Drive targeted traffic and qualified leads through optimized Meta ad campaigns.",
+      "desc": "Drive quality leads through optimized Meta ad campaigns.",
       "deliverables": [
         "Ad Creative & Copy Testing",
         "Audience & Retargeting Setup",
@@ -83,8 +83,7 @@ class _ServicesState extends State<Services> {
       "title": "Web Development",
       "icon": Icons.web_rounded,
       "tag": "WEBSITE DEVELOPMENT",
-      "desc":
-      "Modern, responsive, and high-performance websites designed to grow your business.",
+      "desc": "Modern and responsive high-performance website design.",
       "deliverables": [
         "Responsive Website Design",
         "Fast & Secure Development",
@@ -95,8 +94,7 @@ class _ServicesState extends State<Services> {
       "title": "Branding",
       "icon": Icons.verified_user_rounded,
       "tag": "BRAND TRUST",
-      "desc":
-      "Strengthen your brand identity, build trust, and maintain a positive online reputation.",
+      "desc": "Strengthen your identity, build trust, and maintain online reputation.",
       "deliverables": [
         "Brand Reputation Management",
         "Social Media Monitoring",
@@ -124,6 +122,44 @@ class _ServicesState extends State<Services> {
       "tag": "Hospital's Marketing"
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _transitionController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(-0.2, 0.0), // Left to right motion
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _transitionController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _transitionController, curve: Curves.easeIn),
+    );
+
+    _transitionController.forward();
+  }
+
+  @override
+  void dispose() {
+    _transitionController.dispose();
+    super.dispose();
+  }
+
+  void _onSelectService(int index) {
+    if (_selectedServiceIndex == index) return;
+    setState(() {
+      _selectedServiceIndex = index;
+    });
+    _transitionController.reset();
+    _transitionController.forward();
+  }
 
   Future<void> _launchUrlString(String url) async {
     final Uri uri = Uri.parse(url);
@@ -323,17 +359,12 @@ class _ServicesState extends State<Services> {
             child: _buildAGHeroBanner(screenWidth, isDesktop),
           ),
 
-          // Services Grid
+          // Main Combined Section (1 Col Grid + 2 Col Interactive for Desktop)
           SliverToBoxAdapter(
-            child: _buildServicesGrid(screenWidth),
+            child: _buildCombinedServicesSection(isDesktop),
           ),
 
-          // Interactive Service Detail Section
-          SliverToBoxAdapter(
-            child: _buildInteractiveServiceSection(isDesktop),
-          ),
-
-          // Testimonials & Reviews Section (Styled exactly as per Reviews.dart)
+          // Testimonials & Reviews Section
           SliverToBoxAdapter(
             child: _buildUniqueReviewsSection(isDesktop),
           ),
@@ -592,30 +623,17 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  Widget _buildServicesGrid(double screenWidth) {
-    final bool isDesktop = screenWidth >= 1024;
-    final bool isTablet = screenWidth >= 650 && screenWidth < 1024;
-
-    const double gap = 24;
-    const double maxContentWidth = 1200;
-
-    int crossAxisCount = 1;
-    if (isDesktop) {
-      crossAxisCount = 3;
-    } else if (isTablet) {
-      crossAxisCount = 2;
-    }
-
+  Widget _buildCombinedServicesSection(bool isDesktop) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        vertical: 70,
+        vertical: 60,
         horizontal: isDesktop ? 60 : 20,
       ),
       color: darkBg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: maxContentWidth),
+          constraints: const BoxConstraints(maxWidth: 1250),
           child: Column(
             children: [
               Container(
@@ -644,35 +662,53 @@ class _ServicesState extends State<Services> {
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                "Comprehensive digital marketing strategies engineered to scale your market influence.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
-                  fontSize: 15,
-                  color: textMuted,
-                  height: 1.5,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-              const SizedBox(height: 48),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: serviceData.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: gap,
-                  mainAxisSpacing: gap,
-                  mainAxisExtent: 260,
-                ),
-                itemBuilder: (context, index) {
-                  final service = serviceData[index];
-                  return _buildServiceCard(
-                    service: service,
-                    index: index,
-                  );
-                },
+              const SizedBox(height: 40),
+              isDesktop
+                  ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 1 Column Grid for Desktop
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: List.generate(serviceData.length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: _buildServiceCard(
+                            service: serviceData[index],
+                            index: index,
+                            isCompact: true,
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  const SizedBox(width: 32),
+                  // 2 Column Interactive Details View for Desktop
+                  Expanded(
+                    flex: 2,
+                    child: _buildInteractiveDetailCard(isDesktop),
+                  ),
+                ],
+              )
+                  : Column(
+                children: [
+                  // Stack vertically on mobile/tablet
+                  Column(
+                    children: List.generate(serviceData.length, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: _buildServiceCard(
+                          service: serviceData[index],
+                          index: index,
+                          isCompact: false,
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 32),
+                  _buildInteractiveDetailCard(isDesktop),
+                ],
               ),
             ],
           ),
@@ -684,81 +720,89 @@ class _ServicesState extends State<Services> {
   Widget _buildServiceCard({
     required Map<String, dynamic> service,
     required int index,
+    required bool isCompact,
   }) {
     final bool isSelected = _selectedServiceIndex == index;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _selectedServiceIndex = index;
-          });
-        },
+        onTap: () => _onSelectService(index),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.all(24),
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: isCompact ? 14 : 18,
+          ),
           decoration: BoxDecoration(
-            color: Colors.white60,
+            color: isSelected ? darkCardBg : darkBg.withOpacity(0.6),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSelected ? accentGold : Colors.transparent,
-              width: isSelected ? 2.5 : 1,
+              color: isSelected ? accentGold : accentCyan.withOpacity(0.25),
+              width: isSelected ? 1.8 : 1.0,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isSelected ? 0.25 : 0.1),
-                blurRadius: isSelected ? 16 : 8,
+                color: isSelected
+                    ? accentGold.withOpacity(0.15)
+                    : Colors.black.withOpacity(0.12),
+                blurRadius: isSelected ? 14 : 6,
                 offset: const Offset(0, 4),
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Row(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: isSelected ? darkCardBg : darkBg,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(service["icon"], color: isSelected ? accentGold : Colors.white, size: 24),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isSelected ? accentGold : accentCyan,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isSelected ? accentGold : Colors.black87,
+                    width: 1,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: darkCardBg.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: darkCardBg.withOpacity(0.12)),
-                        ),
-                        child: Text(service["tag"], overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 10, fontWeight: FontWeight.bold, color: darkCardBg, letterSpacing: 0.8)),
+                ),
+                child: Icon(service["icon"], color: isSelected ? brandBlue : Colors.black87, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      service["title"],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.bellota(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: isSelected ? accentGold : Colors.white,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 3),
+                    Text(
+                      service["desc"],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.bellota(
+                        fontSize: 12,
+                        color: isSelected
+                            ? textMuted
+                            : Colors.white.withOpacity(0.65),
+                        height: 1.2,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(service["title"], maxLines: 1, overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 18, fontWeight: FontWeight.bold, color: darkCardBg)),
-                  const SizedBox(height: 6),
-                  Text(service["desc"], style: GoogleFonts.bellota(fontSize: 13, color: Colors.black87, height: 1.4), maxLines: 2, overflow: TextOverflow.ellipsis,),
-                ],
-              ),
-              Row(
-                children: [
-                  Text("Explore Deliverables", style: GoogleFonts.bellota(fontSize: 13, fontWeight: FontWeight.bold, color: brandBlue)),
-                  const SizedBox(width: 6),
-                  const Icon(Icons.arrow_forward_rounded, size: 16, color: brandBlue),
-                ],
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: isSelected ? accentGold : Colors.white24,
               ),
             ],
           ),
@@ -767,236 +811,142 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  Widget _buildInteractiveServiceSection(bool isDesktop) {
+  Widget _buildInteractiveDetailCard(bool isDesktop) {
     final activeService = serviceData[_selectedServiceIndex];
 
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        vertical: 70,
-        horizontal: isDesktop ? 60 : 20,
+      constraints: BoxConstraints(
+        minHeight: isDesktop ? 425 : 0,
       ),
-      color: Colors.white70,
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1100),
+      padding: EdgeInsets.all(isDesktop ? 36 : 24),
+      decoration: BoxDecoration(
+        color: darkCardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: accentGold,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  color: darkCardBg,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  "SERVICE DEEP DIVE",
-                  style: GoogleFonts.bellota(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                "Breakdown & Key Deliverables",
-                style: GoogleFonts.bellota(
-                  fontSize: isDesktop ? 34 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: darkCardBg,
-                ),
-              ),
-              const SizedBox(height: 36),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: Container(
-                  key: ValueKey<int>(_selectedServiceIndex),
-                  padding: EdgeInsets.all(isDesktop ? 40 : 24),
-                  decoration: BoxDecoration(
-                    color: darkCardBg,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
                       color: accentGold,
-                      width: 1.5,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: accentCyan.withOpacity(0.4)),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+                    child: Icon(activeService["icon"], color: brandBlue, size: 36),
                   ),
-                  child: isDesktop
-                      ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: accentCyan.withOpacity(0.4)),
-                              ),
-                              child: Icon(activeService["icon"], color: brandBlue, size: 48),
-                            ),
-                            const SizedBox(height: 20),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: accentCyan.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: accentCyan.withOpacity(0.4)),
-                              ),
-                              child: Text(
-                                activeService["tag"],
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.bellota(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: accentCyan,
-                                  letterSpacing: 1.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 40),
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              activeService["title"],
-                              style: GoogleFonts.bellota(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: accentGold,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              activeService["desc"],
-                              style: GoogleFonts.bellota(
-                                fontSize: 15,
-                                color: textMuted,
-                                height: 1.6,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                            const SizedBox(height: 28),
-                            Text(
-                              "WHAT WE DELIVER",
-                              style: GoogleFonts.bellota(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                letterSpacing: 1.5,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: List<String>.from(activeService["deliverables"])
-                                  .map((item) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: darkBg,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: accentCyan.withOpacity(0.3)),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.check_circle_rounded,
-                                      size: 16,
-                                      color: accentGold,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Flexible(
-                                      child: Text(
-                                        item,
-                                        style: GoogleFonts.bellota(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ))
-                                  .toList(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                      : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Icon(activeService["icon"], color: brandBlue, size: 32),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: accentCyan,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: accentCyan.withOpacity(0.4)),
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: accentCyan.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: accentCyan.withOpacity(0.4)),
-                              ),
-                              child: Text(activeService["tag"], textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 10, fontWeight: FontWeight.bold, color: accentCyan, letterSpacing: 0.8)),
+                          child: Text(
+                            activeService["tag"],
+                            style: GoogleFonts.bellota(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                              letterSpacing: 0.8,
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Text(activeService["title"], style: GoogleFonts.bellota(fontSize: 22, fontWeight: FontWeight.bold, color: accentGold)),
-                      const SizedBox(height: 12),
-                      Text(activeService["desc"], style: GoogleFonts.bellota(fontSize: 14, color: textMuted, height: 1.6, fontWeight: FontWeight.w300)),
-                      const SizedBox(height: 24),
-                      Text("WHAT WE DELIVER", style: GoogleFonts.bellota(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.2)),
-                      const SizedBox(height: 12),
-                      ...List<String>.from(activeService["deliverables"]).map((item) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.check_circle_rounded, size: 16, color: accentGold),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(item, style: GoogleFonts.bellota(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
-                            ),
-                          ],
                         ),
-                      )),
-                    ],
+                        const SizedBox(height: 6),
+                        Text(
+                          activeService["title"],
+                          style: GoogleFonts.bellota(
+                            fontSize: isDesktop ? 26 : 20,
+                            fontWeight: FontWeight.bold,
+                            color: accentGold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                activeService["desc"],
+                style: GoogleFonts.bellota(
+                  fontSize: 15,
+                  color: textMuted,
+                  height: 1.6,
+                  fontWeight: FontWeight.w300,
                 ),
+              ),
+              const SizedBox(height: 28),
+              Text(
+                "WHAT WE DELIVER",
+                style: GoogleFonts.bellota(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: List<String>.from(activeService["deliverables"])
+                    .map((item) => Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: darkBg,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: accentCyan.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        size: 16,
+                        color: accentGold,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          item,
+                          style: GoogleFonts.bellota(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ))
+                    .toList(),
               ),
             ],
           ),
