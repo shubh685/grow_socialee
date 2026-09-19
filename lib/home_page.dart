@@ -31,7 +31,7 @@ class UniformLogoCard extends StatelessWidget {
         color: isWhiteLogo ? HomePage.darkCardBg : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isWhiteLogo ? Colors.white24 : HomePage.brandBlue,
+          color: isWhiteLogo ? HomePage.accentCyan.withOpacity(0.4) : HomePage.brandBlue,
           width: 1.5,
         ),
         boxShadow: [
@@ -60,12 +60,16 @@ class UniformLogoCard extends StatelessWidget {
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-  // Brand Color Theme
-  static const Color brandBlue = Color(0xFF1B64B1);     // Primary Brand Blue
-  static const Color darkBg = Color(0xFF144F8E);        // Rich Blue Background
-  static const Color darkCardBg = Color(0xFF0F3E72);    // Darker Blue for Cards
-  static const Color accentWhite = Colors.white;         // White Contrast Accent
-  static const Color textMuted = Color(0xFFD0E1F9);     // Soft Blue Tint for Subtexts
+  // Base Blue & White Theme
+  static const Color brandBlue = Color(0xFF1B64B1);
+  static const Color darkBg = Color(0xFF144F8E);
+  static const Color darkCardBg = Color(0xFF0F3E72);
+  static const Color accentWhite = Colors.white;
+  static const Color textMuted = Color(0xFFD0E1F9);
+
+  // Eye-Catching Secondary Accent Colors
+  static const Color accentGold = Color(0xFFFFB703);    // Vibrant Amber Gold Accent
+  static const Color accentCyan = Color(0xFF00E5FF);    // Electric Cyan Accent
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -84,7 +88,6 @@ class _HomePageState extends State<HomePage> {
   int _currentLogoPage = 0;
   final GlobalKey<_StatsSectionState> _statsKey = GlobalKey<_StatsSectionState>();
 
-  // FAQ expansion states
   final List<bool> _faqExpanded = List.generate(6, (index) => false);
 
   final List<Map<String, dynamic>> clientLogos = [
@@ -115,33 +118,6 @@ class _HomePageState extends State<HomePage> {
     {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
   ];
 
-  final List<Map<String, dynamic>> statesServed = [
-    {
-      "state": "Gujarat",
-      "cities": "Bhavnagar, Ahmedabad, Surat, Vadodara, Rajkot",
-      "clients": "15+ Brands Served",
-      "icon": Icons.location_city_rounded,
-    },
-    {
-      "state": "Maharashtra",
-      "cities": "Mumbai, Pune, Nagpur, Thane",
-      "clients": "8+ Brands Served",
-      "icon": Icons.business_rounded,
-    },
-    {
-      "state": "Rajasthan",
-      "cities": "Jaipur, Udaipur, Jodhpur",
-      "clients": "5+ Brands Served",
-      "icon": Icons.fort_rounded,
-    },
-    {
-      "state": "Delhi NCR",
-      "cities": "New Delhi, Gurugram, Noida",
-      "clients": "4+ Brands Served",
-      "icon": Icons.account_balance_rounded,
-    },
-  ];
-
   final List<Map<String, String>> faqs = [
     {
       "question": "How will you learn about my business?",
@@ -169,12 +145,10 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  final String addressQuery =
-      "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
+  final String addressQuery = "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
   final String emailAddr = "growsocialee@gmail.com";
-  final String googleMapsUrl =
-      "https://maps.google.com/?q=Leela+Efcee+Bhavnagar+Gujarat";
+  final String googleMapsUrl = "https://maps.google.com/?q=Leela+Efcee+Bhavnagar+Gujarat";
 
   final String facebookUrl = "https://www.facebook.com/growsocialeeofficial/";
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
@@ -237,8 +211,7 @@ class _HomePageState extends State<HomePage> {
   void _previousPage() {
     if (!mounted) return;
     if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
-      int prev =
-          (_currentLogoPage - 1 + clientLogos.length) % clientLogos.length;
+      int prev = (_currentLogoPage - 1 + clientLogos.length) % clientLogos.length;
       _clientPageController.animateToPage(
         prev,
         duration: const Duration(milliseconds: 400),
@@ -394,10 +367,10 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             color: HomePage.darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.15), width: 1)),
+            border: Border(bottom: BorderSide(color: HomePage.accentCyan.withOpacity(0.3), width: 1.5)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.2),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -412,7 +385,7 @@ class _HomePageState extends State<HomePage> {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
+                  icon: const Icon(Icons.menu_rounded, color: HomePage.accentGold, size: 28),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
@@ -446,7 +419,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white24),
+              Divider(height: 1, thickness: 1, color: HomePage.accentCyan.withOpacity(0.3)),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -531,7 +504,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Container(
                 height: 4,
-                color: Colors.white,
+                color: HomePage.accentGold,
               )
             ],
           ),
@@ -629,50 +602,35 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.12),
+                        color: HomePage.accentCyan.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white.withOpacity(0.25)),
+                        border: Border.all(color: HomePage.accentCyan.withOpacity(0.6)),
                       ),
-                      child: Text(
-                        "WE MAKE YOUR BUSINESS VISIBLE",
-                        style: GoogleFonts.montserrat(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 2.5,
-                        ),
-                      ),
+                      child: Text("WE MAKE YOUR BUSINESS VISIBLE", style: GoogleFonts.bellota(fontSize: 11, fontWeight: FontWeight.w700, color: HomePage.accentCyan, letterSpacing: 2.5)),
                     ),
                     const SizedBox(height: 24),
                     Column(
                       children: [
-                        Text(
-                          "Getting your name on top is our",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.cormorantGaramond(
-                            fontSize: isDesktop ? 54 : 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            height: 1.1,
-                          ),
-                        ),
-                        Text(
-                          "No.1 priority.",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.cormorantGaramond(
-                            fontSize: isDesktop ? 54 : 32,
-                            fontWeight: FontWeight.bold,
-                            color: HomePage.textMuted,
-                            height: 1.1,
-                          ),
-                        ),
+                        Text("Getting your name on top is our", textAlign: TextAlign.center, style: GoogleFonts.bellota(fontSize: isDesktop ? 56 : 34, fontWeight: FontWeight.bold, color: Colors.white, height: 1.1)),
+                        Text("No.1 priority.", textAlign: TextAlign.center, style: GoogleFonts.bellota(fontSize: isDesktop ? 56 : 34, fontWeight: FontWeight.bold, color: HomePage.accentGold, height: 1.1)),
                       ],
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      "We make sure you receive the attention your business deserves. We are not just a social media agency - we provide a variance of services.",
+                      "We make sure you receive the attention your business deserves. We are not just a social media agency.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.bellota(
+                        fontSize: isDesktop ? 17 : 14,
+                        color: HomePage.textMuted,
+                        height: 1.6,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "We provide a variance of services.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bellota(
                         fontSize: isDesktop ? 17 : 14,
                         color: HomePage.textMuted,
                         height: 1.6,
@@ -687,8 +645,8 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: HomePage.darkBg,
+                            backgroundColor: HomePage.accentGold,
+                            foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 32,
                               vertical: 18,
@@ -697,17 +655,10 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             elevation: 8,
-                            shadowColor: Colors.black26,
+                            shadowColor: HomePage.accentGold.withOpacity(0.4),
                           ),
-                          icon: const Icon(Icons.rocket_launch_rounded, size: 18, color: HomePage.darkBg),
-                          label: Text(
-                            "GET STARTED NOW",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
+                          icon: const Icon(Icons.rocket_launch_rounded, size: 18, color: Colors.black),
+                          label: Text("GET STARTED NOW", style: GoogleFonts.bellota(fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 1.0)),
                           onPressed: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const Contact()));
                           },
@@ -719,20 +670,13 @@ class _HomePageState extends State<HomePage> {
                               horizontal: 32,
                               vertical: 18,
                             ),
-                            side: const BorderSide(color: Colors.white, width: 1.8),
+                            side: const BorderSide(color: HomePage.accentCyan, width: 1.8),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          icon: const Icon(Icons.grid_view_rounded, size: 18),
-                          label: Text(
-                            "EXPLORE SERVICES",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
+                          icon: const Icon(Icons.grid_view_rounded, size: 18, color: HomePage.accentCyan),
+                          label: Text("EXPLORE SERVICES", style: GoogleFonts.bellota(fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
                           onPressed: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const Services()));
                           },
@@ -765,25 +709,15 @@ class _HomePageState extends State<HomePage> {
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              Text(
-                "OUR METHODOLOGY",
-                style: GoogleFonts.montserrat(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 8.5, top: 8.5),
+                decoration: BoxDecoration(
                   color: Colors.white,
-                  letterSpacing: 2.0,
+                  borderRadius: BorderRadius.circular(0)
                 ),
-              ),
+                  child: Text("OUR METHODOLOGY", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.darkCardBg, letterSpacing: 2.0))),
               const SizedBox(height: 10),
-              Text(
-                "A Clearer Way to Build & Scale",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.cormorantGaramond(
-                  fontSize: isDesktop ? 38 : 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              Text("A Clearer Way to Build & Scale", textAlign: TextAlign.center, style: GoogleFonts.bellota(fontSize: isDesktop ? 38 : 28, fontWeight: FontWeight.bold, color: Colors.white),),
               const SizedBox(height: 40),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -802,6 +736,9 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
+                            border: const Border(
+                              top: BorderSide(color: HomePage.accentGold, width: 4),
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.1),
@@ -813,32 +750,11 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                s["step"]!,
-                                style: GoogleFonts.cormorantGaramond(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: HomePage.brandBlue,
-                                ),
-                              ),
+                              Text(s["step"]!, style: GoogleFonts.bellota(fontSize: 34, fontWeight: FontWeight.bold, color: HomePage.brandBlue)),
                               const SizedBox(height: 8),
-                              Text(
-                                s["title"]!,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: HomePage.darkCardBg,
-                                ),
-                              ),
+                              Text(s["title"]!, style: GoogleFonts.bellota(fontSize: 15, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
                               const SizedBox(height: 8),
-                              Text(
-                                s["desc"]!,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  color: Colors.black87,
-                                  height: 1.5,
-                                ),
-                              ),
+                              Text(s["desc"]!, style: GoogleFonts.bellota(fontSize: 13, color: Colors.black87, height: 1.5)),
                             ],
                           ),
                         ),
@@ -863,24 +779,9 @@ class _HomePageState extends State<HomePage> {
           constraints: const BoxConstraints(maxWidth: 900),
           child: Column(
             children: [
-              Text(
-                "QUESTIONS ANSWERED",
-                style: GoogleFonts.montserrat(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2.0,
-                ),
-              ),
+              Text("QUESTIONS ANSWERED", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.accentWhite, letterSpacing: 2.0)),
               const SizedBox(height: 10),
-              Text(
-                "Frequently Asked Questions",
-                style: GoogleFonts.cormorantGaramond(
-                  fontSize: isDesktop ? 38 : 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              Text("Frequently Asked Questions", style: GoogleFonts.bellota(fontSize: isDesktop ? 38 : 28, fontWeight: FontWeight.bold, color: HomePage.accentGold)),
               const SizedBox(height: 36),
               ListView.builder(
                 shrinkWrap: true,
@@ -896,8 +797,8 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isExpanded ? HomePage.brandBlue : Colors.white24,
-                        width: 1.5,
+                        color: isExpanded ? HomePage.accentGold : Colors.white24,
+                        width: 1.8,
                       ),
                     ),
                     child: Theme(
@@ -980,7 +881,7 @@ class _HomePageState extends State<HomePage> {
                   width: playerWidth * 0.8,
                   height: playerHeight * 0.5,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.12),
+                    color: HomePage.accentCyan.withOpacity(0.18),
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
@@ -993,7 +894,7 @@ class _HomePageState extends State<HomePage> {
                   height: playerHeight,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white38, width: 1.5),
+                    border: Border.all(color: HomePage.accentCyan.withOpacity(0.5), width: 1.8),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.4),
@@ -1046,39 +947,26 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          "ABOUT GROW SOCIALEE",
-          style: GoogleFonts.montserrat(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+        Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
             color: Colors.white,
-            letterSpacing: 2.0,
+            borderRadius: BorderRadius.circular(12)
           ),
-        ),
+            child: Text("ABOUT GROW SOCIALEE", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.darkCardBg, letterSpacing: 2.0))),
         const SizedBox(height: 10),
-        Text(
-          "Grow Socialee",
-          style: GoogleFonts.cormorantGaramond(
-            fontSize: 42,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            height: 1.1,
-          ),
-        ),
+        Text("Grow Socialee", style: GoogleFonts.bellota(fontSize: 42, fontWeight: FontWeight.bold, color: HomePage.accentGold, height: 1.1)),
         const SizedBox(height: 16),
         Text(
           "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 15,
-            color: HomePage.textMuted,
-            height: 1.6,
-            fontWeight: FontWeight.w300,
-          ),
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.bellota(fontSize: 15, color: HomePage.textMuted, height: 1.6, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 16),
         Text(
           "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
-          style: GoogleFonts.plusJakartaSans(
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.bellota(
             fontSize: 15,
             color: HomePage.textMuted,
             height: 1.6,
@@ -1088,17 +976,19 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 18),
         Text(
           "Let's build your digital success together! 📩 Contact Grow Socialee today!",
-          style: GoogleFonts.plusJakartaSans(
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.bellota(
             fontSize: 15,
-            color: HomePage.textMuted,
+            color: Colors.white,
             height: 1.5,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(height: 14),
         Text(
           "We understand social behaviours within online communities, cultures and subcultures.",
-          style: GoogleFonts.plusJakartaSans(
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.bellota(
             fontSize: 15,
             fontWeight: FontWeight.w300,
             color: Colors.white70,
@@ -1111,21 +1001,14 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const Contact()));
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: HomePage.darkBg,
+            backgroundColor: HomePage.accentGold,
+            foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          child: Text(
-            "Get in Touch",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
-          ),
+          child: Text("Get in Touch", style: GoogleFonts.bellota(fontSize: 14, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
         ),
       ],
     );
@@ -1143,7 +1026,7 @@ class _HomePageState extends State<HomePage> {
               "We are \n Grow Socialee",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.cormorantGaramond(
+              style: GoogleFonts.bellota(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -1160,32 +1043,17 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "CONTACT INFO",
-          style: GoogleFonts.montserrat(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            letterSpacing: 1.0,
-          ),
-        ),
+        Text("CONTACT INFO", style: GoogleFonts.bellota(fontSize: 14, fontWeight: FontWeight.bold, color: HomePage.accentGold, letterSpacing: 1.0)),
         const SizedBox(height: 16),
         InkWell(
           onTap: () => _launchUrlString(googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.location_on_outlined, size: 18, color: HomePage.accentGold),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  addressQuery,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: HomePage.textMuted,
-                    height: 1.4,
-                  ),
-                ),
+                child: Text(addressQuery, style: GoogleFonts.bellota(fontSize: 13, color: HomePage.accentWhite, height: 1.4, fontWeight: FontWeight.w700))
               ),
             ],
           ),
@@ -1195,17 +1063,10 @@ class _HomePageState extends State<HomePage> {
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.phone_outlined, size: 18, color: HomePage.accentGold),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  phoneNum,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: HomePage.textMuted,
-                  ),
-                ),
+                child: Text(phoneNum, overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 13, color: HomePage.textMuted, fontWeight: FontWeight.w700)),
               ),
             ],
           ),
@@ -1215,17 +1076,10 @@ class _HomePageState extends State<HomePage> {
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.email_outlined, size: 18, color: HomePage.accentGold),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  emailAddr,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: HomePage.textMuted,
-                  ),
-                ),
+                child: Text(emailAddr, overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 13, color: HomePage.textMuted, fontWeight: FontWeight.w700)),
               ),
             ],
           ),
@@ -1252,26 +1106,18 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
+              color: isSelected ? HomePage.accentGold : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? HomePage.darkBg : Colors.white),
+                Icon(icon, size: 20, color: isSelected ? Colors.black : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(
-                    label,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected ? HomePage.darkBg : Colors.white,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
+                  child: Text(label, style: GoogleFonts.bellota(fontSize: 13, fontWeight: FontWeight.bold, color: isSelected ? Colors.black87 : Colors.white, letterSpacing: 1.0)),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: HomePage.darkBg),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.black),
               ],
             ),
           ),
@@ -1320,29 +1166,19 @@ class _HomePageState extends State<HomePage> {
         return Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
-          color: Colors.white,
+          color: Colors.white70,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "TRUSTED PARTNERSHIPS",
-                style: GoogleFonts.montserrat(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: HomePage.brandBlue,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "The Brands We're Working With",
-                style: GoogleFonts.cormorantGaramond(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
                   color: HomePage.darkCardBg,
+                  borderRadius: BorderRadius.circular(12)
                 ),
-                textAlign: TextAlign.center,
-              ),
+                  child: Text("TRUSTED PARTNERSHIPS", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0))),
+              const SizedBox(height: 10),
+              Text("The Brands We're Working With", style: GoogleFonts.bellota(fontSize: 34, fontWeight: FontWeight.bold, color: HomePage.darkCardBg,), textAlign: TextAlign.center),
               const SizedBox(height: 36),
               MouseRegion(
                 onEnter: (_) => _stopAutoScroll(),
@@ -1504,32 +1340,11 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 20.0),
       child: Column(
         children: [
-          Text(
-            "SELECTED WORK",
-            style: GoogleFonts.montserrat(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 2.0,
-            ),
-          ),
+          Text("SELECTED WORK", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.accentWhite, letterSpacing: 2.0)),
           const SizedBox(height: 10),
-          Text(
-            "What We've Built",
-            style: GoogleFonts.cormorantGaramond(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          Text("What We've Built", style: GoogleFonts.bellota(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white,)),
           const SizedBox(height: 8),
-          Text(
-            "Creative showcases & production reels.",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
-              color: HomePage.textMuted,
-            ),
-          ),
+          Text("Creative showcases & production reels.", style: GoogleFonts.bellota(fontSize: 15, color: HomePage.textMuted),),
           const SizedBox(height: 36),
           LayoutBuilder(
             builder: (context, constraints) {
@@ -1570,7 +1385,7 @@ class _HomePageState extends State<HomePage> {
       color: HomePage.darkBg,
       child: Column(
         children: [
-          const Divider(height: 1, thickness: 1, color: Colors.white24),
+          Divider(height: 1, thickness: 1, color: HomePage.accentCyan.withOpacity(0.3)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -1632,11 +1447,7 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 14,
-            color: HomePage.textMuted,
-            height: 1.6,
-          ),
+          style: GoogleFonts.bellota(fontSize: 14, color: HomePage.textMuted, height: 1.6),
         ),
       ],
     );
@@ -1646,15 +1457,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "CONNECT WITH US",
-          style: GoogleFonts.montserrat(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            letterSpacing: 1.0,
-          ),
-        ),
+        Text("CONNECT WITH US", style: GoogleFonts.bellota(fontSize: 14, fontWeight: FontWeight.bold, color: HomePage.accentGold, letterSpacing: 1.0)),
         const SizedBox(height: 16),
         Row(
           children: [
@@ -1724,8 +1527,9 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: HomePage.darkBg,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: HomePage.accentCyan.withOpacity(0.4), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -1764,10 +1568,10 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
             child: Text(
               widget.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.bellota(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: HomePage.darkCardBg,
+                color: HomePage.accentGold,
               ),
             ),
           ),
@@ -1955,8 +1759,8 @@ class _StatsSectionState extends State<StatsSection>
         color: HomePage.darkCardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.white24,
-          width: 1,
+          color: HomePage.accentGold,
+          width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
@@ -1972,28 +1776,11 @@ class _StatsSectionState extends State<StatsSection>
         children: [
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text(
-              "$formattedValue${item.suffix}",
-              style: GoogleFonts.cormorantGaramond(
-                fontSize: widget.isDesktop ? 34 : 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                height: 1.0,
-              ),
-            ),
+            child: Text("$formattedValue${item.suffix}", style: GoogleFonts.bellota(fontSize: widget.isDesktop ? 34 : 26, fontWeight: FontWeight.bold, color: HomePage.accentGold, height: 1.0)),
           ),
           const SizedBox(height: 6),
-          Text(
-            item.label.toUpperCase(),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.montserrat(
-              fontSize: widget.isDesktop ? 11 : 10,
-              fontWeight: FontWeight.w600,
-              color: HomePage.textMuted,
-              letterSpacing: 1.0,
-            ),
+          Text(item.label.toUpperCase(), textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.bellota(fontSize: widget.isDesktop ? 11 : 10, fontWeight: FontWeight.w600, color: HomePage.textMuted, letterSpacing: 1.0),
           ),
         ],
       ),

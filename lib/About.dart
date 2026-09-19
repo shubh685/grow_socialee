@@ -22,13 +22,6 @@ class _AboutState extends State<About> {
   final GlobalKey<_ValuesSectionState> _valuesKey = GlobalKey<_ValuesSectionState>();
   final GlobalKey<_TeamSectionState> _teamKey = GlobalKey<_TeamSectionState>();
 
-  // Color Palette aligned with HomePage theme
-  static const Color brandBlue = Color(0xFF1B64B1);
-  static const Color darkBg = Color(0xFF144F8E);
-  static const Color darkCardBg = Color(0xFF0F3E72);
-  static const Color accentWhite = Colors.white;
-  static const Color textMuted = Color(0xFFD0E1F9);
-
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -79,13 +72,20 @@ class _AboutState extends State<About> {
     final bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      backgroundColor: darkBg,
+      backgroundColor: HomePage.darkBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(75),
         child: Container(
-          decoration: const BoxDecoration(
-            color: darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
+          decoration: BoxDecoration(
+            color: HomePage.darkBg,
+            border: Border(bottom: BorderSide(color: HomePage.accentCyan.withOpacity(0.3), width: 1.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -96,7 +96,7 @@ class _AboutState extends State<About> {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
+                  icon: const Icon(Icons.menu_rounded, color: HomePage.accentGold, size: 28),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
@@ -107,14 +107,14 @@ class _AboutState extends State<About> {
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: darkBg,
+        backgroundColor: HomePage.darkBg,
         child: SafeArea(
           child: Column(
             children: [
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
-                color: darkCardBg,
+                color: HomePage.darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
@@ -130,7 +130,7 @@ class _AboutState extends State<About> {
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white24),
+              Divider(height: 1, thickness: 1, color: HomePage.accentCyan.withOpacity(0.3)),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -223,7 +223,7 @@ class _AboutState extends State<About> {
               ),
               Container(
                 height: 4,
-                color: Colors.white,
+                color: HomePage.accentGold,
               )
             ],
           ),
@@ -245,7 +245,7 @@ class _AboutState extends State<About> {
             // Detailed Overview & Vision Section
             SliverToBoxAdapter(
               child: Container(
-                color: darkBg,
+                color: HomePage.darkBg,
                 padding: EdgeInsets.symmetric(
                   vertical: 60,
                   horizontal: isDesktop ? 60 : 20,
@@ -299,12 +299,19 @@ class _AboutState extends State<About> {
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 50,
+          Flexible(
             child: Text(
-                "We are \n Grow Socialee",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')
+              "We are \n Grow Socialee",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.bellota(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                height: 1.0,
+              ),
             ),
           ),
         ],
@@ -330,20 +337,20 @@ class _AboutState extends State<About> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
+              color: isSelected ? HomePage.accentGold : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? darkBg : Colors.white),
+                Icon(icon, size: 20, color: isSelected ? Colors.black : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 14,
+                    style: GoogleFonts.bellota(
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? darkBg : Colors.white,
+                      color: isSelected ? Colors.black87 : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
@@ -352,7 +359,7 @@ class _AboutState extends State<About> {
                   const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: darkBg,
+                    color: Colors.black,
                   ),
               ],
             ),
@@ -362,16 +369,25 @@ class _AboutState extends State<About> {
     );
   }
 
-  // AG Dark Creative Hero Banner
+  // Hero Banner styled like HomePage
   Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      color: darkBg,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            HomePage.darkBg,
+            HomePage.darkCardBg,
+          ],
+        ),
+      ),
       child: Stack(
         children: [
           Positioned.fill(
             child: Opacity(
-              opacity: 0.12,
+              opacity: 0.10,
               child: CustomPaint(
                 painter: _AboutHeroPatternPainter(),
               ),
@@ -388,25 +404,25 @@ class _AboutState extends State<About> {
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: HomePage.accentCyan.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white30),
+                        border: Border.all(color: HomePage.accentCyan.withOpacity(0.6)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.auto_awesome_rounded,
-                              size: 16, color: Colors.white),
+                              size: 16, color: HomePage.accentCyan),
                           const SizedBox(width: 8),
                           Text(
                             "WHO WE ARE",
-                            style: GoogleFonts.cinzel(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 2.0,
+                            style: GoogleFonts.bellota(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: HomePage.accentCyan,
+                              letterSpacing: 2.5,
                             ),
                           ),
                         ],
@@ -414,13 +430,14 @@ class _AboutState extends State<About> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                        "Crafting Digital Legacies Through Strategic Innovation.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: isDesktop ? 48 : 28,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            height: 1.2,
-                            letterSpacing: -0.5, fontFamily: "Main Fonts")
+                      "Crafting Digital Legacies Through Strategic Innovation.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bellota(
+                        fontSize: isDesktop ? 48 : 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
                     ),
                   ],
                 ),
@@ -439,11 +456,11 @@ class _AboutState extends State<About> {
         constraints: const BoxConstraints(maxWidth: 480),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white24),
+          border: Border.all(color: HomePage.accentCyan.withOpacity(0.5), width: 1.8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 25,
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 20,
               offset: const Offset(0, 10),
             ),
           ],
@@ -455,8 +472,8 @@ class _AboutState extends State<About> {
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => Container(
               height: 320,
-              color: darkCardBg,
-              child: const Icon(Icons.business_rounded, size: 60, color: textMuted),
+              color: HomePage.darkCardBg,
+              child: const Icon(Icons.business_rounded, size: 60, color: HomePage.textMuted),
             ),
           ),
         ),
@@ -470,51 +487,63 @@ class _AboutState extends State<About> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          "ABOUT GROW SOCIALEE",
-          style: GoogleFonts.cinzel(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
             color: Colors.white,
-            letterSpacing: 2.0,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            "ABOUT GROW SOCIALEE",
+            style: GoogleFonts.bellota(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: HomePage.darkCardBg,
+              letterSpacing: 2.0,
+            ),
           ),
         ),
         const SizedBox(height: 10),
         Text(
-            "Innovating Digital Excellence in Bhavnagar",
-            style: TextStyle(fontSize: 32,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-                height: 1.25, fontFamily: 'Main Fonts')
+          "Innovating Digital Excellence in Bhavnagar",
+          style: GoogleFonts.bellota(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: HomePage.accentGold,
+            height: 1.25,
+          ),
         ),
         const SizedBox(height: 16),
         Text(
           "We are Grow Socialee—a full-suite digital marketing agency based in Bhavnagar committed to scaling small and medium enterprises. Modern market dynamics demand more than an online presence; they require digital dominance.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.alexandria(
+          style: GoogleFonts.bellota(
             fontSize: 15,
-            color: textMuted,
+            color: HomePage.textMuted,
             height: 1.6,
+            fontWeight: FontWeight.w300,
           ),
         ),
         const SizedBox(height: 14),
         Text(
           "From custom social media strategies and video editing production to conversion-focused ad campaigns and brand identity design, our tailored solutions eliminate complexity and generate sustainable revenue growth.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.alexandria(
+          style: GoogleFonts.bellota(
             fontSize: 15,
-            color: textMuted,
+            color: HomePage.textMuted,
             height: 1.6,
+            fontWeight: FontWeight.w300,
           ),
         ),
         const SizedBox(height: 14),
         Text(
           "At Grow Socialee, we believe every brand has a unique story waiting to be told. We combine creative thinking, strategic planning, and digital technology to transform ideas into impactful brand experiences that connect with the right audience and build lasting relationships.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.alexandria(
+          style: GoogleFonts.bellota(
             fontSize: 15,
-            color: textMuted,
+            color: HomePage.textMuted,
             height: 1.6,
+            fontWeight: FontWeight.w300,
           ),
         ),
         const SizedBox(height: 20),
@@ -526,19 +555,21 @@ class _AboutState extends State<About> {
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: darkBg,
+            backgroundColor: HomePage.accentGold,
+            foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
+            elevation: 8,
+            shadowColor: HomePage.accentGold.withOpacity(0.4),
           ),
-          icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+          icon: const Icon(Icons.arrow_forward_rounded, size: 18, color: Colors.black),
           label: Text(
             "WORK WITH US",
-            style: GoogleFonts.aleo(
+            style: GoogleFonts.bellota(
               fontSize: 13,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
               letterSpacing: 1.0,
             ),
           ),
@@ -547,7 +578,7 @@ class _AboutState extends State<About> {
     );
   }
 
-  // Expanded Capabilities & Service Highlights Section
+  // Capabilities & Service Highlights Section
   Widget _buildCapabilitiesSection(bool isDesktop) {
     final capabilities = [
       {
@@ -583,9 +614,32 @@ class _AboutState extends State<About> {
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              Text("WHAT WE BRING TO THE TABLE", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: darkBg, letterSpacing: 2.0)),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: HomePage.darkCardBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  "WHAT WE BRING TO THE TABLE",
+                  style: GoogleFonts.bellota(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
-              Text("Integrated Digital Expertise", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: darkCardBg, fontFamily: 'Main Fonts')),
+              Text(
+                "Integrated Digital Expertise",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.bellota(
+                  fontSize: isDesktop ? 32 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: HomePage.darkCardBg,
+                ),
+              ),
               const SizedBox(height: 40),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -601,29 +655,50 @@ class _AboutState extends State<About> {
                         child: Container(
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: darkCardBg,
+                            color: HomePage.darkCardBg,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white24),
+                            border: Border.all(color: HomePage.accentCyan.withOpacity(0.4), width: 1.5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: darkCardBg.withOpacity(0.12),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Icon(cap["icon"] as IconData, color: Colors.white, size: 28)
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: HomePage.accentCyan.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(cap["icon"] as IconData, color: HomePage.accentCyan, size: 28),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(cap["title"] as String, style: GoogleFonts.aleo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                                    Text(
+                                      cap["title"] as String,
+                                      style: GoogleFonts.bellota(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: HomePage.accentGold,
+                                      ),
+                                    ),
                                     const SizedBox(height: 6),
-                                    Text(cap["desc"] as String, style: GoogleFonts.alexandria(fontSize: 14, color: Colors.white70, height: 1.5)),
+                                    Text(
+                                      cap["desc"] as String,
+                                      style: GoogleFonts.bellota(
+                                        fontSize: 14,
+                                        color: HomePage.textMuted,
+                                        height: 1.5,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -649,10 +724,10 @@ class _AboutState extends State<About> {
 
     return Container(
       width: double.infinity,
-      color: darkBg,
+      color: HomePage.darkBg,
       child: Column(
         children: [
-          const Divider(height: 1, thickness: 1, color: Colors.white24),
+          Divider(height: 1, thickness: 1, color: HomePage.accentCyan.withOpacity(0.3)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -684,13 +759,13 @@ class _AboutState extends State<About> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: darkCardBg,
+            color: HomePage.darkCardBg,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: textMuted,
+                  color: HomePage.textMuted,
                 ),
               ),
             ),
@@ -714,9 +789,9 @@ class _AboutState extends State<About> {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.bellota(
             fontSize: 14,
-            color: textMuted,
+            color: HomePage.textMuted,
             height: 1.6,
           ),
         ),
@@ -730,10 +805,10 @@ class _AboutState extends State<About> {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: HomePage.accentGold,
             letterSpacing: 1.0,
           ),
         ),
@@ -743,15 +818,16 @@ class _AboutState extends State<About> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.location_on_outlined, size: 18, color: HomePage.accentGold),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   addressQuery,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.bellota(
                     fontSize: 13,
-                    color: HomePage.textMuted,
+                    color: HomePage.accentWhite,
                     height: 1.4,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -763,15 +839,16 @@ class _AboutState extends State<About> {
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.phone_outlined, size: 18, color: HomePage.accentGold),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   phoneNum,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.bellota(
                     fontSize: 13,
                     color: HomePage.textMuted,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -783,15 +860,16 @@ class _AboutState extends State<About> {
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.email_outlined, size: 18, color: HomePage.accentGold),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   emailAddr,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.bellota(
                     fontSize: 13,
                     color: HomePage.textMuted,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -808,10 +886,10 @@ class _AboutState extends State<About> {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: HomePage.accentGold,
             letterSpacing: 1.0,
           ),
         ),
@@ -936,7 +1014,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       title: "Our Mission",
       content: Text(
         "To simplify digital growth for businesses by delivering impactful branding, creative visual design, strategic social media engagement, and revenue-focused advertising campaigns.",
-        style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400),
+        style: GoogleFonts.bellota(fontSize: 14, color: Colors.black87, height: 1.5),
       ),
     );
 
@@ -945,7 +1023,7 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       title: "Our Vision",
       content: Text(
         "To empower small and medium enterprises to establish distinct online identities and gain competitive advantages in an ever-evolving digital world.",
-        style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400),
+        style: GoogleFonts.bellota(fontSize: 14, color: Colors.black87, height: 1.5),
       ),
     );
 
@@ -966,24 +1044,33 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      color: const Color(0xFF144F8E),
+      color: HomePage.darkBg,
       child: Column(
         children: [
-          Text(
-            "CORE PHILOSOPHY",
-            style: GoogleFonts.cinzel(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8.5),
+            decoration: BoxDecoration(
               color: Colors.white,
-              letterSpacing: 2.0,
+              borderRadius: BorderRadius.circular(0),
+            ),
+            child: Text(
+              "CORE PHILOSOPHY",
+              style: GoogleFonts.bellota(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: HomePage.darkCardBg,
+                letterSpacing: 2.0,
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Text(
-              "Driven by Strategy & Purpose",
-              style: TextStyle(fontSize: widget.isDesktop ? 32 : 24,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white, fontFamily: 'Main Fonts')
+            "Driven by Strategy & Purpose",
+            style: GoogleFonts.bellota(
+              fontSize: widget.isDesktop ? 32 : 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(height: 40),
           Center(
@@ -1045,13 +1132,16 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
   Widget _buildPillarPoint(String boldTitle, String text) {
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.alexandria(fontSize: 13, color: const Color(0xFFD0E1F9), height: 1.4, fontWeight: FontWeight.bold),
+        style: GoogleFonts.bellota(fontSize: 13, color: Colors.black87, height: 1.4),
         children: [
           TextSpan(
             text: boldTitle,
-            style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkCardBg, height: 1.5, fontWeight: FontWeight.bold),
+            style: GoogleFonts.bellota(fontSize: 14, color: HomePage.darkCardBg, height: 1.5, fontWeight: FontWeight.bold),
           ),
-          TextSpan(text: text, style: GoogleFonts.alexandria(fontSize: 14, color: _AboutState.darkBg, height: 1.5, fontWeight: FontWeight.w400)),
+          TextSpan(
+            text: text,
+            style: GoogleFonts.bellota(fontSize: 14, color: Colors.black87, height: 1.5),
+          ),
         ],
       ),
     );
@@ -1066,9 +1156,18 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
       width: double.infinity,
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: Colors.white70,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white24),
+        border: const Border(
+          top: BorderSide(color: HomePage.accentGold, width: 4),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1078,13 +1177,13 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: _AboutState.darkCardBg,
+              color: HomePage.darkCardBg,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: Colors.white, size: 26),
           ),
           const SizedBox(height: 20),
-          Text(title, style: GoogleFonts.aleo(fontSize: 20, fontWeight: FontWeight.bold, color: _AboutState.darkCardBg)),
+          Text(title, style: GoogleFonts.bellota(fontSize: 20, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
           const SizedBox(height: 12),
           content,
         ],
@@ -1182,14 +1281,25 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      color: Colors.white70,
+      color: HomePage.darkCardBg,
       child: Column(
         children: [
-          Text(
-              "MEET OUR LEADERSHIP", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: _AboutState.darkBg, letterSpacing: 2.0,)),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12)
+            ),
+              child: Text("MEET OUR LEADERSHIP", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.darkCardBg, letterSpacing: 2.0))),
           const SizedBox(height: 10),
           Text(
-              "The Minds Behind the Agency", style: TextStyle(fontSize: widget.isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: _AboutState.darkCardBg, fontFamily: 'Main Fonts')),
+            "The Minds Behind the Agency",
+            style: GoogleFonts.bellota(
+              fontSize: widget.isDesktop ? 32 : 24,
+              fontWeight: FontWeight.bold,
+              color: HomePage.accentGold,
+            ),
+          ),
           const SizedBox(height: 40),
           Center(
             child: Container(
@@ -1255,9 +1365,16 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
       width: double.infinity,
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: const Color(0xFF144F8E),
+        color: Colors.white70,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(color: HomePage.accentCyan.withOpacity(0.4), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.18),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1266,30 +1383,19 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: Colors.white.withOpacity(0.15),
+            backgroundColor: HomePage.darkCardBg,
             child: const Icon(Icons.person_rounded, size: 45, color: Colors.white),
           ),
           const SizedBox(height: 18),
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.aleo(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          Text(name, textAlign: TextAlign.center, style: GoogleFonts.bellota(fontSize: 20, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
           const SizedBox(height: 6),
-          Text(
-            designation.toUpperCase(),
-            textAlign: TextAlign.center,
-            style: GoogleFonts.cinzel(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFFD0E1F9),
-              letterSpacing: 1.2,
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: HomePage.darkCardBg,
+              borderRadius: BorderRadius.circular(0)
             ),
-          ),
+              child: Text(designation.toUpperCase(), textAlign: TextAlign.center, style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: HomePage.accentGold, letterSpacing: 1.2,))),
         ],
       ),
     );
