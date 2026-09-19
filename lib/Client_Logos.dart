@@ -19,13 +19,6 @@ class ClientLogoPage extends StatefulWidget {
 class _ClientLogoPageState extends State<ClientLogoPage> {
   int _selectedIndex = 2;
 
-  // Color Palette aligned with About.dart
-  static const Color brandBlue = Color(0xFF1B64B1);
-  static const Color darkBg = Color(0xFF144F8E);
-  static const Color darkCardBg = Color(0xFF0F3E72);
-  static const Color accentWhite = Colors.white;
-  static const Color textMuted = Color(0xFFD0E1F9);
-
   final List<Map<String, dynamic>> clientLogos = const [
     {"path": "assets/photos/aroma.png", "isWhite": true},
     {"path": "assets/photos/aura.png", "isWhite": false},
@@ -58,14 +51,16 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
   final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
-  // Keys to trigger scroll visibility detection
-  final List<GlobalKey<_DirectionalAnimatedLogoCardState>> _cardKeys = [];
+  final List<GlobalKey<_BottomToTopAnimatedLogoCardState>> _cardKeys = [];
 
   @override
   void initState() {
     super.initState();
     _cardKeys.addAll(
-      List.generate(clientLogos.length, (_) => GlobalKey<_DirectionalAnimatedLogoCardState>()),
+      List.generate(
+        clientLogos.length,
+            (_) => GlobalKey<_BottomToTopAnimatedLogoCardState>(),
+      ),
     );
   }
 
@@ -114,13 +109,25 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     final bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      backgroundColor: darkBg,
+      backgroundColor: HomePage.darkBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(75),
         child: Container(
-          decoration: const BoxDecoration(
-            color: darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
+          decoration: BoxDecoration(
+            color: HomePage.darkBg,
+            border: Border(
+              bottom: BorderSide(
+                color: HomePage.accentCyan.withOpacity(0.3),
+                width: 1.5,
+              ),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -131,7 +138,11 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
+                  icon: const Icon(
+                    Icons.menu_rounded,
+                    color: HomePage.accentGold,
+                    size: 28,
+                  ),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
@@ -142,14 +153,17 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: darkBg,
+        backgroundColor: HomePage.darkBg,
         child: SafeArea(
           child: Column(
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
-                color: darkCardBg,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 28.0,
+                  horizontal: 16.0,
+                ),
+                color: HomePage.darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
@@ -165,7 +179,11 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white24),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: HomePage.accentCyan.withOpacity(0.3),
+              ),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -232,12 +250,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       onTap: () {
                         setState(() => _selectedIndex = 4);
                         Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Reviews(),
-                          ),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Reviews()));
                       },
                     ),
                     _buildDrawerItem(
@@ -260,7 +273,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               ),
               Container(
                 height: 4,
-                color: Colors.white,
+                color: HomePage.accentGold,
               )
             ],
           ),
@@ -299,20 +312,24 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     );
   }
 
-  // Exact Logo Header from About.dart
   Widget _buildLogoHeader() {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 50,
+          Flexible(
             child: Text(
               "We are \n Grow Socialee",
-              style: TextStyle(  fontSize: 18,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.bellota(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white, fontFamily: "Main Fonts")
+                color: Colors.white,
+                height: 1.0,
+              ),
             ),
           ),
         ],
@@ -338,20 +355,24 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
+              color: isSelected ? HomePage.accentGold : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? darkBg : Colors.white),
+                Icon(
+                  icon,
+                  size: 20,
+                  color: isSelected ? Colors.black : Colors.white,
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 14,
+                    style: GoogleFonts.bellota(
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? darkBg : Colors.white,
+                      color: isSelected ? Colors.black87 : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
@@ -360,7 +381,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                   const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: darkBg,
+                    color: Colors.black,
                   ),
               ],
             ),
@@ -373,7 +394,16 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   Widget _buildHeroSection(bool isDesktop) {
     return Container(
       width: double.infinity,
-      color: darkBg,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            HomePage.darkBg,
+            HomePage.darkCardBg,
+          ],
+        ),
+      ),
       padding: EdgeInsets.symmetric(
         vertical: isDesktop ? 80 : 50,
         horizontal: 24,
@@ -386,22 +416,26 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: HomePage.accentCyan.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.white30),
+                  border: Border.all(color: HomePage.accentCyan.withOpacity(0.6)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.people_alt_rounded, size: 16, color: Colors.white),
+                    const Icon(
+                      Icons.people_alt_rounded,
+                      size: 16,
+                      color: HomePage.accentCyan,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       "OUR CLIENTS",
-                      style: GoogleFonts.cinzel(
-                        fontSize: 12,
+                      style: GoogleFonts.bellota(
+                        fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 2.0,
+                        color: HomePage.accentCyan,
+                        letterSpacing: 2.5,
                       ),
                     ),
                   ],
@@ -411,19 +445,22 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Text(
                 "The Brands We're Working With",
                 textAlign: TextAlign.center,
-                style: TextStyle( fontSize: isDesktop ? 44 : 28,
-                  fontWeight: FontWeight.w800,
+                style: GoogleFonts.bellota(
+                  fontSize: isDesktop ? 44 : 28,
+                  fontWeight: FontWeight.bold,
                   color: Colors.white,
-                  height: 1.2, fontFamily: 'Main Fonts')
+                  height: 1.2,
+                ),
               ),
               const SizedBox(height: 14),
               Text(
                 "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.alexandria(
-                  fontSize: 15,
-                  color: textMuted,
+                style: GoogleFonts.bellota(
+                  fontSize: 14.5,
+                  color: HomePage.textMuted,
                   height: 1.6,
+                  fontWeight: FontWeight.w300,
                 ),
               ),
             ],
@@ -442,7 +479,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         : 2;
 
     return Container(
-      color: darkBg,
+      color: HomePage.darkBg,
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: GridView.builder(
         shrinkWrap: true,
@@ -455,15 +492,15 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           childAspectRatio: 1.3,
         ),
         itemBuilder: (context, index) {
-          final columnIndex = index % crossAxisCount;
-          final isFirstThreeColumns = columnIndex < (crossAxisCount / 2).ceil();
+          final int rowIndex = index ~/ crossAxisCount;
+          final int colIndex = index % crossAxisCount;
 
-          return DirectionalAnimatedLogoCard(
+          return BottomToTopAnimatedLogoCard(
             key: _cardKeys[index],
             imagePath: clientLogos[index]["path"]!,
             isWhiteLogo: clientLogos[index]["isWhite"] ?? false,
-            index: index,
-            fromLeftToRight: isFirstThreeColumns,
+            rowIndex: rowIndex,
+            colIndex: colIndex,
           );
         },
       ),
@@ -471,27 +508,27 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   }
 }
 
-class DirectionalAnimatedLogoCard extends StatefulWidget {
+class BottomToTopAnimatedLogoCard extends StatefulWidget {
   final String imagePath;
   final bool isWhiteLogo;
-  final int index;
-  final bool fromLeftToRight;
+  final int rowIndex;
+  final int colIndex;
 
-  const DirectionalAnimatedLogoCard({
+  const BottomToTopAnimatedLogoCard({
     super.key,
     required this.imagePath,
-    required this.index,
-    required this.fromLeftToRight,
+    required this.rowIndex,
+    required this.colIndex,
     this.isWhiteLogo = false,
   });
 
   @override
-  State<DirectionalAnimatedLogoCard> createState() =>
-      _DirectionalAnimatedLogoCardState();
+  State<BottomToTopAnimatedLogoCard> createState() =>
+      _BottomToTopAnimatedLogoCardState();
 }
 
-class _DirectionalAnimatedLogoCardState
-    extends State<DirectionalAnimatedLogoCard>
+class _BottomToTopAnimatedLogoCardState
+    extends State<BottomToTopAnimatedLogoCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
@@ -503,16 +540,12 @@ class _DirectionalAnimatedLogoCardState
     super.initState();
 
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 650),
       vsync: this,
     );
 
-    Offset startOffset = widget.fromLeftToRight
-        ? const Offset(-0.8, 0.0)
-        : const Offset(0.8, 0.0);
-
     _offsetAnimation = Tween<Offset>(
-      begin: startOffset,
+      begin: const Offset(0.0, 0.8), // Enforces bottom-to-top dimension movement
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -540,9 +573,12 @@ class _DirectionalAnimatedLogoCardState
       final position = renderObject.localToGlobal(Offset.zero);
       final screenHeight = MediaQuery.of(context).size.height;
 
-      if (position.dy < screenHeight - 50 && (position.dy + renderObject.size.height) > 0) {
+      if (position.dy < screenHeight - 50 &&
+          (position.dy + renderObject.size.height) > 0) {
         _hasAnimated = true;
-        Future.delayed(Duration(milliseconds: (widget.index % 6) * 60), () {
+        // Stagger row by row line-by-line horizontally
+        final int delay = (widget.rowIndex * 120) + (widget.colIndex * 50);
+        Future.delayed(Duration(milliseconds: delay), () {
           if (mounted) {
             _controller.forward();
           }
@@ -566,12 +602,12 @@ class _DirectionalAnimatedLogoCardState
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: widget.isWhiteLogo ? const Color(0xFF0F3E72) : Colors.white,
+            color: widget.isWhiteLogo ? HomePage.darkCardBg : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: widget.isWhiteLogo
-                  ? Colors.white24
-                  : Colors.white,
+                  ? HomePage.accentCyan.withOpacity(0.4)
+                  : HomePage.accentCyan.withOpacity(0.8),
               width: 1.5,
             ),
             boxShadow: [
@@ -632,18 +668,6 @@ class _AnimatedFooterState extends State<AnimatedFooter>
     with SingleTickerProviderStateMixin {
   late AnimationController _glowController;
   late Animation<double> _glowAnimation;
-  final String phoneNum = "+919408518168";
-  final String emailAddr = "growsocialee@gmail.com";
-  final String addressQuery =
-      "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
-  final String googleMapsUrl =
-      "https://maps.google.com/?q=Leela+Efcee+Bhavnagar+Gujarat";
-  final String googleReviewsUrl =
-      "https://www.google.com/maps/place/Grow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar/@21.7521703,72.1422254,17z/data=!3m1!5s0x395f5a7614a4fc37:0xb6b7c2fd5ec85477!4m16!1m9!3m8!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!2sGrow+Socialee,+Social+Media+Marketing+Agency+in+Bhavnagar!8m2!3d21.7521703!4d72.1422254!9m1!1b1!16s%2Fg%2F11js22bbxs!3m5!1s0x395f5bda3e409bdf:0x9c73e4385ba146c5!8m2!3d21.7521703!4d72.1422254!16s%2Fg%2F11js22bbxs?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D";
-
-  final String facebookUrl = "https://www.facebook.com/growsocialeeofficial/";
-  final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
-  final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
   @override
   void initState() {
@@ -671,7 +695,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
 
     return Container(
       width: double.infinity,
-      color: const Color(0xFF144F8E),
+      color: HomePage.darkBg,
       child: Column(
         children: [
           AnimatedBuilder(
@@ -683,14 +707,14 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.white.withOpacity(_glowAnimation.value),
-                      const Color(0xFFD0E1F9).withOpacity(_glowAnimation.value),
-                      Colors.white.withOpacity(_glowAnimation.value),
+                      HomePage.accentCyan.withOpacity(_glowAnimation.value),
+                      HomePage.accentGold.withOpacity(_glowAnimation.value),
+                      HomePage.accentCyan.withOpacity(_glowAnimation.value),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.white.withOpacity(_glowAnimation.value),
+                      color: HomePage.accentCyan.withOpacity(_glowAnimation.value),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),
@@ -730,13 +754,13 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF0F3E72),
+            color: HomePage.darkCardBg,
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: const Color(0xFFD0E1F9),
+                  color: HomePage.textMuted,
                 ),
               ),
             ),
@@ -760,47 +784,14 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.bellota(
             fontSize: 14,
-            color: const Color(0xFFD0E1F9),
+            color: HomePage.textMuted,
             height: 1.6,
           ),
         ),
       ],
     );
-  }
-
-  Future<void> _launchUrlString(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch $url')),
-        );
-      }
-    }
-  }
-
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
-    if (!await launchUrl(launchUri)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open phone dialer')),
-        );
-      }
-    }
-  }
-
-  Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(scheme: 'mailto', path: email);
-    if (!await launchUrl(launchUri)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open email client')),
-        );
-      }
-    }
   }
 
   Widget _buildFooterContactSection() {
@@ -809,28 +800,33 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: HomePage.accentGold,
             letterSpacing: 1.0,
           ),
         ),
         const SizedBox(height: 16),
         InkWell(
-          onTap: () => _launchUrlString(googleMapsUrl),
+          onTap: () => widget.onLaunchUrl(widget.googleMapsUrl),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
+              const Icon(
+                Icons.location_on_outlined,
+                size: 18,
+                color: HomePage.accentGold,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  addressQuery,
-                  style: GoogleFonts.plusJakartaSans(
+                  widget.addressQuery,
+                  style: GoogleFonts.bellota(
                     fontSize: 13,
-                    color: HomePage.textMuted,
+                    color: HomePage.accentWhite,
                     height: 1.4,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -839,18 +835,23 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         ),
         const SizedBox(height: 12),
         InkWell(
-          onTap: () => _makePhoneCall(phoneNum),
+          onTap: () => widget.onMakeCall(widget.phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
+              const Icon(
+                Icons.phone_outlined,
+                size: 18,
+                color: HomePage.accentGold,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  phoneNum,
+                  widget.phoneNum,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.bellota(
                     fontSize: 13,
                     color: HomePage.textMuted,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -859,18 +860,23 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         ),
         const SizedBox(height: 12),
         InkWell(
-          onTap: () => _sendEmail(emailAddr),
+          onTap: () => widget.onSendEmail(widget.emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
+              const Icon(
+                Icons.email_outlined,
+                size: 18,
+                color: HomePage.accentGold,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  emailAddr,
+                  widget.emailAddr,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.bellota(
                     fontSize: 13,
                     color: HomePage.textMuted,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -887,10 +893,10 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: HomePage.accentGold,
             letterSpacing: 1.0,
           ),
         ),
@@ -898,15 +904,27 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         Row(
           children: [
             IconButton(
-              icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: Colors.white),
+              icon: const Icon(
+                FontAwesomeIcons.facebook,
+                size: 20,
+                color: Colors.white,
+              ),
               onPressed: () => widget.onLaunchUrl(widget.facebookUrl),
             ),
             IconButton(
-              icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: Colors.white),
+              icon: const Icon(
+                FontAwesomeIcons.instagram,
+                size: 20,
+                color: Colors.white,
+              ),
               onPressed: () => widget.onLaunchUrl(widget.instagramUrl),
             ),
             IconButton(
-              icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: Colors.white),
+              icon: const Icon(
+                FontAwesomeIcons.linkedin,
+                size: 20,
+                color: Colors.white,
+              ),
               onPressed: () => widget.onLaunchUrl(widget.linkedInUrl),
             ),
           ],
