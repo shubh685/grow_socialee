@@ -663,7 +663,7 @@ class _ServicesState extends State<Services> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: isSelected ? HomePage.darkBg : Colors.black54,
+                      color: isSelected ? darkBg : Colors.black54,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(service["icon"], color: Colors.white, size: 24),

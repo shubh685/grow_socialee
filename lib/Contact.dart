@@ -203,7 +203,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         preferredSize: const Size.fromHeight(75),
         child: Container(
           decoration: const BoxDecoration(
-            color: HomePage.darkBg,
+            color: darkCardBg,
             border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
           ),
           child: SafeArea(
@@ -231,7 +231,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       ),
       endDrawer: Drawer(
         width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: HomePage.darkBg,
+        backgroundColor: darkBg,
         child: SafeArea(
           child: Column(
             children: [
@@ -239,7 +239,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(
                     vertical: 28.0, horizontal: 16.0),
-                color: HomePage.darkCardBg,
+                color: darkCardBg,
                 child: Center(
                   child: SizedBox(
                     height: 55,
