@@ -1078,13 +1078,13 @@ class _ValuesSectionState extends State<ValuesSection> with SingleTickerProvider
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: HomePage.darkCardBg,
+              color: _AboutState.darkCardBg,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: Colors.white, size: 26),
           ),
           const SizedBox(height: 20),
-          Text(title, style: GoogleFonts.aleo(fontSize: 20, fontWeight: FontWeight.bold, color: HomePage.darkCardBg)),
+          Text(title, style: GoogleFonts.aleo(fontSize: 20, fontWeight: FontWeight.bold, color: _AboutState.darkCardBg)),
           const SizedBox(height: 12),
           content,
         ],
@@ -1189,7 +1189,7 @@ class _TeamSectionState extends State<TeamSection> with SingleTickerProviderStat
               "MEET OUR LEADERSHIP", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: _AboutState.darkBg, letterSpacing: 2.0,)),
           const SizedBox(height: 10),
           Text(
-              "The Minds Behind the Agency", style: TextStyle(fontSize: widget.isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: HomePage.darkCardBg, fontFamily: 'Main Fonts')),
+              "The Minds Behind the Agency", style: TextStyle(fontSize: widget.isDesktop ? 32 : 24, fontWeight: FontWeight.w800, color: _AboutState.darkCardBg, fontFamily: 'Main Fonts')),
           const SizedBox(height: 40),
           Center(
             child: Container(
