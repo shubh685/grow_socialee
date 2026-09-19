@@ -19,12 +19,14 @@ class _ServicesState extends State<Services> {
   int _selectedIndex = 3;
   int _selectedServiceIndex = 0;
 
-  // Colors aligned with About.dart
+  // Colors aligned with home_page.dart
   static const Color brandBlue = Color(0xFF1B64B1);
   static const Color darkBg = Color(0xFF144F8E);
   static const Color darkCardBg = Color(0xFF0F3E72);
   static const Color accentWhite = Colors.white;
   static const Color textMuted = Color(0xFFD0E1F9);
+  static const Color accentGold = Color(0xFFFFB703);
+  static const Color accentCyan = Color(0xFF00E5FF);
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -68,7 +70,7 @@ class _ServicesState extends State<Services> {
     {
       "title": "P.P.C",
       "icon": Icons.campaign_rounded,
-      "tag": "Pay Per Click",
+      "tag": "PAY PER CLICK",
       "desc":
       "Drive targeted traffic and qualified leads through optimized Meta ad campaigns.",
       "deliverables": [
@@ -80,7 +82,7 @@ class _ServicesState extends State<Services> {
     {
       "title": "Web Development",
       "icon": Icons.web_rounded,
-      "tag": "Website Development",
+      "tag": "WEBSITE DEVELOPMENT",
       "desc":
       "Modern, responsive, and high-performance websites designed to grow your business.",
       "deliverables": [
@@ -103,7 +105,7 @@ class _ServicesState extends State<Services> {
     },
   ];
 
-  // Unique Reviews Data
+  // Unique Reviews Data preserved
   final List<Map<String, String>> clientReviews = [
     {
       "name": "Venisha Chitalia",
@@ -118,9 +120,7 @@ class _ServicesState extends State<Services> {
       "company": "Body Mind Soul",
       "rating": "5.0",
       "review":
-      "Growsocialee has been helping me  for my social media management and Shaily the founder has been extremely professional  , she is very helpful and always available for any questions "
-          "she is   very cooperative in her approach, she has in depth knowledge of how this social media marketing works and knows the right things to do."
-          "She is very creative and her team also brings the vision to life .",
+      "Growsocialee has been helping me for my social media management and Shaily the founder has been extremely professional, she is very helpful and always available for any questions she is very cooperative in her approach, she has in depth knowledge of how this social media marketing works and knows the right things to do. She is very creative and her team also brings the vision to life.",
       "tag": "Hospital's Marketing"
     },
   ];
@@ -168,9 +168,16 @@ class _ServicesState extends State<Services> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(75),
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: darkBg,
-            border: Border(bottom: BorderSide(color: Colors.white24, width: 1)),
+            border: Border(bottom: BorderSide(color: accentCyan.withOpacity(0.3), width: 1.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: AppBar(
             backgroundColor: Colors.transparent,
@@ -181,7 +188,7 @@ class _ServicesState extends State<Services> {
             actions: [
               Builder(
                 builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
+                  icon: const Icon(Icons.menu_rounded, color: accentGold, size: 28),
                   onPressed: () => Scaffold.of(context).openEndDrawer(),
                 ),
               ),
@@ -215,7 +222,7 @@ class _ServicesState extends State<Services> {
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: Colors.white24),
+              Divider(height: 1, thickness: 1, color: accentCyan.withOpacity(0.3)),
               const SizedBox(height: 12),
               Expanded(
                 child: ListView(
@@ -282,7 +289,7 @@ class _ServicesState extends State<Services> {
                       onTap: () {
                         setState(() => _selectedIndex = 4);
                         Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Reviews()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Reviews()));
                       },
                     ),
                     _buildDrawerItem(
@@ -303,7 +310,7 @@ class _ServicesState extends State<Services> {
               ),
               Container(
                 height: 4,
-                color: Colors.white,
+                color: accentGold,
               )
             ],
           ),
@@ -311,7 +318,7 @@ class _ServicesState extends State<Services> {
       ),
       body: CustomScrollView(
         slivers: [
-          // Dark Modern Hero Banner
+          // Dark Modern Hero Banner matching HomePage style
           SliverToBoxAdapter(
             child: _buildAGHeroBanner(screenWidth, isDesktop),
           ),
@@ -326,9 +333,9 @@ class _ServicesState extends State<Services> {
             child: _buildInteractiveServiceSection(isDesktop),
           ),
 
-          // Unique Testimonials & Reviews Section
+          // Testimonials & Reviews Section (Styled exactly as per Reviews.dart)
           SliverToBoxAdapter(
-            child: _buildUniqueReviewsSection(screenWidth),
+            child: _buildUniqueReviewsSection(isDesktop),
           ),
 
           // Consultation CTA
@@ -344,7 +351,7 @@ class _ServicesState extends State<Services> {
             ),
           ),
 
-          // Modern Footer Section
+          // Footer Section matching HomePage
           SliverToBoxAdapter(
             child: _buildAGFooter(context),
           ),
@@ -358,10 +365,20 @@ class _ServicesState extends State<Services> {
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 50,
-            child: Text("We are \n Grow Socialee", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: "Main Fonts")),
+          Flexible(
+            child: Text(
+              "We are \n Grow Socialee",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.bellota(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                height: 1.0,
+              ),
+            ),
           ),
         ],
       ),
@@ -386,26 +403,26 @@ class _ServicesState extends State<Services> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
+              color: isSelected ? accentGold : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? darkBg : Colors.white),
+                Icon(icon, size: 20, color: isSelected ? Colors.black : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 14,
+                    style: GoogleFonts.bellota(
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? darkBg : Colors.white,
+                      color: isSelected ? Colors.black87 : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: darkBg),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.black),
               ],
             ),
           ),
@@ -414,16 +431,24 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Dark Modern Hero Banner
   Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
-      color: darkBg,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            darkBg,
+            darkCardBg,
+          ],
+        ),
+      ),
       child: Stack(
         children: [
           Positioned.fill(
             child: Opacity(
-              opacity: 0.12,
+              opacity: 0.10,
               child: Image.asset(
                 "assets/photos/image.png",
                 fit: BoxFit.cover,
@@ -442,37 +467,56 @@ class _ServicesState extends State<Services> {
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: accentCyan.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white30),
+                        border: Border.all(color: accentCyan.withOpacity(0.6)),
                       ),
                       child: Text(
                         "OUR DIGITAL CAPABILITIES",
-                        style: GoogleFonts.cinzel(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 2.0,
+                        style: GoogleFonts.bellota(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: accentCyan,
+                          letterSpacing: 2.5,
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          Text("Getting your name on top is our ", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts')),
-                          Text("No.1 priority.", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 56 : 28, fontWeight: FontWeight.w600, color: Colors.white, height: 1.15, letterSpacing: -0.5, fontFamily: 'Main Fonts'))
-                        ]),
+                    Column(
+                      children: [
+                        Text(
+                          "Getting your name on top is our",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.bellota(
+                            fontSize: isDesktop ? 56 : 34,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            height: 1.1,
+                          ),
+                        ),
+                        Text(
+                          "No.1 priority.",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.bellota(
+                            fontSize: isDesktop ? 56 : 34,
+                            fontWeight: FontWeight.bold,
+                            color: accentGold,
+                            height: 1.1,
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 20),
                     Text(
                       "We make sure you receive the attention your business deserves. We are not just a social media agency — we provide a multi-channel variance of services tailored for growth.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.alexandria(
-                        fontSize: isDesktop ? 16 : 14,
+                      style: GoogleFonts.bellota(
+                        fontSize: isDesktop ? 17 : 14,
                         color: textMuted,
                         height: 1.6,
+                        fontWeight: FontWeight.w300,
                       ),
                     ),
                     const SizedBox(height: 36),
@@ -483,23 +527,24 @@ class _ServicesState extends State<Services> {
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: darkBg,
+                            backgroundColor: accentGold,
+                            foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 32,
-                              vertical: 20,
+                              vertical: 18,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             elevation: 8,
+                            shadowColor: accentGold.withOpacity(0.4),
                           ),
-                          icon: const Icon(Icons.rocket_launch_rounded, size: 18),
+                          icon: const Icon(Icons.rocket_launch_rounded, size: 18, color: Colors.black),
                           label: Text(
                             "START A PROJECT",
-                            style: GoogleFonts.aleo(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.bellota(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
                               letterSpacing: 1.0,
                             ),
                           ),
@@ -517,18 +562,18 @@ class _ServicesState extends State<Services> {
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                               horizontal: 32,
-                              vertical: 20,
+                              vertical: 18,
                             ),
-                            side: const BorderSide(color: Colors.white24, width: 1.5),
+                            side: const BorderSide(color: accentCyan, width: 1.8),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          icon: const Icon(Icons.phone_rounded, size: 18),
+                          icon: const Icon(Icons.phone_rounded, size: 18, color: accentCyan),
                           label: Text(
                             "CALL US NOW",
-                            style: GoogleFonts.aleo(
-                              fontSize: 14,
+                            style: GoogleFonts.bellota(
+                              fontSize: 13,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.0,
                             ),
@@ -547,7 +592,6 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Services Grid Component with Responsive Multi-Column Calculations (Fixed RenderFlow Issues)
   Widget _buildServicesGrid(double screenWidth) {
     final bool isDesktop = screenWidth >= 1024;
     final bool isTablet = screenWidth >= 650 && screenWidth < 1024;
@@ -574,17 +618,41 @@ class _ServicesState extends State<Services> {
           constraints: const BoxConstraints(maxWidth: maxContentWidth),
           child: Column(
             children: [
-              Text("WHAT WE OFFER", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
-              const SizedBox(height: 10),
-              Text("Tailored Growth Solutions", textAlign: TextAlign.center, style: TextStyle(fontSize: isDesktop ? 32 : 24, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Main Fonts')),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  "WHAT WE OFFER",
+                  style: GoogleFonts.bellota(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: darkCardBg,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Tailored Growth Solutions",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.bellota(
+                  fontSize: isDesktop ? 36 : 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 12),
               Text(
                 "Comprehensive digital marketing strategies engineered to scale your market influence.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.alexandria(
+                style: GoogleFonts.bellota(
                   fontSize: 15,
                   color: textMuted,
                   height: 1.5,
+                  fontWeight: FontWeight.w300,
                 ),
               ),
               const SizedBox(height: 48),
@@ -631,24 +699,16 @@ class _ServicesState extends State<Services> {
           duration: const Duration(milliseconds: 250),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white70,
+            color: Colors.white60,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSelected ? Colors.black87 : Colors.black45,
-              width: isSelected ? 2 : 1,
+              color: isSelected ? accentGold : Colors.transparent,
+              width: isSelected ? 2.5 : 1,
             ),
-            boxShadow: isSelected
-                ? [
+            boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ]
-                : [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
+                color: Colors.black.withOpacity(isSelected ? 0.25 : 0.1),
+                blurRadius: isSelected ? 16 : 8,
                 offset: const Offset(0, 4),
               ),
             ],
@@ -663,28 +723,23 @@ class _ServicesState extends State<Services> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: isSelected ? darkBg : Colors.black54,
+                      color: isSelected ? darkCardBg : darkBg,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(service["icon"], color: Colors.white, size: 24),
+                    child: Icon(service["icon"], color: isSelected ? accentGold : Colors.white, size: 24),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
+                          color: darkCardBg.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.white12),
+                          border: Border.all(color: darkCardBg.withOpacity(0.12)),
                         ),
-                        child: Text(
-                          service["tag"],
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.bold, color: darkCardBg, letterSpacing: 0.8),
-                        ),
+                        child: Text(service["tag"], overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 10, fontWeight: FontWeight.bold, color: darkCardBg, letterSpacing: 0.8)),
                       ),
                     ),
                   ),
@@ -693,16 +748,16 @@ class _ServicesState extends State<Services> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(service["title"], maxLines: 1, overflow: TextOverflow.ellipsis, style: GoogleFonts.aleo(fontSize: 18, fontWeight: FontWeight.bold, color: darkCardBg)),
+                  Text(service["title"], maxLines: 1, overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 18, fontWeight: FontWeight.bold, color: darkCardBg)),
                   const SizedBox(height: 6),
-                  Text(service["desc"], style: GoogleFonts.alexandria(fontSize: 12, color: darkBg, height: 1.4), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  Text(service["desc"], style: GoogleFonts.bellota(fontSize: 13, color: Colors.black87, height: 1.4), maxLines: 2, overflow: TextOverflow.ellipsis,),
                 ],
               ),
               Row(
                 children: [
-                  Text("Explore Deliverables", style: GoogleFonts.aleo(fontSize: 13, fontWeight: FontWeight.bold, color: darkCardBg)),
+                  Text("Explore Deliverables", style: GoogleFonts.bellota(fontSize: 13, fontWeight: FontWeight.bold, color: brandBlue)),
                   const SizedBox(width: 6),
-                  const Icon(Icons.arrow_forward_rounded, size: 16, color: darkBg),
+                  const Icon(Icons.arrow_forward_rounded, size: 16, color: brandBlue),
                 ],
               ),
             ],
@@ -712,7 +767,6 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Interactive Service Detail Section
   Widget _buildInteractiveServiceSection(bool isDesktop) {
     final activeService = serviceData[_selectedServiceIndex];
 
@@ -728,9 +782,31 @@ class _ServicesState extends State<Services> {
           constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              Text("SERVICE DEEP DIVE", style: GoogleFonts.cinzel(fontSize: 12, fontWeight: FontWeight.bold, color: darkBg, letterSpacing: 2.0)),
-              const SizedBox(height: 10),
-              Text("Breakdown & Key Deliverables", style: TextStyle(fontSize: isDesktop ? 30 : 22, fontWeight: FontWeight.bold, color: darkCardBg, fontFamily: 'Main Fonts')),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: darkCardBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  "SERVICE DEEP DIVE",
+                  style: GoogleFonts.bellota(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Breakdown & Key Deliverables",
+                style: GoogleFonts.bellota(
+                  fontSize: isDesktop ? 34 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: darkCardBg,
+                ),
+              ),
               const SizedBox(height: 36),
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -738,12 +814,19 @@ class _ServicesState extends State<Services> {
                   key: ValueKey<int>(_selectedServiceIndex),
                   padding: EdgeInsets.all(isDesktop ? 40 : 24),
                   decoration: BoxDecoration(
-                    color: darkBg,
+                    color: darkCardBg,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.white24,
+                      color: accentGold,
                       width: 1.5,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
                   child: isDesktop
                       ? Row(
@@ -756,23 +839,30 @@ class _ServicesState extends State<Services> {
                             Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: Colors.white70,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    color: Colors.white24),
+                                border: Border.all(color: accentCyan.withOpacity(0.4)),
                               ),
-                              child: Icon(activeService["icon"], color: darkBg, size: 48),
+                              child: Icon(activeService["icon"], color: brandBlue, size: 48),
                             ),
                             const SizedBox(height: 20),
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
-                                color: darkCardBg,
+                                color: accentCyan.withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.white12),
+                                border: Border.all(color: accentCyan.withOpacity(0.4)),
                               ),
-                              child: Text(activeService["tag"], textAlign: TextAlign.center, style: GoogleFonts.cinzel(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.0)),
+                              child: Text(
+                                activeService["tag"],
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.bellota(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: accentCyan,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -785,45 +875,46 @@ class _ServicesState extends State<Services> {
                           children: [
                             Text(
                               activeService["title"],
-                              style: GoogleFonts.aleo(
-                                fontSize: 24,
+                              style: GoogleFonts.bellota(
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: accentGold,
                               ),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               activeService["desc"],
-                              style: GoogleFonts.alexandria(
+                              style: GoogleFonts.bellota(
                                 fontSize: 15,
                                 color: textMuted,
                                 height: 1.6,
+                                fontWeight: FontWeight.w300,
                               ),
                             ),
                             const SizedBox(height: 28),
                             Text(
                               "WHAT WE DELIVER",
-                              style: GoogleFonts.cinzel(
+                              style: GoogleFonts.bellota(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
-                                letterSpacing: 1.2,
+                                letterSpacing: 1.5,
                               ),
                             ),
                             const SizedBox(height: 16),
                             Wrap(
                               spacing: 12,
                               runSpacing: 12,
-                              children: List<String>.from(
-                                  activeService["deliverables"])
+                              children: List<String>.from(activeService["deliverables"])
                                   .map((item) => Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12),
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: darkCardBg,
+                                  color: darkBg,
                                   borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.white10),
+                                  border: Border.all(color: accentCyan.withOpacity(0.3)),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -831,15 +922,15 @@ class _ServicesState extends State<Services> {
                                     const Icon(
                                       Icons.check_circle_rounded,
                                       size: 16,
-                                      color: Colors.white,
+                                      color: accentGold,
                                     ),
                                     const SizedBox(width: 10),
                                     Flexible(
                                       child: Text(
                                         item,
-                                        style: GoogleFonts.alexandria(
+                                        style: GoogleFonts.bellota(
                                           fontSize: 13,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.bold,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -862,89 +953,43 @@ class _ServicesState extends State<Services> {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.12),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Icon(
-                              activeService["icon"],
-                              color: Colors.white,
-                              size: 32,
-                            ),
+                            child: Icon(activeService["icon"], color: brandBlue, size: 32),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 6),
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.05),
+                                color: accentCyan.withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.white12),
+                                border: Border.all(color: accentCyan.withOpacity(0.4)),
                               ),
-                              child: Text(
-                                activeService["tag"],
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.cinzel(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: textMuted,
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
+                              child: Text(activeService["tag"], textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: GoogleFonts.bellota(fontSize: 10, fontWeight: FontWeight.bold, color: accentCyan, letterSpacing: 0.8)),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Text(
-                        activeService["title"],
-                        style: GoogleFonts.aleo(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
+                      Text(activeService["title"], style: GoogleFonts.bellota(fontSize: 22, fontWeight: FontWeight.bold, color: accentGold)),
                       const SizedBox(height: 12),
-                      Text(
-                        activeService["desc"],
-                        style: GoogleFonts.alexandria(
-                          fontSize: 14,
-                          color: textMuted,
-                          height: 1.6,
-                        ),
-                      ),
+                      Text(activeService["desc"], style: GoogleFonts.bellota(fontSize: 14, color: textMuted, height: 1.6, fontWeight: FontWeight.w300)),
                       const SizedBox(height: 24),
-                      Text(
-                        "WHAT WE DELIVER",
-                        style: GoogleFonts.cinzel(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
+                      Text("WHAT WE DELIVER", style: GoogleFonts.bellota(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.2)),
                       const SizedBox(height: 12),
-                      ...List<String>.from(activeService["deliverables"])
-                          .map((item) => Padding(
+                      ...List<String>.from(activeService["deliverables"]).map((item) => Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Row(
                           children: [
-                            const Icon(
-                              Icons.check_circle_rounded,
-                              size: 16,
-                              color: Colors.white,
-                            ),
+                            const Icon(Icons.check_circle_rounded, size: 16, color: accentGold),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: Text(
-                                item,
-                                style: GoogleFonts.alexandria(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              child: Text(item, style: GoogleFonts.bellota(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
                             ),
                           ],
                         ),
@@ -960,185 +1005,151 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Unique Testimonials & Reviews Section
-  Widget _buildUniqueReviewsSection(double screenWidth) {
-    final bool isDesktop = screenWidth >= 1024;
-    final bool isTablet = screenWidth >= 650 && screenWidth < 1024;
-
-    // Use a 2-column layout for desktop and tablet, and 1-column for mobile
-    final int crossAxisCount = (isDesktop || isTablet) ? 2 : 1;
-    const double gap = 20.0;
-    const double maxContentWidth = 1200.0;
-
+  // Reviews section redesigned matching Reviews.dart review cards structure
+  Widget _buildUniqueReviewsSection(bool isDesktop) {
     return Container(
       width: double.infinity,
+      color: darkCardBg,
       padding: EdgeInsets.symmetric(
         vertical: 70,
         horizontal: isDesktop ? 60 : 20,
       ),
-      color: darkBg,
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: maxContentWidth),
+          constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             children: [
-              Text(
-                "CLIENT FEEDBACK",
-                style: GoogleFonts.cinzel(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2.0,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Text("CLIENT STORIES", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: darkCardBg, letterSpacing: 2.0)),
               ),
               const SizedBox(height: 10),
-              Text(
-                "What Our Partners Say",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: isDesktop ? 32 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Main Fonts',
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                "Real stories from business owners who transformed their digital growth with us.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.alexandria(
-                  fontSize: 15,
-                  color: textMuted,
-                ),
-              ),
-              const SizedBox(height: 48),
-              // Replaced Wrap with GridView.builder using SilverGrid constraints to prevent height overflow
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: clientReviews.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: gap,
-                  mainAxisSpacing: gap,
-                  // Adjust height dynamically for long text entries without clipping
-                  mainAxisExtent: isDesktop ? 320 : 360,
-                ),
-                itemBuilder: (context, index) {
-                  final rev = clientReviews[index];
-                  return Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white70,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: List.generate(
-                                    5,
-                                        (i) => const Icon(
-                                      Icons.star_rounded,
-                                      color: Colors.amber,
-                                      size: 18,
+              Text("What People Say About Grow Socialee", textAlign: TextAlign.center, style: GoogleFonts.bellota(fontSize: isDesktop ? 34 : 24, fontWeight: FontWeight.bold, color: Colors.white)),
+              const SizedBox(height: 40),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Wrap(
+                    spacing: 24,
+                    runSpacing: 24,
+                    alignment: WrapAlignment.center,
+                    children: clientReviews.map((rev) {
+                      double cardWidth = isDesktop
+                          ? (constraints.maxWidth - 24) / 2
+                          : constraints.maxWidth;
+                      double ratingVal = double.tryParse(rev["rating"] ?? "5.0") ?? 5.0;
+
+                      return SizedBox(
+                        width: cardWidth,
+                        child: Container(
+                          padding: const EdgeInsets.all(28),
+                          decoration: BoxDecoration(
+                            color: darkCardBg,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: accentGold, width: 1.5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.12),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: List.generate(
+                                      5,
+                                          (index) => Icon(
+                                        index < ratingVal.floor()
+                                            ? Icons.star_rounded
+                                            : Icons.star_half_rounded,
+                                        color: accentGold,
+                                        size: 18,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                Flexible(
-                                  child: Container(
+                                  Container(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
+                                      horizontal: 10,
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: darkCardBg,
+                                      color: accentGold,
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
                                       rev["tag"]!,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.cinzel(
+                                      style: GoogleFonts.bellota(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              "\"${rev["review"]!}\"",
-                              style: GoogleFonts.alexandria(
-                                fontSize: 13,
-                                color: darkBg,
-                                fontWeight: FontWeight.w500,
-                                height: 1.5,
-                                fontStyle: FontStyle.italic,
+                                ],
                               ),
-                              maxLines: 6,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Divider(color: darkCardBg, height: 16),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: darkCardBg,
-                                  radius: 18,
-                                  child: Text(
-                                    rev["name"]![0],
-                                    style: GoogleFonts.aleo(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                              const SizedBox(height: 18),
+                              Text(
+                                "\"${rev["review"]!}\"",
+                                style: GoogleFonts.bellota(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  height: 1.6,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              const Divider(color: Colors.white24, height: 1),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: accentGold,
+                                    radius: 20,
+                                    child: Text(
+                                      rev["name"]![0],
+                                      style: GoogleFonts.bellota(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
+                                  const SizedBox(width: 12),
+                                  Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         rev["name"]!,
-                                        style: GoogleFonts.aleo(
-                                          fontSize: 14,
+                                        style: GoogleFonts.bellota(
+                                          fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          color: darkCardBg,
+                                          color: Colors.white,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
                                         rev["company"]!,
-                                        style: GoogleFonts.alexandria(
+                                        style: GoogleFonts.bellota(
                                           fontSize: 12,
-                                          color: darkBg,
+                                          color: textMuted,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      );
+                    }).toList(),
                   );
                 },
               ),
@@ -1149,7 +1160,6 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Consultation Banner CTA
   Widget _buildConsultationCTA() {
     return Container(
       width: double.infinity,
@@ -1157,7 +1167,7 @@ class _ServicesState extends State<Services> {
       decoration: BoxDecoration(
         color: darkCardBg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white24, width: 1.5),
+        border: Border.all(color: accentGold, width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -1172,28 +1182,30 @@ class _ServicesState extends State<Services> {
             ? Column(
           children: [
             Text(
-                "Ready to Scale Your Online Brand Presence?",
-                textAlign: TextAlign.center,
-                style: TextStyle( fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white, fontFamily: 'Main Fonts')
+              "Ready to Scale Your Online Brand Presence?",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.bellota(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 10),
             Text(
               "Get in touch with our team in Bhavnagar today for a complimentary growth session.",
               textAlign: TextAlign.center,
-              style: GoogleFonts.alexandria(
+              style: GoogleFonts.bellota(
                 fontSize: 13,
                 color: textMuted,
+                fontWeight: FontWeight.w300,
               ),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: darkBg,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 28, vertical: 16),
+                backgroundColor: accentGold,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -1201,15 +1213,14 @@ class _ServicesState extends State<Services> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const Contact()),
+                  MaterialPageRoute(builder: (context) => const Contact()),
                 );
               },
               child: Text(
                 "GET IN TOUCH",
-                style: GoogleFonts.aleo(
+                style: GoogleFonts.bellota(
                   fontSize: 13,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
                   letterSpacing: 1.0,
                 ),
               ),
@@ -1224,7 +1235,7 @@ class _ServicesState extends State<Services> {
                 children: [
                   Text(
                     "Ready to Scale Your Online Brand Presence?",
-                    style: GoogleFonts.aleo(
+                    style: GoogleFonts.bellota(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -1233,9 +1244,10 @@ class _ServicesState extends State<Services> {
                   const SizedBox(height: 8),
                   Text(
                     "Get in touch with our team in Bhavnagar today for a complimentary growth session.",
-                    style: GoogleFonts.alexandria(
+                    style: GoogleFonts.bellota(
                       fontSize: 14,
                       color: textMuted,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
                 ],
@@ -1244,10 +1256,9 @@ class _ServicesState extends State<Services> {
             const SizedBox(width: 24),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: darkBg,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 32, vertical: 18),
+                backgroundColor: accentGold,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -1256,11 +1267,17 @@ class _ServicesState extends State<Services> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const Contact()),
+                  MaterialPageRoute(builder: (context) => const Contact()),
                 );
               },
-              child: Text("GET IN TOUCH", style: GoogleFonts.aleo(fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+              child: Text(
+                "GET IN TOUCH",
+                style: GoogleFonts.bellota(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.0,
+                ),
+              ),
             ),
           ],
         );
@@ -1268,7 +1285,6 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  // Modern Footer Component
   Widget _buildAGFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
@@ -1278,7 +1294,7 @@ class _ServicesState extends State<Services> {
       color: darkBg,
       child: Column(
         children: [
-          const Divider(height: 1, thickness: 1, color: Colors.white24),
+          Divider(height: 1, thickness: 1, color: accentCyan.withOpacity(0.3)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -1314,7 +1330,7 @@ class _ServicesState extends State<Services> {
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.bellota(
                   fontSize: 13,
                   color: textMuted,
                 ),
@@ -1340,7 +1356,7 @@ class _ServicesState extends State<Services> {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.alexandria(
+          style: GoogleFonts.bellota(
             fontSize: 14,
             color: textMuted,
             height: 1.6,
@@ -1356,10 +1372,10 @@ class _ServicesState extends State<Services> {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: accentGold,
             letterSpacing: 1.0,
           ),
         ),
@@ -1369,15 +1385,16 @@ class _ServicesState extends State<Services> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.location_on_outlined, size: 18, color: accentGold),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   addressQuery,
-                  style: GoogleFonts.alexandria(
+                  style: GoogleFonts.bellota(
                     fontSize: 13,
-                    color: textMuted,
+                    color: Colors.white,
                     height: 1.4,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -1389,13 +1406,17 @@ class _ServicesState extends State<Services> {
           onTap: () => _makePhoneCall(phoneNum),
           child: Row(
             children: [
-              const Icon(Icons.phone_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.phone_outlined, size: 18, color: accentGold),
               const SizedBox(width: 10),
-              Text(
-                phoneNum,
-                style: GoogleFonts.alexandria(
-                  fontSize: 13,
-                  color: textMuted,
+              Expanded(
+                child: Text(
+                  phoneNum,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.bellota(
+                    fontSize: 13,
+                    color: textMuted,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -1406,13 +1427,17 @@ class _ServicesState extends State<Services> {
           onTap: () => _sendEmail(emailAddr),
           child: Row(
             children: [
-              const Icon(Icons.email_outlined, size: 18, color: Colors.white),
+              const Icon(Icons.email_outlined, size: 18, color: accentGold),
               const SizedBox(width: 10),
-              Text(
-                emailAddr,
-                style: GoogleFonts.alexandria(
-                  fontSize: 13,
-                  color: textMuted,
+              Expanded(
+                child: Text(
+                  emailAddr,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.bellota(
+                    fontSize: 13,
+                    color: textMuted,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -1428,10 +1453,10 @@ class _ServicesState extends State<Services> {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: accentGold,
             letterSpacing: 1.0,
           ),
         ),
