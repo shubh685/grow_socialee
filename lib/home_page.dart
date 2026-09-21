@@ -2191,7 +2191,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // OUR WORK SECTION
+  // OUR WORK SECTION — 4-column responsive grid
   // ============================================================
   Widget _buildAGOurWorkSection(BuildContext context, double screenWidth) {
     final bool isDesktop = screenWidth >= Breakpoints.tablet;
@@ -2210,60 +2210,74 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
       padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: horizontal),
-      child: Column(
-        children: [
-          _buildSectionPill("SELECTED WORK"),
-          const SizedBox(height: 14),
-          Text(
-            "What We've Built",
-            style: GoogleFonts.bellota(
-              fontSize: screenWidth > 900 ? 36 : 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "Creative showcases & production reels.",
-            style: GoogleFonts.bellota(
-              fontSize: 15,
-              color: HomePage.textMuted,
-            ),
-          ),
-          const SizedBox(height: 36),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              int columns = 4;
-              if (constraints.maxWidth < 500) {
-                columns = 1;
-              } else if (constraints.maxWidth < 800) {
-                columns = 2;
-              } else if (constraints.maxWidth < 1200) {
-                columns = 3;
-              }
-              final double spacing = 20;
-              final double w = (constraints.maxWidth -
-                  (spacing * (columns - 1))) /
-                  columns;
-              return Wrap(
-                spacing: spacing,
-                runSpacing: spacing,
-                alignment: WrapAlignment.center,
-                children: ourWorkVideos.map((item) {
-                  return SizedBox(
-                    width: w.clamp(220.0, 320.0),
-                    child: _OurWorkVideoCard(
-                      videoPath: item["path"]!,
-                      title: item["title"]!,
-                      onExpand: (controller) =>
-                          _openZoomableVideoDialog(context, controller),
-                    ),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1400),
+          child: Column(
+            children: [
+              _buildSectionPill("SELECTED WORK"),
+              const SizedBox(height: 14),
+              Text(
+                "What We've Built",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.bellota(
+                  fontSize: screenWidth > 900 ? 36 : 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Creative showcases & production reels.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.bellota(
+                  fontSize: 15,
+                  color: HomePage.textMuted,
+                ),
+              ),
+              const SizedBox(height: 36),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Responsive grid breakpoints:
+                  //  - >= 1024 px : 4 columns (Desktop)
+                  //  - >= 700 px  : 3 columns (Tablet)
+                  //  - >= 480 px  : 2 columns (Large Mobile)
+                  //  - < 480 px   : 1 column  (Mobile)
+                  int columns;
+                  if (constraints.maxWidth < 480) {
+                    columns = 1;
+                  } else if (constraints.maxWidth < 700) {
+                    columns = 2;
+                  } else if (constraints.maxWidth < 1024) {
+                    columns = 3;
+                  } else {
+                    columns = 4;
+                  }
+
+                  final double spacing = 16;
+                  final double w = (constraints.maxWidth -
+                      (spacing * (columns - 1))) /
+                      columns;
+
+                  return Wrap(
+                    spacing: spacing,
+                    runSpacing: spacing,
+                    alignment: WrapAlignment.center,
+                    children: ourWorkVideos.map((item) {
+                      return SizedBox(
+                        width: w,
+                        child: _OurWorkVideoCard(
+                          videoPath: item["path"]!,
+                          title: item["title"]!,
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
-              );
-            },
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -2529,12 +2543,10 @@ class _HoverScaleState extends State<_HoverScale> {
 class _OurWorkVideoCard extends StatefulWidget {
   final String videoPath;
   final String title;
-  final Function(VideoPlayerController) onExpand;
 
   const _OurWorkVideoCard({
     required this.videoPath,
     required this.title,
-    required this.onExpand,
   });
 
   @override
@@ -2603,47 +2615,44 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
               child: AspectRatio(
                 aspectRatio: 9 / 16,
                 child: !_hasError
-                    ? GestureDetector(
-                  onTap: () => widget.onExpand(_controller),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      VideoPlayer(_controller),
-                      Positioned(
-                        bottom: 10,
-                        right: 10,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.55),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color:
-                              HomePage.accentGold.withOpacity(0.6),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.zoom_out_map_rounded,
-                                  color: HomePage.accentGold, size: 12),
-                              const SizedBox(width: 4),
-                              Text(
-                                "TAP",
-                                style: GoogleFonts.bellota(
-                                  fontSize: 9,
-                                  color: HomePage.accentGold,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                ),
-                              ),
-                            ],
+                    ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    VideoPlayer(_controller),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.55),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color:
+                            HomePage.accentGold.withOpacity(0.6),
                           ),
                         ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.touch_app_rounded,
+                                color: HomePage.accentGold, size: 12),
+                            const SizedBox(width: 4),
+                            Text(
+                              "TAP",
+                              style: GoogleFonts.bellota(
+                                fontSize: 9,
+                                color: HomePage.accentGold,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
                     : Container(
                   color: HomePage.glassCard,
@@ -2655,12 +2664,14 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(14.0),
+              padding: const EdgeInsets.all(12.0),
               child: Text(
                 widget.title,
                 textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.bellota(
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: HomePage.accentGold,
                 ),
