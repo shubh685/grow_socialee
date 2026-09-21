@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,33 @@ import 'Reviews.dart';
 import 'contact.dart';
 import 'Services.dart';
 
+// ============================================================
+// CLIENT LOGOS PAGE — THEME (matches HomePage royal blue + gold)
+// ============================================================
+class ClientTheme {
+  // Backgrounds (identical to HomePage)
+  static const Color royalBlue = Color(0xFF0A1F44);
+  static const Color royalBlueMid = Color(0xFF0F2A5C);
+  static const Color darkBg = Color(0xFF0A1F44);
+  static const Color darkCardBg = Color(0xFF0D2551);
+  static const Color glassCard = Color(0xFF13315C);
+
+  // Gold accents
+  static const Color accentGold = Color(0xFFF5C842);
+  static const Color accentGoldDeep = Color(0xFFD4A017);
+  static const Color accentGoldSoft = Color(0xFFFFE08A);
+
+  // Cyan accents
+  static const Color accentCyan = Color(0xFF4FC3F7);
+  static const Color accentCyanGlow = Color(0xFF29B6F6);
+  static const Color brandBlue = Color(0xFF1E88E5);
+
+  // Text
+  static const Color accentWhite = Colors.white;
+  static const Color textMuted = Color(0xFFB8D4F0);
+  static const Color textSoft = Color(0xFFD6E6FA);
+}
+
 class ClientLogoPage extends StatefulWidget {
   const ClientLogoPage({super.key});
 
@@ -18,26 +46,27 @@ class ClientLogoPage extends StatefulWidget {
 
 class _ClientLogoPageState extends State<ClientLogoPage> {
   int _selectedIndex = 2;
+  int _activeFilter = 0; // 0=All, 1=Featured, 2=Partners
 
   final List<Map<String, dynamic>> clientLogos = const [
-    {"path": "assets/photos/aroma.png", "isWhite": true},
-    {"path": "assets/photos/aura.png", "isWhite": false},
-    {"path": "assets/photos/bani_thani.png", "isWhite": false},
-    {"path": "assets/photos/bindu_decor.png", "isWhite": false},
-    {"path": "assets/photos/ella.png", "isWhite": false},
-    {"path": "assets/photos/every_child.png", "isWhite": false},
-    {"path": "assets/photos/gayat_cate.png", "isWhite": false},
-    {"path": "assets/photos/kids_connect.png", "isWhite": false},
-    {"path": "assets/photos/manas.png", "isWhite": false},
-    {"path": "assets/photos/nari_sanari.png", "isWhite": false},
-    {"path": "assets/photos/nilav_shah.png", "isWhite": false},
-    {"path": "assets/photos/jinali_modi.png", "isWhite": false},
-    {"path": "assets/photos/pavan_salon.png", "isWhite": false},
-    {"path": "assets/photos/shwass.png", "isWhite": false},
-    {"path": "assets/photos/the_celebration.png", "isWhite": true},
-    {"path": "assets/photos/ugs.png", "isWhite": false},
-    {"path": "assets/photos/ved_icu.png", "isWhite": false},
-    {"path": "assets/photos/wost.png", "isWhite": false},
+    {"path": "assets/photos/aroma.png", "isWhite": true, "featured": true},
+    {"path": "assets/photos/aura.png", "isWhite": false, "featured": true},
+    {"path": "assets/photos/bani_thani.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/bindu_decor.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/ella.png", "isWhite": false, "featured": true},
+    {"path": "assets/photos/every_child.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/gayat_cate.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/kids_connect.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/manas.png", "isWhite": false, "featured": true},
+    {"path": "assets/photos/nari_sanari.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/nilav_shah.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/jinali_modi.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/pavan_salon.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/shwass.png", "isWhite": false, "featured": true},
+    {"path": "assets/photos/the_celebration.png", "isWhite": true, "featured": true},
+    {"path": "assets/photos/ugs.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/ved_icu.png", "isWhite": false, "featured": false},
+    {"path": "assets/photos/wost.png", "isWhite": false, "featured": false},
   ];
 
   final String addressQuery =
@@ -103,182 +132,27 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     }
   }
 
+  // Filtered list based on active chip
+  List<Map<String, dynamic>> get _filteredLogos {
+    if (_activeFilter == 0) return clientLogos;
+    if (_activeFilter == 1) {
+      return clientLogos.where((c) => c["featured"] == true).toList();
+    }
+    return clientLogos.where((c) => c["featured"] != true).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Scaffold(
-      backgroundColor: HomePage.darkBg,
+      backgroundColor: ClientTheme.darkBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(75),
-        child: Container(
-          decoration: BoxDecoration(
-            color: HomePage.darkBg,
-            border: Border(
-              bottom: BorderSide(
-                color: HomePage.accentCyan.withOpacity(0.3),
-                width: 1.5,
-              ),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            titleSpacing: 0,
-            title: _buildLogoHeader(),
-            actions: [
-              Builder(
-                builder: (context) => IconButton(
-                  icon: const Icon(
-                    Icons.menu_rounded,
-                    color: HomePage.accentGold,
-                    size: 28,
-                  ),
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                ),
-              ),
-              const SizedBox(width: 12),
-            ],
-          ),
-        ),
+        child: _buildAppBar(isDesktop),
       ),
-      endDrawer: Drawer(
-        width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: HomePage.darkBg,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 28.0,
-                  horizontal: 16.0,
-                ),
-                color: HomePage.darkCardBg,
-                child: Center(
-                  child: SizedBox(
-                    height: 55,
-                    child: Image.asset(
-                      "assets/photos/Gro_Soc_Image.png",
-                      color: Colors.white,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.image,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Divider(
-                height: 1,
-                thickness: 1,
-                color: HomePage.accentCyan.withOpacity(0.3),
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    _buildDrawerItem(
-                      index: 0,
-                      icon: Icons.home_rounded,
-                      label: "HOME",
-                      onTap: () {
-                        setState(() => _selectedIndex = 0);
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 1,
-                      icon: Icons.info_outline_rounded,
-                      label: "ABOUT",
-                      onTap: () {
-                        setState(() => _selectedIndex = 1);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const About(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 2,
-                      icon: Icons.group_outlined,
-                      label: "CLIENTS",
-                      onTap: () {
-                        setState(() => _selectedIndex = 2);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 3,
-                      icon: Icons.task_alt_outlined,
-                      label: "SERVICES",
-                      onTap: () {
-                        setState(() => _selectedIndex = 3);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Services(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 4,
-                      icon: Icons.chat_bubble_outline_rounded,
-                      label: "REVIEWS",
-                      onTap: () {
-                        setState(() => _selectedIndex = 4);
-                        Navigator.pop(context);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Reviews()));
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 5,
-                      icon: Icons.contact_phone_sharp,
-                      label: "CONTACT US",
-                      onTap: () {
-                        setState(() => _selectedIndex = 5);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Contact(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 4,
-                color: HomePage.accentGold,
-              )
-            ],
-          ),
-        ),
-      ),
+      endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           _checkCardsVisibility();
@@ -286,12 +160,27 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         },
         child: CustomScrollView(
           slivers: [
+            // ✅ Hero section
             SliverToBoxAdapter(
               child: _buildHeroSection(isDesktop),
             ),
+            // ✅ Filter chips
+            SliverToBoxAdapter(
+              child: _buildFilterChips(isDesktop),
+            ),
+            // ✅ Logos grid
             SliverToBoxAdapter(
               child: _buildAllLogosGrid(context),
             ),
+            // ✅ Ornament divider
+            SliverToBoxAdapter(
+              child: _buildOrnamentDivider(),
+            ),
+            // ✅ CTA before footer
+            SliverToBoxAdapter(
+              child: _buildCTASection(isDesktop),
+            ),
+            // ✅ Footer
             SliverToBoxAdapter(
               child: AnimatedFooter(
                 addressQuery: addressQuery,
@@ -312,6 +201,84 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     );
   }
 
+  // ============================================================
+  // APP BAR
+  // ============================================================
+  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(75),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              ClientTheme.royalBlue,
+              ClientTheme.royalBlueMid,
+            ],
+          ),
+          border: Border(
+            bottom: BorderSide(
+              color: ClientTheme.accentGold.withOpacity(0.6),
+              width: 1.5,
+            ),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: ClientTheme.accentCyan.withOpacity(0.15),
+              blurRadius: 14,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          titleSpacing: 0,
+          title: _buildLogoHeader(),
+          actions: [
+            Builder(
+              builder: (context) => Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () => Scaffold.of(context).openEndDrawer(),
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            ClientTheme.accentGold.withOpacity(0.22),
+                            ClientTheme.accentGoldDeep.withOpacity(0.12),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: ClientTheme.accentGold.withOpacity(0.7),
+                          width: 1.4,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.menu_rounded,
+                        color: ClientTheme.accentGold,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildLogoHeader() {
     return Container(
       height: 45,
@@ -319,20 +286,201 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  ClientTheme.accentGold.withOpacity(0.25),
+                  ClientTheme.accentGoldDeep.withOpacity(0.12),
+                ],
+              ),
+              border: Border.all(
+                color: ClientTheme.accentGold.withOpacity(0.7),
+                width: 1.2,
+              ),
+            ),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: ClientTheme.accentGold,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 12),
           Flexible(
-            child: Text(
-              "We are \n Grow Socialee",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.bellota(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                height: 1.0,
+            child: ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [
+                  ClientTheme.accentGoldSoft,
+                  ClientTheme.accentGold,
+                  ClientTheme.accentGoldDeep,
+                ],
+              ).createShader(bounds),
+              child: Text(
+                "We are\nGrow Socialee",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.bellota(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  height: 1.05,
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // END DRAWER
+  // ============================================================
+  Widget _buildEndDrawer(double screenWidth, bool isDesktop) {
+    return Drawer(
+      width: isDesktop ? 380 : math.min(screenWidth * 0.85, 340),
+      backgroundColor: ClientTheme.royalBlue,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding:
+              const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    ClientTheme.royalBlueMid,
+                    ClientTheme.glassCard,
+                  ],
+                ),
+              ),
+              child: Center(
+                child: SizedBox(
+                  height: 55,
+                  child: Image.asset(
+                    "assets/photos/Gro_Soc_Image.png",
+                    color: Colors.white,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.image,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: ClientTheme.accentGold.withOpacity(0.4),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  _buildDrawerItem(
+                    index: 0,
+                    icon: Icons.home_rounded,
+                    label: "HOME",
+                    onTap: () {
+                      setState(() => _selectedIndex = 0);
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 1,
+                    icon: Icons.info_outline_rounded,
+                    label: "ABOUT",
+                    onTap: () {
+                      setState(() => _selectedIndex = 1);
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const About(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 2,
+                    icon: Icons.group_outlined,
+                    label: "CLIENTS",
+                    onTap: () {
+                      setState(() => _selectedIndex = 2);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 3,
+                    icon: Icons.task_alt_outlined,
+                    label: "SERVICES",
+                    onTap: () {
+                      setState(() => _selectedIndex = 3);
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Services(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 4,
+                    icon: Icons.chat_bubble_outline_rounded,
+                    label: "REVIEWS",
+                    onTap: () {
+                      setState(() => _selectedIndex = 4);
+                      Navigator.pop(context);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Reviews()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 5,
+                    icon: Icons.contact_phone_sharp,
+                    label: "CONTACT US",
+                    onTap: () {
+                      setState(() => _selectedIndex = 5);
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Contact(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    ClientTheme.accentGoldSoft,
+                    ClientTheme.accentGold,
+                    ClientTheme.accentGoldDeep,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -352,10 +500,19 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: onTap,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? HomePage.accentGold : Colors.transparent,
+              gradient: isSelected
+                  ? const LinearGradient(
+                colors: [
+                  ClientTheme.accentGoldSoft,
+                  ClientTheme.accentGold,
+                  ClientTheme.accentGoldDeep,
+                ],
+              )
+                  : null,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -363,7 +520,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 Icon(
                   icon,
                   size: 20,
-                  color: isSelected ? Colors.black : Colors.white,
+                  color: isSelected ? const Color(0xFF1A1200) : Colors.white,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -372,7 +529,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     style: GoogleFonts.bellota(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.black87 : Colors.white,
+                      color: isSelected
+                          ? const Color(0xFF1A1200)
+                          : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
@@ -381,7 +540,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                   const Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: Colors.black,
+                    color: Color(0xFF1A1200),
                   ),
               ],
             ),
@@ -391,7 +550,310 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     );
   }
 
+  // ============================================================
+  // HERO SECTION
+  // ============================================================
   Widget _buildHeroSection(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment(0.6, -0.3),
+          radius: 1.4,
+          colors: [
+            Color(0xFF173F7B),
+            ClientTheme.royalBlue,
+            Color(0xFF061733),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Cyan glow top-right
+          Positioned(
+            top: -80,
+            right: -80,
+            child: Container(
+              width: 320,
+              height: 320,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    ClientTheme.accentCyan.withOpacity(0.15),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Gold glow bottom-left
+          Positioned(
+            bottom: -100,
+            left: -80,
+            child: Container(
+              width: 280,
+              height: 280,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    ClientTheme.accentGold.withOpacity(0.12),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.10,
+              child: CustomPaint(painter: _ClientHeroPatternPainter()),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: isDesktop ? 90 : 55,
+              horizontal: 24,
+            ),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
+                  children: [
+                    // Chapter marker
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: ClientTheme.accentGold.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: ClientTheme.accentGold.withOpacity(0.7),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: ClientTheme.accentGold.withOpacity(0.15),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.workspace_premium_rounded,
+                            size: 14,
+                            color: ClientTheme.accentGold,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "CHAPTER 03 · OUR CLIENTS",
+                            style: GoogleFonts.bellota(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.bold,
+                              color: ClientTheme.accentGold,
+                              letterSpacing: 2.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+                    // "Trusted by" small line
+                    Text(
+                      "Trusted by",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bellota(
+                        fontSize: isDesktop ? 24 : 18,
+                        fontWeight: FontWeight.w400,
+                        color: ClientTheme.textSoft,
+                        height: 1.2,
+                      ),
+                    ),
+                    // Big gradient headline
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [
+                          ClientTheme.accentGoldSoft,
+                          ClientTheme.accentGold,
+                          ClientTheme.accentGoldDeep,
+                        ],
+                      ).createShader(bounds),
+                      child: Text(
+                        "50+ Visionary Brands",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.bellota(
+                          fontSize: isDesktop ? 52 : 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          height: 1.1,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bellota(
+                        fontSize: isDesktop ? 15 : 13.5,
+                        color: ClientTheme.textMuted,
+                        height: 1.6,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // FILTER CHIPS (visual only)
+  // ============================================================
+  Widget _buildFilterChips(bool isDesktop) {
+    final chips = ["ALL BRANDS", "FEATURED", "PARTNERS"];
+
+    return Container(
+      width: double.infinity,
+      color: ClientTheme.royalBlue,
+      padding: EdgeInsets.symmetric(
+        vertical: 24,
+        horizontal: isDesktop ? 60 : 20,
+      ),
+      child: Center(
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 12,
+          runSpacing: 12,
+          children: List.generate(chips.length, (i) {
+            final isActive = _activeFilter == i;
+            return GestureDetector(
+              onTap: () => setState(() => _activeFilter = i),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  gradient: isActive
+                      ? const LinearGradient(
+                    colors: [
+                      ClientTheme.accentGoldSoft,
+                      ClientTheme.accentGold,
+                      ClientTheme.accentGoldDeep,
+                    ],
+                  )
+                      : null,
+                  color: isActive ? null : Colors.white.withOpacity(0.06),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: isActive
+                        ? ClientTheme.accentGold
+                        : ClientTheme.accentGold.withOpacity(0.35),
+                    width: 1.3,
+                  ),
+                  boxShadow: isActive
+                      ? [
+                    BoxShadow(
+                      color: ClientTheme.accentGold.withOpacity(0.30),
+                      blurRadius: 14,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                      : null,
+                ),
+                child: Text(
+                  chips[i],
+                  style: GoogleFonts.bellota(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w800,
+                    color: isActive
+                        ? const Color(0xFF1A1200)
+                        : ClientTheme.accentGold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // ORNAMENT DIVIDER
+  // ============================================================
+  Widget _buildOrnamentDivider() {
+    return Container(
+      width: double.infinity,
+      color: ClientTheme.royalBlueMid,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 60,
+              height: 1.2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    ClientTheme.accentGold.withOpacity(0.6),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Transform.rotate(
+              angle: 0.785,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      ClientTheme.accentGoldSoft,
+                      ClientTheme.accentGoldDeep,
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ClientTheme.accentGold.withOpacity(0.5),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              width: 60,
+              height: 1.2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    ClientTheme.accentGold.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // CTA SECTION before footer
+  // ============================================================
+  Widget _buildCTASection(bool isDesktop) {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -399,68 +861,106 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            HomePage.darkBg,
-            HomePage.darkCardBg,
+            ClientTheme.royalBlueMid,
+            ClientTheme.royalBlue,
           ],
         ),
       ),
       padding: EdgeInsets.symmetric(
-        vertical: isDesktop ? 80 : 50,
-        horizontal: 24,
+        vertical: isDesktop ? 60 : 40,
+        horizontal: isDesktop ? 60 : 20,
       ),
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 850),
+          constraints: const BoxConstraints(maxWidth: 800),
           child: Column(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: HomePage.accentCyan.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: HomePage.accentCyan.withOpacity(0.6)),
+              const Icon(
+                Icons.handshake_outlined,
+                color: ClientTheme.accentGold,
+                size: 40,
+              ),
+              const SizedBox(height: 14),
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [
+                    ClientTheme.accentGoldSoft,
+                    ClientTheme.accentGold,
+                    ClientTheme.accentGoldDeep,
+                  ],
+                ).createShader(bounds),
+                child: Text(
+                  "Ready to Join Them?",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.bellota(
+                    fontSize: isDesktop ? 36 : 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.15,
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.people_alt_rounded,
-                      size: 16,
-                      color: HomePage.accentCyan,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "OUR CLIENTS",
-                      style: GoogleFonts.bellota(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: HomePage.accentCyan,
-                        letterSpacing: 2.5,
-                      ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Let's build your brand's success story together.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.bellota(
+                  fontSize: 15,
+                  color: ClientTheme.textMuted,
+                  height: 1.6,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              const SizedBox(height: 26),
+              // Gold gradient CTA
+              Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      ClientTheme.accentGoldSoft,
+                      ClientTheme.accentGold,
+                      ClientTheme.accentGoldDeep,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(50),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ClientTheme.accentGold.withOpacity(0.35),
+                      blurRadius: 18,
+                      offset: const Offset(0, 6),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "The Brands We're Working With",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
-                  fontSize: isDesktop ? 44 : 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
-                  fontSize: 14.5,
-                  color: HomePage.textMuted,
-                  height: 1.6,
-                  fontWeight: FontWeight.w300,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Contact()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    foregroundColor: const Color(0xFF1A1200),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  icon: const Icon(Icons.arrow_forward_rounded,
+                      size: 18, color: Color(0xFF1A1200)),
+                  label: Text(
+                    "START YOUR PROJECT",
+                    style: GoogleFonts.bellota(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -470,6 +970,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     );
   }
 
+  // ============================================================
+  // ALL LOGOS GRID
+  // ============================================================
   Widget _buildAllLogosGrid(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final int crossAxisCount = screenWidth > 900
@@ -478,39 +981,129 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         ? 4
         : 2;
 
-    return Container(
-      color: HomePage.darkBg,
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: clientLogos.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1.3,
-        ),
-        itemBuilder: (context, index) {
-          final int rowIndex = index ~/ crossAxisCount;
-          final int colIndex = index % crossAxisCount;
+    final filtered = _filteredLogos;
 
-          return BottomToTopAnimatedLogoCard(
-            key: _cardKeys[index],
-            imagePath: clientLogos[index]["path"]!,
-            isWhiteLogo: clientLogos[index]["isWhite"] ?? false,
-            rowIndex: rowIndex,
-            colIndex: colIndex,
-          );
-        },
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            ClientTheme.royalBlue,
+            ClientTheme.royalBlueMid,
+          ],
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Section pill
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: ClientTheme.accentGold.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: ClientTheme.accentGold.withOpacity(0.6),
+              ),
+            ),
+            child: Text(
+              "TRUSTED PARTNERSHIPS",
+              style: GoogleFonts.bellota(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: ClientTheme.accentGold,
+                letterSpacing: 2.0,
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            "The Brands We Work With",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.bellota(
+              fontSize: screenWidth > 900 ? 32 : 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 36),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: filtered.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.3,
+            ),
+            itemBuilder: (context, index) {
+              final int rowIndex = index ~/ crossAxisCount;
+              final int colIndex = index % crossAxisCount;
+              // Find global index for key usage
+              final globalIndex = clientLogos
+                  .indexWhere((c) => c["path"] == filtered[index]["path"]);
+              return BottomToTopAnimatedLogoCard(
+                key: _cardKeys[globalIndex >= 0 ? globalIndex : index],
+                imagePath: filtered[index]["path"] as String,
+                isWhiteLogo: filtered[index]["isWhite"] as bool? ?? false,
+                isFeatured: filtered[index]["featured"] as bool? ?? false,
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 }
 
+// ============================================================
+// HERO PATTERN PAINTER
+// ============================================================
+class _ClientHeroPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = ClientTheme.accentGold.withOpacity(0.08)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    for (double i = -size.height; i < size.width + size.height; i += 50) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        paint,
+      );
+    }
+
+    final cyanPaint = Paint()
+      ..color = ClientTheme.accentCyan.withOpacity(0.06)
+      ..strokeWidth = 1.2;
+
+    for (double i = -size.height; i < size.width + size.height; i += 90) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        cyanPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ============================================================
+// BOTTOM-TO-TOP ANIMATED LOGO CARD
+// ============================================================
 class BottomToTopAnimatedLogoCard extends StatefulWidget {
   final String imagePath;
   final bool isWhiteLogo;
+  final bool isFeatured;
   final int rowIndex;
   final int colIndex;
 
@@ -520,6 +1113,7 @@ class BottomToTopAnimatedLogoCard extends StatefulWidget {
     required this.rowIndex,
     required this.colIndex,
     this.isWhiteLogo = false,
+    this.isFeatured = false,
   });
 
   @override
@@ -533,6 +1127,7 @@ class _BottomToTopAnimatedLogoCardState
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
   bool _hasAnimated = false;
 
   @override
@@ -540,12 +1135,12 @@ class _BottomToTopAnimatedLogoCardState
     super.initState();
 
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 650),
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
     _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 0.8), // Enforces bottom-to-top dimension movement
+      begin: const Offset(0.0, 0.6),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -557,7 +1152,15 @@ class _BottomToTopAnimatedLogoCardState
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn,
+      curve: const Interval(0.0, 0.7, curve: Curves.easeIn),
+    ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.85,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
     ));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -576,8 +1179,7 @@ class _BottomToTopAnimatedLogoCardState
       if (position.dy < screenHeight - 50 &&
           (position.dy + renderObject.size.height) > 0) {
         _hasAnimated = true;
-        // Stagger row by row line-by-line horizontally
-        final int delay = (widget.rowIndex * 120) + (widget.colIndex * 50);
+        final int delay = (widget.rowIndex * 100) + (widget.colIndex * 60);
         Future.delayed(Duration(milliseconds: delay), () {
           if (mounted) {
             _controller.forward();
@@ -599,26 +1201,69 @@ class _BottomToTopAnimatedLogoCardState
       position: _offsetAnimation,
       child: FadeTransition(
         opacity: _fadeAnimation,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: widget.isWhiteLogo ? HomePage.darkCardBg : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: widget.isWhiteLogo
-                  ? HomePage.accentCyan.withOpacity(0.4)
-                  : HomePage.accentCyan.withOpacity(0.8),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: _buildCard(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard() {
+    final bool isFeatured = widget.isFeatured;
+    final bool isWhite = widget.isWhiteLogo;
+
+    // Featured cards get gold border + glow; normal cards get subtle cyan
+    final borderColor = isFeatured
+        ? ClientTheme.accentGold
+        : (isWhite
+        ? ClientTheme.accentGold.withOpacity(0.55)
+        : ClientTheme.accentCyan.withOpacity(0.35));
+
+    final shadowColor = isFeatured
+        ? ClientTheme.accentGold.withOpacity(0.30)
+        : (isWhite
+        ? ClientTheme.accentGold.withOpacity(0.12)
+        : ClientTheme.accentCyan.withOpacity(0.14));
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        gradient: isWhite
+            ? const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0D2551),
+            Color(0xFF13315C),
+          ],
+        )
+            : LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.96),
+            Colors.white.withOpacity(0.86),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: borderColor,
+          width: isFeatured ? 1.8 : 1.4,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: shadowColor,
+            blurRadius: isFeatured ? 20 : 14,
+            spreadRadius: isFeatured ? 1 : 0,
+            offset: const Offset(0, 4),
           ),
-          child: Center(
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Logo
+          Center(
             child: Image.asset(
               widget.imagePath,
               fit: BoxFit.contain,
@@ -628,12 +1273,38 @@ class _BottomToTopAnimatedLogoCardState
               ),
             ),
           ),
-        ),
+          // Featured crown badge
+          if (isFeatured)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      ClientTheme.accentGoldSoft,
+                      ClientTheme.accentGoldDeep,
+                    ],
+                  ),
+                ),
+                child: const Icon(
+                  Icons.workspace_premium_rounded,
+                  size: 10,
+                  color: Color(0xFF1A1200),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
 }
 
+// ============================================================
+// ANIMATED FOOTER
+// ============================================================
 class AnimatedFooter extends StatefulWidget {
   final String addressQuery;
   final String phoneNum;
@@ -677,7 +1348,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       duration: const Duration(seconds: 3),
     )..repeat(reverse: true);
 
-    _glowAnimation = Tween<double>(begin: 0.2, end: 0.8).animate(
+    _glowAnimation = Tween<double>(begin: 0.3, end: 0.9).animate(
       CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
     );
   }
@@ -695,7 +1366,16 @@ class _AnimatedFooterState extends State<AnimatedFooter>
 
     return Container(
       width: double.infinity,
-      color: HomePage.darkBg,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            ClientTheme.royalBlue,
+            Color(0xFF05132B),
+          ],
+        ),
+      ),
       child: Column(
         children: [
           AnimatedBuilder(
@@ -707,15 +1387,19 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      HomePage.accentCyan.withOpacity(_glowAnimation.value),
-                      HomePage.accentGold.withOpacity(_glowAnimation.value),
-                      HomePage.accentCyan.withOpacity(_glowAnimation.value),
+                      ClientTheme.accentGold
+                          .withOpacity(_glowAnimation.value),
+                      ClientTheme.accentCyan
+                          .withOpacity(_glowAnimation.value),
+                      ClientTheme.accentGoldDeep
+                          .withOpacity(_glowAnimation.value),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: HomePage.accentCyan.withOpacity(_glowAnimation.value),
-                      blurRadius: 10,
+                      color: ClientTheme.accentGold
+                          .withOpacity(_glowAnimation.value * 0.6),
+                      blurRadius: 12,
                       spreadRadius: 2,
                     ),
                   ],
@@ -732,11 +1416,14 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(flex: 2, child: _buildFooterBrandSection()),
+                    Expanded(
+                        flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 40),
-                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    Expanded(
+                        flex: 2, child: _buildFooterContactSection()),
                     const SizedBox(width: 40),
-                    Expanded(flex: 1, child: _buildFooterSocialSection()),
+                    Expanded(
+                        flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
@@ -754,14 +1441,15 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: HomePage.darkCardBg,
+            color: const Color(0xFF05132B),
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
-                  color: HomePage.textMuted,
+                  color: ClientTheme.textMuted,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -786,7 +1474,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.bellota(
             fontSize: 14,
-            color: HomePage.textMuted,
+            color: ClientTheme.textMuted,
             height: 1.6,
           ),
         ),
@@ -803,87 +1491,68 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: HomePage.accentGold,
+            color: ClientTheme.accentGold,
             letterSpacing: 1.0,
           ),
         ),
         const SizedBox(height: 16),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.location_on_outlined,
+          text: widget.addressQuery,
           onTap: () => widget.onLaunchUrl(widget.googleMapsUrl),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(
-                Icons.location_on_outlined,
-                size: 18,
-                color: HomePage.accentGold,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  widget.addressQuery,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: HomePage.accentWhite,
-                    height: 1.4,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          isMultiLine: true,
         ),
         const SizedBox(height: 12),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.phone_outlined,
+          text: widget.phoneNum,
           onTap: () => widget.onMakeCall(widget.phoneNum),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.phone_outlined,
-                size: 18,
-                color: HomePage.accentGold,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  widget.phoneNum,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: HomePage.textMuted,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
         const SizedBox(height: 12),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.email_outlined,
+          text: widget.emailAddr,
           onTap: () => widget.onSendEmail(widget.emailAddr),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.email_outlined,
-                size: 18,
-                color: HomePage.accentGold,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  widget.emailAddr,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: HomePage.textMuted,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildFooterLink({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+    bool isMultiLine = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          crossAxisAlignment:
+          isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: ClientTheme.accentGold),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                maxLines: isMultiLine ? 3 : 1,
+                style: GoogleFonts.bellota(
+                  fontSize: 13,
+                  color: isMultiLine
+                      ? ClientTheme.accentWhite
+                      : ClientTheme.textMuted,
+                  height: 1.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -896,40 +1565,43 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           style: GoogleFonts.bellota(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: HomePage.accentGold,
+            color: ClientTheme.accentGold,
             letterSpacing: 1.0,
           ),
         ),
         const SizedBox(height: 16),
-        Row(
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
           children: [
-            IconButton(
-              icon: const Icon(
-                FontAwesomeIcons.facebook,
-                size: 20,
-                color: Colors.white,
-              ),
-              onPressed: () => widget.onLaunchUrl(widget.facebookUrl),
-            ),
-            IconButton(
-              icon: const Icon(
-                FontAwesomeIcons.instagram,
-                size: 20,
-                color: Colors.white,
-              ),
-              onPressed: () => widget.onLaunchUrl(widget.instagramUrl),
-            ),
-            IconButton(
-              icon: const Icon(
-                FontAwesomeIcons.linkedin,
-                size: 20,
-                color: Colors.white,
-              ),
-              onPressed: () => widget.onLaunchUrl(widget.linkedInUrl),
-            ),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.facebook, url: widget.facebookUrl),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.instagram, url: widget.instagramUrl),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.linkedin, url: widget.linkedInUrl),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildSocialButton({required IconData icon, required String url}) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: ClientTheme.accentGold.withOpacity(0.6)),
+        boxShadow: [
+          BoxShadow(
+            color: ClientTheme.accentGold.withOpacity(0.10),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 18, color: ClientTheme.accentGold),
+        onPressed: () => widget.onLaunchUrl(url),
+      ),
     );
   }
 }
