@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,18 +18,28 @@ class Contact extends StatefulWidget {
   State<Contact> createState() => _ContactState();
 }
 
-class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
+class _ContactState extends State<Contact> with TickerProviderStateMixin {
   int _selectedIndex = 5;
   int _selectedFormCategory = 0;
 
-  // Colors aligned with HomePage design
-  static const Color brandBlue = Color(0xFF1B64B1);
-  static const Color darkBg = Color(0xFF144F8E);
-  static const Color darkCardBg = Color(0xFF0F3E72);
-  static const Color textMuted = Color(0xFFD0E1F9);
+  // ===== THEME (matches home_page.dart) =====
+  static const Color royalBlue = Color(0xFF0A1F44);
+  static const Color royalBlueMid = Color(0xFF0F2A5C);
+  static const Color darkBg = Color(0xFF0A1F44);
+  static const Color darkCardBg = Color(0xFF0D2551);
+  static const Color glassCard = Color(0xFF13315C);
+
+  static const Color accentGold = Color(0xFFF5C842);
+  static const Color accentGoldDeep = Color(0xFFD4A017);
+  static const Color accentGoldSoft = Color(0xFFFFE08A);
+
+  static const Color accentCyan = Color(0xFF4FC3F7);
+  static const Color accentCyanGlow = Color(0xFF29B6F6);
+  static const Color brandBlue = Color(0xFF1E88E5);
+
   static const Color accentWhite = Colors.white;
-  static const Color accentGold = Color(0xFFFFB703);
-  static const Color accentCyan = Color(0xFF00E5FF);
+  static const Color textMuted = Color(0xFFB8D4F0);
+  static const Color textSoft = Color(0xFFD6E6FA);
 
   final _formKey = GlobalKey<FormState>();
   String? _serviceDr;
@@ -48,6 +59,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
 
   bool _isSubmitting = false;
   late AnimationController _radarAnimationController;
+  late AnimationController _orbController;
+  late AnimationController _pulseController;
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -69,11 +82,23 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       vsync: this,
       duration: const Duration(seconds: 3),
     )..repeat();
+
+    _orbController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 14),
+    )..repeat();
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
     _radarAnimationController.dispose();
+    _orbController.dispose();
+    _pulseController.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -114,13 +139,18 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     }
   }
 
+  // ============================================================
+  // API SUBMISSION — PRESERVED EXACTLY
+  // ============================================================
   Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isSubmitting = true;
-      });
+      setState(() => _isSubmitting = true);
 
-      final List<String> categories = ["General Inquiry", "Get Quote", "Support"];
+      final List<String> categories = [
+        "General Inquiry",
+        "Get Quote",
+        "Support"
+      ];
       final String selectedCategory = categories[_selectedFormCategory];
       final Uri apiUrl =
       Uri.parse("http://192.168.1.103/grow_socialee/send_inquiry.php");
@@ -163,9 +193,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           _emailController.clear();
           _phoneController.clear();
           _messageController.clear();
-          setState(() {
-            _serviceDr = null;
-          });
+          setState(() => _serviceDr = null);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -186,11 +214,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           ),
         );
       } finally {
-        if (mounted) {
-          setState(() {
-            _isSubmitting = false;
-          });
-        }
+        if (mounted) setState(() => _isSubmitting = false);
       }
     }
   }
@@ -204,161 +228,11 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
       backgroundColor: darkBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(75),
-        child: Container(
-          decoration: BoxDecoration(
-            color: darkBg,
-            border: Border(bottom: BorderSide(color: accentCyan.withOpacity(0.3), width: 1.5)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            titleSpacing: 0,
-            title: _buildLogoHeader(),
-            actions: [
-              Builder(
-                builder: (context) => IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  icon: const Icon(Icons.menu_rounded,
-                      color: accentGold, size: 28),
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                ),
-              ),
-              const SizedBox(width: 16),
-            ],
-          ),
-        ),
+        child: _buildAppBar(isDesktop),
       ),
-      endDrawer: Drawer(
-        width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: darkBg,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 28.0, horizontal: 16.0),
-                color: darkCardBg,
-                child: Center(
-                  child: SizedBox(
-                    height: 55,
-                    child: Image.asset(
-                      "assets/photos/Gro_Soc_Image.png",
-                      color: Colors.white,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.image,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Divider(height: 1, thickness: 1, color: accentCyan.withOpacity(0.3)),
-              const SizedBox(height: 12),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    _buildDrawerItem(
-                      index: 0,
-                      icon: Icons.home_rounded,
-                      label: "HOME",
-                      onTap: () {
-                        setState(() => _selectedIndex = 0);
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 1,
-                      icon: Icons.info_outline_rounded,
-                      label: "ABOUT",
-                      onTap: () {
-                        setState(() => _selectedIndex = 1);
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const About()));
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 2,
-                      icon: Icons.group_outlined,
-                      label: "CLIENTS",
-                      onTap: () {
-                        setState(() => _selectedIndex = 2);
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ClientLogoPage()));
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 3,
-                      icon: Icons.task_alt_outlined,
-                      label: "SERVICES",
-                      onTap: () {
-                        setState(() => _selectedIndex = 3);
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Services()));
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 4,
-                      icon: Icons.chat_bubble_outline_rounded,
-                      label: "REVIEWS",
-                      onTap: () {
-                        setState(() => _selectedIndex = 4);
-                        Navigator.pop(context);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Reviews()));
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 5,
-                      icon: Icons.contact_phone_sharp,
-                      label: "CONTACT US",
-                      onTap: () {
-                        setState(() => _selectedIndex = 5);
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Contact()));
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 4,
-                color: accentGold,
-              )
-            ],
-          ),
-        ),
-      ),
+      endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverToBoxAdapter(
             child: _buildAGHeroBanner(screenWidth, isDesktop),
@@ -407,9 +281,90 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             ),
           ),
           SliverToBoxAdapter(
+            child: _buildOrnamentDivider(),
+          ),
+          SliverToBoxAdapter(
             child: _buildAGFooter(context),
           ),
         ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // APP BAR
+  // ============================================================
+  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(75),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              royalBlue,
+              royalBlueMid,
+            ],
+          ),
+          border: Border(
+            bottom: BorderSide(
+              color: accentGold.withOpacity(0.6),
+              width: 1.5,
+            ),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: accentCyan.withOpacity(0.15),
+              blurRadius: 14,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          titleSpacing: 0,
+          title: _buildLogoHeader(),
+          actions: [
+            Builder(
+              builder: (context) => Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () => Scaffold.of(context).openEndDrawer(),
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            accentGold.withOpacity(0.22),
+                            accentGoldDeep.withOpacity(0.12),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: accentGold.withOpacity(0.7),
+                          width: 1.4,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.menu_rounded,
+                        color: accentGold,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
+        ),
       ),
     );
   }
@@ -418,16 +373,193 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        "We are \n Grow Socialee",
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.bellota(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          height: 1.0,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  accentGold.withOpacity(0.25),
+                  accentGoldDeep.withOpacity(0.12),
+                ],
+              ),
+              border: Border.all(
+                color: accentGold.withOpacity(0.7),
+                width: 1.2,
+              ),
+            ),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: accentGold,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Flexible(
+            child: ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [
+                  accentGoldSoft,
+                  accentGold,
+                  accentGoldDeep,
+                ],
+              ).createShader(bounds),
+              child: Text(
+                "We are\nGrow Socialee",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.bellota(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  height: 1.05,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // END DRAWER
+  // ============================================================
+  Widget _buildEndDrawer(double screenWidth, bool isDesktop) {
+    return Drawer(
+      width: isDesktop ? 380 : math.min(screenWidth * 0.85, 340),
+      backgroundColor: royalBlue,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding:
+              const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    royalBlueMid,
+                    glassCard,
+                  ],
+                ),
+              ),
+              child: Center(
+                child: SizedBox(
+                  height: 55,
+                  child: Image.asset(
+                    "assets/photos/Gro_Soc_Image.png",
+                    color: Colors.white,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.image,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Divider(
+                height: 1, thickness: 1, color: accentGold.withOpacity(0.4)),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  _buildDrawerItem(
+                    index: 0,
+                    icon: Icons.home_rounded,
+                    label: "HOME",
+                    onTap: () {
+                      setState(() => _selectedIndex = 0);
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 1,
+                    icon: Icons.info_outline_rounded,
+                    label: "ABOUT",
+                    onTap: () {
+                      setState(() => _selectedIndex = 1);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const About()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 2,
+                    icon: Icons.group_outlined,
+                    label: "CLIENTS",
+                    onTap: () {
+                      setState(() => _selectedIndex = 2);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ClientLogoPage()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 3,
+                    icon: Icons.task_alt_outlined,
+                    label: "SERVICES",
+                    onTap: () {
+                      setState(() => _selectedIndex = 3);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Services()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 4,
+                    icon: Icons.chat_bubble_outline_rounded,
+                    label: "REVIEWS",
+                    onTap: () {
+                      setState(() => _selectedIndex = 4);
+                      Navigator.pop(context);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Reviews()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 5,
+                    icon: Icons.contact_phone_sharp,
+                    label: "CONTACT US",
+                    onTap: () {
+                      setState(() => _selectedIndex = 5);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    accentGoldSoft,
+                    accentGold,
+                    accentGoldDeep,
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -448,15 +580,28 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: onTap,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? accentGold : Colors.transparent,
+              gradient: isSelected
+                  ? const LinearGradient(
+                colors: [
+                  accentGoldSoft,
+                  accentGold,
+                  accentGoldDeep,
+                ],
+              )
+                  : null,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? Colors.black : Colors.white),
+                Icon(
+                  icon,
+                  size: 20,
+                  color: isSelected ? const Color(0xFF1A1200) : Colors.white,
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
@@ -464,14 +609,19 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     style: GoogleFonts.bellota(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.black87 : Colors.white,
+                      color: isSelected
+                          ? const Color(0xFF1A1200)
+                          : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      size: 14, color: Colors.black),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: Color(0xFF1A1200),
+                  ),
               ],
             ),
           ),
@@ -480,146 +630,77 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
+  // ============================================================
+  // HERO BANNER — Left: chapter + headline, Right: trust strip card
+  // ============================================================
   Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+        gradient: RadialGradient(
+          center: Alignment(0.6, -0.3),
+          radius: 1.4,
           colors: [
-            darkBg,
-            darkCardBg,
+            Color(0xFF173F7B),
+            royalBlue,
+            Color(0xFF061733),
           ],
         ),
       ),
       child: Stack(
         children: [
+          ..._buildFloatingOrbs(),
+          Positioned(
+            top: -60,
+            right: -60,
+            child: Container(
+              width: 320,
+              height: 320,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    accentGold.withOpacity(0.10),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
           Positioned.fill(
             child: Opacity(
-              opacity: 0.12,
-              child: CustomPaint(
-                painter: _HeroPatternPainter(),
-              ),
+              opacity: 0.08,
+              child: CustomPaint(painter: _HeroPatternPainter()),
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
               vertical: isDesktop ? 90 : 50,
-              horizontal: isDesktop ? 80 : 24,
+              horizontal: isDesktop ? 60 : 22,
             ),
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 900),
-                child: Column(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: isDesktop
+                    ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: accentCyan.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: accentCyan.withOpacity(0.6)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.chat_bubble_outline_rounded,
-                              size: 14, color: accentCyan),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              "GET IN TOUCH WITH US",
-                              style: GoogleFonts.bellota(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: accentCyan,
-                                letterSpacing: 2.5,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Expanded(
+                      flex: 6,
+                      child: _buildHeroLeftText(),
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      "Let's Build Something Great Together.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.bellota(
-                        fontSize: isDesktop ? 48 : 28,
-                        fontWeight: FontWeight.bold,
-                        color: accentGold,
-                        height: 1.2,
-                      ),
+                    const SizedBox(width: 40),
+                    Expanded(
+                      flex: 5,
+                      child: _buildTrustStripCard(),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Get prompt responses from a friendly, professional and knowledgeable team.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.bellota(
-                        fontSize: isDesktop ? 17 : 14,
-                        color: textMuted,
-                        height: 1.6,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
+                  ],
+                )
+                    : Column(
+                  children: [
+                    _buildHeroLeftText(),
                     const SizedBox(height: 32),
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 12,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentGold,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 28,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            elevation: 8,
-                            shadowColor: accentGold.withOpacity(0.4),
-                          ),
-                          icon: const Icon(Icons.phone_rounded, size: 18, color: Colors.black),
-                          label: Text(
-                            "CALL NOW",
-                            style: GoogleFonts.bellota(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                          onPressed: () => _makePhoneCall(phoneNum),
-                        ),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 28,
-                              vertical: 16,
-                            ),
-                            side: const BorderSide(color: accentCyan, width: 1.8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          icon: const Icon(Icons.email_rounded, size: 18, color: accentCyan),
-                          label: Text(
-                            "EMAIL US",
-                            style: GoogleFonts.bellota(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                          onPressed: () => _sendEmail(emailAddr),
-                        ),
-                      ],
-                    ),
+                    _buildTrustStripCard(),
                   ],
                 ),
               ),
@@ -630,18 +711,518 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
+  Widget _buildHeroLeftText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Chapter pill
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+          decoration: BoxDecoration(
+            color: accentGold.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: accentGold.withOpacity(0.6),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: accentGold.withOpacity(0.10),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.chat_bubble_outline_rounded,
+                size: 14,
+                color: accentGold,
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  "CHAPTER 06 · GET IN TOUCH",
+                  style: GoogleFonts.bellota(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    color: accentGold,
+                    letterSpacing: 2.2,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 22),
+        Text(
+          "Let's Build Something",
+          style: GoogleFonts.bellota(
+            fontSize: 26,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            height: 1.15,
+          ),
+        ),
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [
+              accentGoldSoft,
+              accentGold,
+              accentGoldDeep,
+            ],
+          ).createShader(bounds),
+          child: Text(
+            "Great Together.",
+            style: GoogleFonts.bellota(
+              fontSize: 46,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              height: 1.05,
+              letterSpacing: -1,
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          "Get prompt responses from a friendly, professional and knowledgeable team.",
+          style: GoogleFonts.bellota(
+            fontSize: 15,
+            color: textSoft,
+            height: 1.6,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        const SizedBox(height: 28),
+        Wrap(
+          spacing: 14,
+          runSpacing: 12,
+          children: [
+            _buildGoldGradientButton(
+              icon: Icons.phone_rounded,
+              label: "CALL NOW",
+              onTap: () => _makePhoneCall(phoneNum),
+            ),
+            _buildGlassOutlineButton(
+              icon: Icons.email_rounded,
+              label: "EMAIL US",
+              onTap: () => _sendEmail(emailAddr),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ============================================================
+  // TRUST STRIP CARD (from uploaded image, side of chapter)
+  // ============================================================
+  Widget _buildTrustStripCard() {
+    final List<Map<String, dynamic>> trustItems = [
+      {
+        "icon": Icons.flash_on_rounded,
+        "label": "FAST RESPONSE",
+      },
+      {
+        "icon": Icons.verified_rounded,
+        "label": "TRUSTED AGENCY",
+      },
+      {
+        "icon": Icons.support_agent_rounded,
+        "label": "24/7 SUPPORT",
+      },
+      {
+        "icon": Icons.location_city_rounded,
+        "label": "BHAVNAGAR HQ",
+      },
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.08),
+            Colors.white.withOpacity(0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: accentCyan.withOpacity(0.35),
+          width: 1.3,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentCyan.withOpacity(0.12),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  AnimatedBuilder(
+                    animation: _pulseController,
+                    builder: (context, _) {
+                      return Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: accentCyan,
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentCyan.withOpacity(
+                                  0.4 + 0.5 * _pulseController.value),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    "WHY CHOOSE US",
+                    style: GoogleFonts.bellota(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: accentCyan,
+                      letterSpacing: 2.0,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.green.withOpacity(0.5),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.greenAccent,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      "OPEN",
+                      style: GoogleFonts.bellota(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.greenAccent,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          // Trust items in 2x2 grid
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: trustItems.map((item) {
+              return _buildTrustChip(
+                icon: item["icon"] as IconData,
+                label: item["label"] as String,
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrustChip({
+    required IconData icon,
+    required String label,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            accentCyan.withOpacity(0.08),
+            accentCyan.withOpacity(0.02),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: accentCyan.withOpacity(0.4),
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: accentCyan.withOpacity(0.15),
+              border: Border.all(
+                color: accentCyan.withOpacity(0.5),
+                width: 1,
+              ),
+            ),
+            child: Icon(icon, color: accentCyan, size: 14),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            label,
+            style: GoogleFonts.bellota(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: accentWhite,
+              letterSpacing: 1.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildFloatingOrbs() {
+    return [
+      AnimatedBuilder(
+        animation: _orbController,
+        builder: (context, _) {
+          final t = _orbController.value * 2 * math.pi;
+          return Positioned(
+            top: 100 + math.sin(t) * 30,
+            left: 40 + math.cos(t) * 20,
+            child: _orb(140, accentCyan.withOpacity(0.10)),
+          );
+        },
+      ),
+      AnimatedBuilder(
+        animation: _orbController,
+        builder: (context, _) {
+          final t = _orbController.value * 2 * math.pi + 1.5;
+          return Positioned(
+            bottom: 80 + math.sin(t) * 40,
+            right: 60 + math.cos(t) * 30,
+            child: _orb(180, accentGold.withOpacity(0.08)),
+          );
+        },
+      ),
+      AnimatedBuilder(
+        animation: _orbController,
+        builder: (context, _) {
+          final t = _orbController.value * 2 * math.pi + 3.0;
+          return Positioned(
+            top: 300 + math.sin(t) * 25,
+            right: 200 + math.cos(t) * 20,
+            child: _orb(90, accentCyan.withOpacity(0.14)),
+          );
+        },
+      ),
+    ];
+  }
+
+  Widget _orb(double size, Color color) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(colors: [color, Colors.transparent]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGoldGradientButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            accentGoldSoft,
+            accentGold,
+            accentGoldDeep,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+          BoxShadow(
+            color: accentGold.withOpacity(0.35),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          foregroundColor: const Color(0xFF1A1200),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+        ),
+        icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
+        label: Text(
+          label,
+          style: GoogleFonts.bellota(
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.8,
+          ),
+        ),
+        onPressed: onTap,
+      ),
+    );
+  }
+
+  Widget _buildGlassOutlineButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return OutlinedButton.icon(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.white.withOpacity(0.06),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+        side: BorderSide(
+          color: accentCyan.withOpacity(0.8),
+          width: 1.6,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+      ),
+      icon: Icon(icon, size: 18, color: accentCyan),
+      label: Text(
+        label,
+        style: GoogleFonts.bellota(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.8,
+        ),
+      ),
+      onPressed: onTap,
+    );
+  }
+
+  // ============================================================
+  // ORNAMENT DIVIDER
+  // ============================================================
+  Widget _buildOrnamentDivider() {
+    return Container(
+      width: double.infinity,
+      color: royalBlueMid,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 60,
+              height: 1.2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    accentGold.withOpacity(0.6),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Transform.rotate(
+              angle: 0.785,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [accentGoldSoft, accentGoldDeep],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentGold.withOpacity(0.5),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              width: 60,
+              height: 1.2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    accentGold.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // FORM CARD
+  // ============================================================
   Widget _buildInteractiveFormCard() {
     final categories = ["General Inquiry", "Get Quote", "Support"];
 
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: darkCardBg,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.07),
+            Colors.white.withOpacity(0.02),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: accentCyan.withOpacity(0.4), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: accentCyan.withOpacity(0.10),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -683,7 +1264,12 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: accentCyan.withOpacity(0.15),
+                    gradient: LinearGradient(
+                      colors: [
+                        accentCyan.withOpacity(0.25),
+                        accentCyan.withOpacity(0.10),
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: accentCyan.withOpacity(0.5)),
                   ),
@@ -704,9 +1290,10 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       label: Text(categories[index]),
                       selected: isSelected,
                       selectedColor: accentGold,
-                      backgroundColor: darkBg,
+                      backgroundColor: royalBlue,
                       labelStyle: GoogleFonts.bellota(
-                        color: isSelected ? Colors.black : textMuted,
+                        color:
+                        isSelected ? const Color(0xFF1A1200) : textMuted,
                         fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
                         fontSize: 13,
@@ -714,7 +1301,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                         side: BorderSide(
-                          color: isSelected ? accentGold : accentCyan.withOpacity(0.3),
+                          color: isSelected
+                              ? accentGold
+                              : accentCyan.withOpacity(0.3),
                         ),
                       ),
                       onSelected: (bool selected) {
@@ -763,8 +1352,9 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             DropdownButtonFormField<String>(
               value: _serviceDr,
               isExpanded: true,
-              dropdownColor: darkCardBg,
-              style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.white),
+              dropdownColor: royalBlue,
+              style:
+              GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.white),
               iconEnabledColor: accentGold,
               decoration: InputDecoration(
                 labelText: "Select Service",
@@ -773,7 +1363,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 prefixIcon: const Icon(Icons.cleaning_services_outlined,
                     color: accentCyan, size: 20),
                 filled: true,
-                fillColor: darkBg,
+                fillColor: royalBlue,
                 contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 enabledBorder: OutlineInputBorder(
@@ -806,9 +1396,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 );
               }).toList(),
               onChanged: (newValue) {
-                setState(() {
-                  _serviceDr = newValue;
-                });
+                setState(() => _serviceDr = newValue);
               },
               validator: (v) =>
               v == null || v.isEmpty ? "Please select a service" : null,
@@ -827,46 +1415,64 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: accentGold,
-                  foregroundColor: Colors.black,
-                  elevation: 8,
-                  shadowColor: accentGold.withOpacity(0.4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              height: 54,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      accentGoldSoft,
+                      accentGold,
+                      accentGoldDeep,
+                    ],
                   ),
-                ),
-                onPressed: _isSubmitting ? null : _handleSubmit,
-                child: _isSubmitting
-                    ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                    strokeWidth: 2.5,
-                  ),
-                )
-                    : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.near_me_rounded,
-                        color: Colors.black, size: 20),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        "SUBMIT INQUIRY",
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.bellota(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black,
-                          letterSpacing: 1.1,
-                        ),
-                      ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentGold.withOpacity(0.35),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
                     ),
                   ],
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    foregroundColor: const Color(0xFF1A1200),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: _isSubmitting ? null : _handleSubmit,
+                  child: _isSubmitting
+                      ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      color: Color(0xFF1A1200),
+                      strokeWidth: 2.5,
+                    ),
+                  )
+                      : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.near_me_rounded,
+                          color: Color(0xFF1A1200), size: 20),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          "SUBMIT INQUIRY",
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.bellota(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF1A1200),
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -876,6 +1482,51 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      validator: validator,
+      style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: GoogleFonts.bellota(color: textMuted, fontSize: 14),
+        prefixIcon: Icon(icon, color: accentCyan, size: 20),
+        filled: true,
+        fillColor: royalBlue,
+        contentPadding:
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: accentCyan.withOpacity(0.3)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: accentGold, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.redAccent),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // SIDEBAR CARDS
+  // ============================================================
   Widget _buildInteractiveContactSidebar() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -884,13 +1535,20 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: darkCardBg,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                accentGold.withOpacity(0.12),
+                accentGoldDeep.withOpacity(0.04),
+              ],
+            ),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: accentGold, width: 1.5),
+            border: Border.all(color: accentGold.withOpacity(0.6), width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 15,
+                color: accentGold.withOpacity(0.20),
+                blurRadius: 18,
                 offset: const Offset(0, 6),
               ),
             ],
@@ -900,12 +1558,20 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
-                decoration: const BoxDecoration(
-                  color: darkBg,
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    colors: [accentGoldSoft, accentGoldDeep],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentGold.withOpacity(0.35),
+                      blurRadius: 12,
+                    ),
+                  ],
                 ),
                 child: const Icon(Icons.timer_rounded,
-                    color: accentGold, size: 26),
+                    color: Color(0xFF1A1200), size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -981,7 +1647,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     bool isStatusBadge = false,
   }) {
     return Material(
-      color: darkCardBg,
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
@@ -989,8 +1655,16 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.06),
+                Colors.white.withOpacity(0.02),
+              ],
+            ),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: accentCyan.withOpacity(0.3), width: 1.5),
+            border: Border.all(color: accentCyan.withOpacity(0.3), width: 1.4),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -998,8 +1672,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: darkBg,
                   shape: BoxShape.circle,
+                  color: accentCyan.withOpacity(0.15),
                   border: Border.all(color: accentCyan.withOpacity(0.5)),
                 ),
                 child: Icon(icon, color: accentCyan, size: 22),
@@ -1044,13 +1718,26 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: Colors.greenAccent,
-                                shape: BoxShape.circle,
-                              ),
+                            AnimatedBuilder(
+                              animation: _pulseController,
+                              builder: (context, _) {
+                                return Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color: Colors.greenAccent,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.greenAccent.withOpacity(
+                                            0.4 + 0.5 * _pulseController.value),
+                                        blurRadius: 8,
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(width: 6),
                             Flexible(
@@ -1102,18 +1789,28 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
+  // ============================================================
+  // GOOGLE MAP SECTION (Animated Radar)
+  // ============================================================
   Widget _buildGoogleMapSection() {
     return Container(
       width: double.infinity,
       height: 380,
       decoration: BoxDecoration(
-        color: darkCardBg,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.06),
+            Colors.white.withOpacity(0.02),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: accentCyan.withOpacity(0.4), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 15,
+            color: accentCyan.withOpacity(0.15),
+            blurRadius: 20,
             offset: const Offset(0, 5),
           ),
         ],
@@ -1128,7 +1825,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                 return Container(
                   width: double.infinity,
                   height: double.infinity,
-                  color: darkBg,
+                  color: royalBlue,
                   child: Stack(
                     children: [
                       Positioned.fill(
@@ -1154,7 +1851,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                             child: const Icon(
                               Icons.location_on_rounded,
                               size: 28,
-                              color: darkBg,
+                              color: Color(0xFF0A1F44),
                             ),
                           ),
                         ),
@@ -1171,7 +1868,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: darkCardBg,
+                  color: royalBlue.withOpacity(0.85),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: accentGold, width: 1.5),
                   boxShadow: [
@@ -1187,8 +1884,11 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: darkBg,
+                        color: accentGold.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: accentGold.withOpacity(0.5),
+                        ),
                       ),
                       child: const Icon(Icons.storefront_rounded,
                           color: accentGold, size: 24),
@@ -1254,13 +1954,14 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: darkBg,
+                        backgroundColor: Colors.white.withOpacity(0.06),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 8),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: accentCyan, width: 1.5),
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(
+                              color: accentCyan.withOpacity(0.7), width: 1.5),
                         ),
                       ),
                       onPressed: () => _launchUrlString(googleMapsUrl),
@@ -1289,36 +1990,57 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: accentGold,
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            accentGoldSoft,
+                            accentGold,
+                            accentGoldDeep,
+                          ],
                         ),
-                      ),
-                      onPressed: () => _launchUrlString(googleDirectionsUrl),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.directions_rounded, size: 18, color: Colors.black),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              "Get Directions",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.bellota(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: accentGold.withOpacity(0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
                         ],
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          foregroundColor: const Color(0xFF1A1200),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () => _launchUrlString(googleDirectionsUrl),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.directions_rounded,
+                                size: 18, color: Color(0xFF1A1200)),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                "Get Directions",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.bellota(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1A1200),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -1331,58 +2053,29 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      validator: validator,
-      style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.white),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: GoogleFonts.bellota(color: textMuted, fontSize: 14),
-        prefixIcon: Icon(icon, color: accentCyan, size: 20),
-        filled: true,
-        fillColor: darkBg,
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: accentCyan.withOpacity(0.3)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: accentGold, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.redAccent),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
-        ),
-      ),
-    );
-  }
-
+  // ============================================================
+  // FOOTER
+  // ============================================================
   Widget _buildAGFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      color: darkBg,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            royalBlue,
+            Color(0xFF05132B),
+          ],
+        ),
+      ),
       child: Column(
         children: [
-          Divider(height: 1, thickness: 1, color: accentCyan.withOpacity(0.3)),
+          Divider(
+              height: 1, thickness: 1, color: accentGold.withOpacity(0.4)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -1392,7 +2085,8 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(flex: 2, child: _buildFooterBrandSection()),
+                    Expanded(
+                        flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 40),
                     Expanded(
                         flex: 2, child: _buildFooterContactSection()),
@@ -1416,7 +2110,7 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: darkCardBg,
+            color: const Color(0xFF05132B),
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
@@ -1476,71 +2170,61 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
           ),
         ),
         const SizedBox(height: 16),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.location_on_outlined,
+          text: addressQuery,
           onTap: () => _launchUrlString(googleMapsUrl),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.location_on_outlined,
-                  size: 18, color: accentGold),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  addressQuery,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: accentWhite,
-                    height: 1.4,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          isMultiLine: true,
         ),
         const SizedBox(height: 12),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.phone_outlined,
+          text: phoneNum,
           onTap: () => _makePhoneCall(phoneNum),
-          child: Row(
-            children: [
-              const Icon(Icons.phone_outlined, size: 18, color: accentGold),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  phoneNum,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: textMuted,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
         const SizedBox(height: 12),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.email_outlined,
+          text: emailAddr,
           onTap: () => _sendEmail(emailAddr),
-          child: Row(
-            children: [
-              const Icon(Icons.email_outlined, size: 18, color: accentGold),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  emailAddr,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: textMuted,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildFooterLink({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+    bool isMultiLine = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          crossAxisAlignment:
+          isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: accentGold),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                maxLines: isMultiLine ? 3 : 1,
+                style: GoogleFonts.bellota(
+                  fontSize: 13,
+                  color: isMultiLine ? Colors.white : textMuted,
+                  height: 1.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1559,36 +2243,49 @@ class _ContactState extends State<Contact> with SingleTickerProviderStateMixin {
         ),
         const SizedBox(height: 16),
         Wrap(
-          spacing: 4,
-          runSpacing: 4,
+          spacing: 10,
+          runSpacing: 10,
           children: [
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.facebook,
-                  size: 20, color: Colors.white),
-              onPressed: () => _launchUrlString(facebookUrl),
-            ),
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.instagram,
-                  size: 20, color: Colors.white),
-              onPressed: () => _launchUrlString(instagramUrl),
-            ),
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.linkedin,
-                  size: 20, color: Colors.white),
-              onPressed: () => _launchUrlString(linkedInUrl),
-            ),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.facebook, url: facebookUrl),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.instagram, url: instagramUrl),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.linkedin, url: linkedInUrl),
           ],
         ),
       ],
     );
   }
+
+  Widget _buildSocialButton({required IconData icon, required String url}) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: accentGold.withOpacity(0.6)),
+        boxShadow: [
+          BoxShadow(
+            color: accentGold.withOpacity(0.10),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 18, color: accentGold),
+        onPressed: () => _launchUrlString(url),
+      ),
+    );
+  }
 }
 
+// ============================================================
+// HERO PATTERN PAINTER
+// ============================================================
 class _HeroPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.08)
+      ..color = const Color(0xFFF5C842).withOpacity(0.06)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
@@ -1599,12 +2296,26 @@ class _HeroPatternPainter extends CustomPainter {
         paint,
       );
     }
+
+    final cyanPaint = Paint()
+      ..color = const Color(0xFF4FC3F7).withOpacity(0.05)
+      ..strokeWidth = 1.2;
+    for (double i = -size.height; i < size.width + size.height; i += 80) {
+      canvas.drawLine(
+        Offset(i, 0),
+        Offset(i + size.height, size.height),
+        cyanPaint,
+      );
+    }
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
+// ============================================================
+// MAP GRID PAINTER (Animated Radar)
+// ============================================================
 class _MapGridPainter extends CustomPainter {
   final double animationValue;
 
@@ -1626,7 +2337,7 @@ class _MapGridPainter extends CustomPainter {
     }
 
     final roadPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = Colors.white.withOpacity(0.25)
       ..strokeWidth = 4.0
       ..style = PaintingStyle.stroke;
 
@@ -1641,7 +2352,7 @@ class _MapGridPainter extends CustomPainter {
     final currentRadius = maxRadius * animationValue;
 
     final radarPaint = Paint()
-      ..color = Colors.white.withOpacity((1 - animationValue) * 0.5)
+      ..color = const Color(0xFF4FC3F7).withOpacity((1 - animationValue) * 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,22 +17,36 @@ class Reviews extends StatefulWidget {
   State<Reviews> createState() => _ReviewsState();
 }
 
-class _ReviewsState extends State<Reviews> {
-  int _selectedIndex = 4; // Reviews tab active
+class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
+  int _selectedIndex = 4;
 
-  // Base Blue & White Theme matched with HomePage
-  static const Color brandBlue = Color(0xFF1B64B1);
-  static const Color darkBg = Color(0xFF144F8E);
-  static const Color darkCardBg = Color(0xFF0F3E72);
+  // ===== THEME (matches home_page.dart) =====
+  static const Color royalBlue = Color(0xFF0A1F44);
+  static const Color royalBlueMid = Color(0xFF0F2A5C);
+  static const Color darkBg = Color(0xFF0A1F44);
+  static const Color darkCardBg = Color(0xFF0D2551);
+  static const Color glassCard = Color(0xFF13315C);
+
+  static const Color accentGold = Color(0xFFF5C842);
+  static const Color accentGoldDeep = Color(0xFFD4A017);
+  static const Color accentGoldSoft = Color(0xFFFFE08A);
+
+  static const Color accentCyan = Color(0xFF4FC3F7);
+  static const Color accentCyanGlow = Color(0xFF29B6F6);
+  static const Color brandBlue = Color(0xFF1E88E5);
+
   static const Color accentWhite = Colors.white;
-  static const Color textMuted = Color(0xFFD0E1F9);
+  static const Color textMuted = Color(0xFFB8D4F0);
+  static const Color textSoft = Color(0xFFD6E6FA);
 
-  // Eye-Catching Secondary Accent Colors from HomePage
-  static const Color accentGold = Color(0xFFFFB703);
-  static const Color accentCyan = Color(0xFF00E5FF);
+  // Compatibility aliases
+  static const Color textMutedLegacy = Color(0xFFB8D4F0);
 
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey<_StatsSectionState> _statsKey = GlobalKey<_StatsSectionState>();
+  final GlobalKey<_ReviewsStatsState> _statsKey = GlobalKey<_ReviewsStatsState>();
+
+  late AnimationController _orbController;
+  late AnimationController _pulseController;
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -46,7 +61,6 @@ class _ReviewsState extends State<Reviews> {
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
   final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
-  // Detailed Client Reviews List
   final List<Map<String, String>> clientReviews = [
     {
       "name": "Dr. Jinali Modi",
@@ -62,7 +76,7 @@ class _ReviewsState extends State<Reviews> {
       "company": "Bindu Decorators",
       "rating": "4.0",
       "review":
-      "I am pleased with the social media management services provided. They have effectively increased my followers, achieving the target set within the expected timeframe. Their strategic approach delivered great value for money, and their consistent efforts have helped enhance my brand’s online presence.",
+      "I am pleased with the social media management services provided. They have effectively increased my followers, achieving the target set within the expected timeframe. Their strategic approach delivered great value for money, and their consistent efforts have helped enhance my brand's online presence.",
       "tag": "Brand Marketing",
       "isFeatured": "false"
     },
@@ -72,6 +86,16 @@ class _ReviewsState extends State<Reviews> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScrollCheck);
+
+    _orbController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 14),
+    )..repeat();
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
   }
 
   void _onScrollCheck() {
@@ -84,6 +108,8 @@ class _ReviewsState extends State<Reviews> {
   void dispose() {
     _scrollController.removeListener(_onScrollCheck);
     _scrollController.dispose();
+    _orbController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -129,176 +155,32 @@ class _ReviewsState extends State<Reviews> {
       backgroundColor: darkBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(75),
-        child: Container(
-          decoration: BoxDecoration(
-            color: darkBg,
-            border: Border(bottom: BorderSide(color: accentCyan.withOpacity(0.3), width: 1.5)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            titleSpacing: 0,
-            title: _buildLogoHeader(),
-            actions: [
-              Builder(
-                builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu_rounded, color: accentGold, size: 28),
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                ),
-              ),
-              const SizedBox(width: 12),
-            ],
-          ),
-        ),
+        child: _buildAppBar(isDesktop),
       ),
-      endDrawer: Drawer(
-        width: isDesktop ? 360 : screenWidth * 0.8,
-        backgroundColor: darkBg,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
-                color: darkCardBg,
-                child: Center(
-                  child: SizedBox(
-                    height: 55,
-                    child: Image.asset(
-                      "assets/photos/Gro_Soc_Image.png",
-                      color: Colors.white,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.image,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Divider(height: 1, thickness: 1, color: accentCyan.withOpacity(0.3)),
-              const SizedBox(height: 12),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    _buildDrawerItem(
-                      index: 0,
-                      icon: Icons.home_rounded,
-                      label: "HOME",
-                      onTap: () {
-                        setState(() => _selectedIndex = 0);
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const HomePage()),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 1,
-                      icon: Icons.info_outline_rounded,
-                      label: "ABOUT",
-                      onTap: () {
-                        setState(() => _selectedIndex = 1);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const About()),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 2,
-                      icon: Icons.group_outlined,
-                      label: "CLIENTS",
-                      onTap: () {
-                        setState(() => _selectedIndex = 2);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ClientLogoPage()),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 3,
-                      icon: Icons.task_alt_outlined,
-                      label: "SERVICES",
-                      onTap: () {
-                        setState(() => _selectedIndex = 3);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Services()),
-                        );
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 4,
-                      icon: Icons.chat_bubble_outline_rounded,
-                      label: "REVIEWS",
-                      onTap: () {
-                        setState(() => _selectedIndex = 4);
-                        Navigator.pop(context);
-                      },
-                    ),
-                    _buildDrawerItem(
-                      index: 5,
-                      icon: Icons.contact_phone_sharp,
-                      label: "CONTACT US",
-                      onTap: () {
-                        setState(() => _selectedIndex = 5);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Contact()),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Container(height: 4, color: accentGold)
-            ],
-          ),
-        ),
-      ),
+      endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: CustomScrollView(
         controller: _scrollController,
+        physics: const BouncingScrollPhysics(),
         slivers: [
-          // Hero Banner matching HomePage gradient and typography
           SliverToBoxAdapter(
             child: _buildHeroBanner(screenWidth, isDesktop),
           ),
-
-          // Highlighting Auto-Scrolling Counter Stats Bar
           SliverToBoxAdapter(
-            child: StatsSection(key: _statsKey, isDesktop: isDesktop),
+            child: _ReviewsStats(key: _statsKey, isDesktop: isDesktop),
           ),
-
-          // Highlighted Featured Review Spotlight
           SliverToBoxAdapter(
             child: _buildFeaturedReviewSpotlight(isDesktop),
           ),
-
-          // Alternating Card Style Review Showcase
+          SliverToBoxAdapter(
+            child: _buildOrnamentDivider(),
+          ),
           SliverToBoxAdapter(
             child: _buildReviewsSection(isDesktop),
           ),
-
-          // Google Review Call-To-Action Container
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
+              padding:
+              const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
               child: Center(
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 1100),
@@ -307,12 +189,88 @@ class _ReviewsState extends State<Reviews> {
               ),
             ),
           ),
-
-          // HomePage Matching Footer Section
           SliverToBoxAdapter(
             child: _buildFooter(context),
           ),
         ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // APP BAR
+  // ============================================================
+  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(75),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              royalBlue,
+              royalBlueMid,
+            ],
+          ),
+          border: Border(
+            bottom: BorderSide(
+              color: accentGold.withOpacity(0.6),
+              width: 1.5,
+            ),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: accentCyan.withOpacity(0.15),
+              blurRadius: 14,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          titleSpacing: 0,
+          title: _buildLogoHeader(),
+          actions: [
+            Builder(
+              builder: (context) => Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () => Scaffold.of(context).openEndDrawer(),
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            accentGold.withOpacity(0.22),
+                            accentGoldDeep.withOpacity(0.12),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: accentGold.withOpacity(0.7),
+                          width: 1.4,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.menu_rounded,
+                        color: accentGold,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
+        ),
       ),
     );
   }
@@ -324,20 +282,193 @@ class _ReviewsState extends State<Reviews> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  accentGold.withOpacity(0.25),
+                  accentGoldDeep.withOpacity(0.12),
+                ],
+              ),
+              border: Border.all(
+                color: accentGold.withOpacity(0.7),
+                width: 1.2,
+              ),
+            ),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: accentGold,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 12),
           Flexible(
-            child: Text(
-              "We are \n Grow Socialee",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.bellota(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                height: 1.0,
+            child: ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [
+                  accentGoldSoft,
+                  accentGold,
+                  accentGoldDeep,
+                ],
+              ).createShader(bounds),
+              child: Text(
+                "We are\nGrow Socialee",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.bellota(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  height: 1.05,
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // END DRAWER
+  // ============================================================
+  Widget _buildEndDrawer(double screenWidth, bool isDesktop) {
+    return Drawer(
+      width: isDesktop ? 380 : math.min(screenWidth * 0.85, 340),
+      backgroundColor: royalBlue,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding:
+              const EdgeInsets.symmetric(vertical: 28.0, horizontal: 16.0),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    royalBlueMid,
+                    glassCard,
+                  ],
+                ),
+              ),
+              child: Center(
+                child: SizedBox(
+                  height: 55,
+                  child: Image.asset(
+                    "assets/photos/Gro_Soc_Image.png",
+                    color: Colors.white,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.image,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Divider(
+                height: 1, thickness: 1, color: accentGold.withOpacity(0.4)),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  _buildDrawerItem(
+                    index: 0,
+                    icon: Icons.home_rounded,
+                    label: "HOME",
+                    onTap: () {
+                      setState(() => _selectedIndex = 0);
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 1,
+                    icon: Icons.info_outline_rounded,
+                    label: "ABOUT",
+                    onTap: () {
+                      setState(() => _selectedIndex = 1);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const About()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 2,
+                    icon: Icons.group_outlined,
+                    label: "CLIENTS",
+                    onTap: () {
+                      setState(() => _selectedIndex = 2);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ClientLogoPage()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 3,
+                    icon: Icons.task_alt_outlined,
+                    label: "SERVICES",
+                    onTap: () {
+                      setState(() => _selectedIndex = 3);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Services()));
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 4,
+                    icon: Icons.chat_bubble_outline_rounded,
+                    label: "REVIEWS",
+                    onTap: () {
+                      setState(() => _selectedIndex = 4);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  _buildDrawerItem(
+                    index: 5,
+                    icon: Icons.contact_phone_sharp,
+                    label: "CONTACT US",
+                    onTap: () {
+                      setState(() => _selectedIndex = 5);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Contact()));
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: 4,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    accentGoldSoft,
+                    accentGold,
+                    accentGoldDeep,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -357,15 +488,28 @@ class _ReviewsState extends State<Reviews> {
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: onTap,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? accentGold : Colors.transparent,
+              gradient: isSelected
+                  ? const LinearGradient(
+                colors: [
+                  accentGoldSoft,
+                  accentGold,
+                  accentGoldDeep,
+                ],
+              )
+                  : null,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: isSelected ? Colors.black : Colors.white),
+                Icon(
+                  icon,
+                  size: 20,
+                  color: isSelected ? const Color(0xFF1A1200) : Colors.white,
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
@@ -373,13 +517,19 @@ class _ReviewsState extends State<Reviews> {
                     style: GoogleFonts.bellota(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.black87 : Colors.white,
+                      color: isSelected
+                          ? const Color(0xFF1A1200)
+                          : Colors.white,
                       letterSpacing: 1.0,
                     ),
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.black),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: Color(0xFF1A1200),
+                  ),
               ],
             ),
           ),
@@ -388,87 +538,83 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
+  // ============================================================
+  // HERO BANNER
+  // ============================================================
   Widget _buildHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+        gradient: RadialGradient(
+          center: Alignment(0.6, -0.3),
+          radius: 1.4,
           colors: [
-            darkBg,
-            darkCardBg,
+            Color(0xFF173F7B),
+            royalBlue,
+            Color(0xFF061733),
           ],
         ),
       ),
       child: Stack(
         children: [
+          // Floating orbs
+          ..._buildFloatingOrbs(),
+          Positioned(
+            top: -60,
+            right: -60,
+            child: Container(
+              width: 320,
+              height: 320,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    accentGold.withOpacity(0.10),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
           Positioned.fill(
             child: Opacity(
-              opacity: 0.10,
+              opacity: 0.06,
               child: Image.asset(
                 "assets/photos/image.png",
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const SizedBox(),
+                errorBuilder: (context, error, stackTrace) =>
+                const SizedBox(),
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 110 : 65,
-              horizontal: isDesktop ? 80 : 24,
+              vertical: isDesktop ? 90 : 55,
+              horizontal: isDesktop ? 60 : 22,
             ),
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 950),
-                child: Column(
+                constraints: const BoxConstraints(maxWidth: 1100),
+                child: isDesktop
+                    ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: accentCyan.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: accentCyan.withOpacity(0.6)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.star_rounded, size: 16, color: accentCyan),
-                          const SizedBox(width: 8),
-                          Text(
-                            "CLIENT TESTIMONIALS",
-                            style: GoogleFonts.bellota(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: accentCyan,
-                              letterSpacing: 2.5,
-                            ),
-                          ),
-                        ],
-                      ),
+                    Expanded(
+                      flex: 6,
+                      child: _buildHeroLeftText(),
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      "Proven Impact & Authentic Client Voices.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.bellota(
-                        fontSize: isDesktop ? 48 : 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        height: 1.1,
-                      ),
+                    const SizedBox(width: 48),
+                    Expanded(
+                      flex: 5,
+                      child: _buildHeroRatingCard(),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Discover real experiences from brand owners and business partners who transformed their digital footprint with Grow Socialee.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.bellota(
-                        fontSize: isDesktop ? 17 : 13,
-                        color: textMuted,
-                        height: 1.6,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
+                  ],
+                )
+                    : Column(
+                  children: [
+                    _buildHeroLeftText(),
+                    const SizedBox(height: 40),
+                    _buildHeroRatingCard(),
                   ],
                 ),
               ),
@@ -479,121 +625,631 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
+  List<Widget> _buildFloatingOrbs() {
+    return [
+      AnimatedBuilder(
+        animation: _orbController,
+        builder: (context, _) {
+          final t = _orbController.value * 2 * math.pi;
+          return Positioned(
+            top: 100 + math.sin(t) * 30,
+            left: 40 + math.cos(t) * 20,
+            child: _orb(140, accentCyan.withOpacity(0.10)),
+          );
+        },
+      ),
+      AnimatedBuilder(
+        animation: _orbController,
+        builder: (context, _) {
+          final t = _orbController.value * 2 * math.pi + 1.5;
+          return Positioned(
+            bottom: 80 + math.sin(t) * 40,
+            right: 60 + math.cos(t) * 30,
+            child: _orb(180, accentGold.withOpacity(0.08)),
+          );
+        },
+      ),
+      AnimatedBuilder(
+        animation: _orbController,
+        builder: (context, _) {
+          final t = _orbController.value * 2 * math.pi + 3.0;
+          return Positioned(
+            top: 300 + math.sin(t) * 25,
+            right: 200 + math.cos(t) * 20,
+            child: _orb(90, accentCyan.withOpacity(0.14)),
+          );
+        },
+      ),
+    ];
+  }
+
+  Widget _orb(double size, Color color) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(colors: [color, Colors.transparent]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeroLeftText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+          decoration: BoxDecoration(
+            color: accentGold.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: accentGold.withOpacity(0.6),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: accentGold.withOpacity(0.10),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.star_rounded,
+                color: accentGold,
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "CHAPTER 05 · CLIENT TESTIMONIALS",
+                style: GoogleFonts.bellota(
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w700,
+                  color: accentGold,
+                  letterSpacing: 2.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 22),
+        Text(
+          "Proven Impact &",
+          style: GoogleFonts.bellota(
+            fontSize: 26,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            height: 1.15,
+          ),
+        ),
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [
+              accentGoldSoft,
+              accentGold,
+              accentGoldDeep,
+            ],
+          ).createShader(bounds),
+          child: Text(
+            "Authentic Voices.",
+            style: GoogleFonts.bellota(
+              fontSize: 42,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              height: 1.1,
+              letterSpacing: -0.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          "Discover real experiences from brand owners and business partners who transformed their digital footprint with Grow Socialee.",
+          style: GoogleFonts.bellota(
+            fontSize: 15,
+            color: textSoft,
+            height: 1.6,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        const SizedBox(height: 28),
+        // Pulsing live indicator
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: accentCyan.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: accentCyan.withOpacity(0.5),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedBuilder(
+                animation: _pulseController,
+                builder: (context, _) {
+                  return Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: accentCyan,
+                      boxShadow: [
+                        BoxShadow(
+                          color: accentCyan.withOpacity(
+                              0.4 + 0.5 * _pulseController.value),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 10),
+              Text(
+                "20+ VERIFIED REVIEWS ON GOOGLE",
+                style: GoogleFonts.bellota(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: accentCyan,
+                  letterSpacing: 1.6,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeroRatingCard() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.08),
+            Colors.white.withOpacity(0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: accentCyan.withOpacity(0.35),
+          width: 1.3,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentCyan.withOpacity(0.15),
+            blurRadius: 22,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "GOOGLE RATING",
+                style: GoogleFonts.bellota(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: accentCyan,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      accentGoldSoft.withOpacity(0.25),
+                      accentGoldDeep.withOpacity(0.12),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: accentGold.withOpacity(0.5),
+                  ),
+                ),
+                child: const Icon(
+                  FontAwesomeIcons.google,
+                  size: 16,
+                  color: accentGold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [
+                    accentGoldSoft,
+                    accentGold,
+                    accentGoldDeep,
+                  ],
+                ).createShader(bounds),
+                child: Text(
+                  "4.9",
+                  style: GoogleFonts.bellota(
+                    fontSize: 62,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.0,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  "/ 5.0",
+                  style: GoogleFonts.bellota(
+                    fontSize: 16,
+                    color: textMuted,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: List.generate(
+              5,
+                  (i) => const Padding(
+                padding: EdgeInsets.only(right: 4),
+                child: Icon(
+                  Icons.star_rounded,
+                  color: accentGold,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Divider(color: Colors.white.withOpacity(0.12), height: 1),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 20,
+            runSpacing: 10,
+            children: [
+              _buildMiniStat("99%", "Retention"),
+              _buildMiniStat("20+", "Reviews"),
+              _buildMiniStat("50+", "Clients"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMiniStat(String value, String label) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [accentGoldSoft, accentGoldDeep],
+          ).createShader(bounds),
+          child: Text(
+            value,
+            style: GoogleFonts.bellota(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              height: 1.0,
+            ),
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: GoogleFonts.bellota(
+            fontSize: 11,
+            color: textMuted,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ============================================================
+  // FEATURED SPOTLIGHT
+  // ============================================================
   Widget _buildFeaturedReviewSpotlight(bool isDesktop) {
-    final featured = clientReviews.firstWhere((r) => r["isFeatured"] == "true");
+    final featured =
+    clientReviews.firstWhere((r) => r["isFeatured"] == "true");
 
     return Container(
-      color: darkBg,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            royalBlue,
+            royalBlueMid,
+          ],
+        ),
+      ),
       padding: EdgeInsets.symmetric(
-        vertical: 40,
+        vertical: 50,
         horizontal: isDesktop ? 60 : 20,
       ),
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1100),
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: darkCardBg,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: accentGold, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.25),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: accentGold,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      "FEATURED STORY",
-                      style: GoogleFonts.bellota(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: List.generate(
-                      5,
-                          (index) => const Icon(Icons.star_rounded, color: accentGold, size: 20),
-                    ),
-                  ),
+          child: Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withOpacity(0.08),
+                  Colors.white.withOpacity(0.02),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                "\"${featured["review"]!}\"",
-                style: GoogleFonts.bellota(
-                  fontSize: isDesktop ? 16 : 14,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                  height: 1.6,
-                  fontStyle: FontStyle.italic,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: accentGold.withOpacity(0.7),
+                width: 1.6,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: accentGold.withOpacity(0.22),
+                  blurRadius: 28,
+                  offset: const Offset(0, 8),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: accentGold,
-                    child: Text(
-                      featured["name"]![0],
-                      style: GoogleFonts.bellota(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                // Giant quote mark
+                Positioned(
+                  top: -30,
+                  right: -10,
+                  child: Text(
+                    '"',
+                    style: GoogleFonts.bellota(
+                      fontSize: 180,
+                      fontWeight: FontWeight.bold,
+                      color: accentGold.withOpacity(0.12),
+                      height: 1,
                     ),
                   ),
-                  const SizedBox(width: 14),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        featured["name"]!,
-                        style: GoogleFonts.bellota(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: accentGold,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 7),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                accentGoldSoft,
+                                accentGold,
+                                accentGoldDeep,
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentGold.withOpacity(0.35),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.workspace_premium_rounded,
+                                size: 12,
+                                color: Color(0xFF1A1200),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "FEATURED STORY",
+                                style: GoogleFonts.bellota(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: const Color(0xFF1A1200),
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        featured["company"]!,
-                        style: GoogleFonts.bellota(
-                          fontSize: 13,
-                          color: textMuted,
+                        Row(
+                          children: List.generate(
+                            5,
+                                (i) => const Icon(
+                              Icons.star_rounded,
+                              color: accentGold,
+                              size: 20,
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 22),
+                    Text(
+                      '"${featured["review"]!}"',
+                      style: GoogleFonts.bellota(
+                        fontSize: isDesktop ? 17 : 14.5,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                        height: 1.65,
+                        fontStyle: FontStyle.italic,
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    ),
+                    const SizedBox(height: 26),
+                    Divider(color: Colors.white.withOpacity(0.12), height: 1),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              colors: [
+                                accentGoldSoft,
+                                accentGoldDeep,
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentGold.withOpacity(0.35),
+                                blurRadius: 14,
+                              ),
+                            ],
+                          ),
+                          child: CircleAvatar(
+                            radius: 22,
+                            backgroundColor: royalBlue,
+                            child: Text(
+                              featured["name"]![0],
+                              style: GoogleFonts.bellota(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: accentGold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              featured["name"]!,
+                              style: GoogleFonts.bellota(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: accentGold,
+                              ),
+                            ),
+                            Text(
+                              featured["company"]!,
+                              style: GoogleFonts.bellota(
+                                fontSize: 13,
+                                color: textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  // ============================================================
+  // ORNAMENT DIVIDER
+  // ============================================================
+  Widget _buildOrnamentDivider() {
+    return Container(
+      width: double.infinity,
+      color: royalBlueMid,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 60,
+              height: 1.2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    accentGold.withOpacity(0.6),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Transform.rotate(
+              angle: 0.785,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [accentGoldSoft, accentGoldDeep],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentGold.withOpacity(0.5),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              width: 60,
+              height: 1.2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    accentGold.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // REVIEWS SECTION
+  // ============================================================
   Widget _buildReviewsSection(bool isDesktop) {
     return Container(
       width: double.infinity,
-      color: Colors.white60,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            royalBlueMid,
+            royalBlue,
+          ],
+        ),
+      ),
       padding: EdgeInsets.symmetric(
         vertical: 70,
         horizontal: isDesktop ? 60 : 20,
@@ -604,21 +1260,40 @@ class _ReviewsState extends State<Reviews> {
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: darkCardBg,
-                  borderRadius: BorderRadius.circular(8),
+                  color: accentGold.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(30),
+                  border:
+                  Border.all(color: accentGold.withOpacity(0.6)),
                 ),
-                child: Text("CLIENT STORIES", style: GoogleFonts.bellota(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
+                child: Text(
+                  "CLIENT STORIES",
+                  style: GoogleFonts.bellota(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: accentGold,
+                    letterSpacing: 2.0,
+                  ),
+                ),
               ),
-              const SizedBox(height: 10),
-              Text(
-                "What People Say About Grow Socialee",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
-                  fontSize: isDesktop ? 34 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: darkCardBg,
+              const SizedBox(height: 14),
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [
+                    Colors.white,
+                    accentGoldSoft,
+                  ],
+                ).createShader(bounds),
+                child: Text(
+                  "What People Say About Grow Socialee",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.bellota(
+                    fontSize: isDesktop ? 34 : 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -628,118 +1303,18 @@ class _ReviewsState extends State<Reviews> {
                     spacing: 24,
                     runSpacing: 24,
                     alignment: WrapAlignment.center,
-                    children: clientReviews.map((rev) {
+                    children: clientReviews.asMap().entries.map((entry) {
+                      final int idx = entry.key;
+                      final rev = entry.value;
                       double cardWidth = isDesktop
                           ? (constraints.maxWidth - 24) / 2
                           : constraints.maxWidth;
-                      double ratingVal = double.tryParse(rev["rating"] ?? "5.0") ?? 5.0;
+                      double ratingVal =
+                          double.tryParse(rev["rating"] ?? "5.0") ?? 5.0;
 
                       return SizedBox(
                         width: cardWidth,
-                        child: Container(
-                          padding: const EdgeInsets.all(28),
-                          decoration: BoxDecoration(
-                            color: darkCardBg,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: accentGold, width: 1.5),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.12),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                          (index) => Icon(
-                                        index < ratingVal.floor()
-                                            ? Icons.star_rounded
-                                            : Icons.star_half_rounded,
-                                        color: accentGold,
-                                        size: 18,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: accentGold,
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      rev["tag"]!,
-                                      style: GoogleFonts.bellota(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 18),
-                              Text(
-                                "\"${rev["review"]!}\"",
-                                style: GoogleFonts.bellota(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  height: 1.6,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              const Divider(color: Colors.white24, height: 1),
-                              const SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: accentGold,
-                                    radius: 20,
-                                    child: Text(
-                                      rev["name"]![0],
-                                      style: GoogleFonts.bellota(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        rev["name"]!,
-                                        style: GoogleFonts.bellota(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Text(
-                                        rev["company"]!,
-                                        style: GoogleFonts.bellota(
-                                          fontSize: 12,
-                                          color: textMuted,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                        child: _buildReviewCard(rev, ratingVal, idx),
                       );
                     }).toList(),
                   );
@@ -752,18 +1327,194 @@ class _ReviewsState extends State<Reviews> {
     );
   }
 
+  Widget _buildReviewCard(
+      Map<String, String> rev, double ratingVal, int index) {
+    final accent = index.isEven ? accentGold : accentCyan;
+
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.07),
+            Colors.white.withOpacity(0.02),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: accent.withOpacity(0.55),
+          width: 1.4,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accent.withOpacity(0.14),
+            blurRadius: 18,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -20,
+            right: 0,
+            child: Text(
+              '"',
+              style: GoogleFonts.bellota(
+                fontSize: 120,
+                fontWeight: FontWeight.bold,
+                color: accent.withOpacity(0.12),
+                height: 1,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: List.generate(
+                      5,
+                          (i) => Icon(
+                        i < ratingVal.floor()
+                            ? Icons.star_rounded
+                            : Icons.star_half_rounded,
+                        color: accentGold,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: accent.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: accent.withOpacity(0.5),
+                      ),
+                    ),
+                    child: Text(
+                      rev["tag"]!,
+                      style: GoogleFonts.bellota(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: accent,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Text(
+                '"${rev["review"]!}"',
+                style: GoogleFonts.bellota(
+                  fontSize: 14,
+                  color: Colors.white,
+                  height: 1.65,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Divider(color: Colors.white.withOpacity(0.12), height: 1),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          accent.withOpacity(0.6),
+                          accent.withOpacity(0.15),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: accent.withOpacity(0.35),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: royalBlue,
+                      child: Text(
+                        rev["name"]![0],
+                        style: GoogleFonts.bellota(
+                          fontWeight: FontWeight.bold,
+                          color: accent,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          rev["name"]!,
+                          style: GoogleFonts.bellota(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          rev["company"]!,
+                          style: GoogleFonts.bellota(
+                            fontSize: 12,
+                            color: textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // GOOGLE REVIEW CTA
+  // ============================================================
   Widget _buildGoogleReviewCTA() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(36),
       decoration: BoxDecoration(
-        color: darkCardBg,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.08),
+            Colors.white.withOpacity(0.02),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accentCyan.withOpacity(0.5), width: 1.8),
+        border: Border.all(
+          color: accentCyan.withOpacity(0.55),
+          width: 1.6,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            blurRadius: 20,
+            color: accentCyan.withOpacity(0.20),
+            blurRadius: 24,
             offset: const Offset(0, 8),
           ),
         ],
@@ -773,7 +1524,26 @@ class _ReviewsState extends State<Reviews> {
         return isMobile
             ? Column(
           children: [
-            const Icon(FontAwesomeIcons.google, size: 36, color: accentGold),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  colors: [accentGoldSoft, accentGoldDeep],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: accentGold.withOpacity(0.35),
+                    blurRadius: 16,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                FontAwesomeIcons.google,
+                size: 26,
+                color: Color(0xFF1A1200),
+              ),
+            ),
             const SizedBox(height: 16),
             Text(
               "Read More Reviews On Google",
@@ -794,37 +1564,30 @@ class _ReviewsState extends State<Reviews> {
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: accentGold,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              icon: const Icon(Icons.open_in_new_rounded, size: 16, color: Colors.black),
-              label: Text(
-                "VIEW ON GOOGLE MAPS",
-                style: GoogleFonts.bellota(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                ),
-              ),
-              onPressed: () => _launchUrlString(googleReviewsUrl),
-            ),
+            _buildGoogleButton(),
           ],
         )
             : Row(
           children: [
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: darkBg,
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  colors: [accentGoldSoft, accentGoldDeep],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: accentGold.withOpacity(0.35),
+                    blurRadius: 16,
+                  ),
+                ],
               ),
-              child: const Icon(FontAwesomeIcons.google, size: 32, color: accentGold),
+              child: const Icon(
+                FontAwesomeIcons.google,
+                size: 26,
+                color: Color(0xFF1A1200),
+              ),
             ),
             const SizedBox(width: 24),
             Expanded(
@@ -851,42 +1614,85 @@ class _ReviewsState extends State<Reviews> {
               ),
             ),
             const SizedBox(width: 24),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: accentGold,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              icon: const Icon(Icons.open_in_new_rounded, size: 16, color: Colors.black),
-              label: Text(
-                "VIEW ON GOOGLE MAPS",
-                style: GoogleFonts.bellota(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                ),
-              ),
-              onPressed: () => _launchUrlString(googleReviewsUrl),
-            ),
+            _buildGoogleButton(),
           ],
         );
       }),
     );
   }
 
+  Widget _buildGoogleButton() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            accentGoldSoft,
+            accentGold,
+            accentGoldDeep,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+          BoxShadow(
+            color: accentGold.withOpacity(0.35),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          foregroundColor: const Color(0xFF1A1200),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+        ),
+        icon: const Icon(
+          Icons.open_in_new_rounded,
+          size: 16,
+          color: Color(0xFF1A1200),
+        ),
+        label: Text(
+          "VIEW ON GOOGLE MAPS",
+          style: GoogleFonts.bellota(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.0,
+          ),
+        ),
+        onPressed: () => _launchUrlString(googleReviewsUrl),
+      ),
+    );
+  }
+
+  // ============================================================
+  // FOOTER
+  // ============================================================
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      color: darkBg,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            royalBlue,
+            Color(0xFF05132B),
+          ],
+        ),
+      ),
       child: Column(
         children: [
-          Divider(height: 1, thickness: 1, color: accentCyan.withOpacity(0.3)),
+          Divider(
+              height: 1, thickness: 1, color: accentGold.withOpacity(0.4)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -896,11 +1702,14 @@ class _ReviewsState extends State<Reviews> {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(flex: 2, child: _buildFooterBrandSection()),
+                    Expanded(
+                        flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 40),
-                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    Expanded(
+                        flex: 2, child: _buildFooterContactSection()),
                     const SizedBox(width: 40),
-                    Expanded(flex: 1, child: _buildFooterSocialSection()),
+                    Expanded(
+                        flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
@@ -918,11 +1727,11 @@ class _ReviewsState extends State<Reviews> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: darkCardBg,
+            color: const Color(0xFF05132B),
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
                   color: textMuted,
                 ),
@@ -972,70 +1781,61 @@ class _ReviewsState extends State<Reviews> {
           ),
         ),
         const SizedBox(height: 16),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.location_on_outlined,
+          text: addressQuery,
           onTap: () => _launchUrlString(googleMapsUrl),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.location_on_outlined, size: 18, color: accentGold),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  addressQuery,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: Colors.white,
-                    height: 1.4,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          isMultiLine: true,
         ),
         const SizedBox(height: 12),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.phone_outlined,
+          text: phoneNum,
           onTap: () => _makePhoneCall(phoneNum),
-          child: Row(
-            children: [
-              const Icon(Icons.phone_outlined, size: 18, color: accentGold),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  phoneNum,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: textMuted,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
         const SizedBox(height: 12),
-        InkWell(
+        _buildFooterLink(
+          icon: Icons.email_outlined,
+          text: emailAddr,
           onTap: () => _sendEmail(emailAddr),
-          child: Row(
-            children: [
-              const Icon(Icons.email_outlined, size: 18, color: accentGold),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  emailAddr,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.bellota(
-                    fontSize: 13,
-                    color: textMuted,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildFooterLink({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+    bool isMultiLine = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          crossAxisAlignment:
+          isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: accentGold),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                maxLines: isMultiLine ? 3 : 1,
+                style: GoogleFonts.bellota(
+                  fontSize: 13,
+                  color: isMultiLine ? Colors.white : textMuted,
+                  height: 1.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1053,51 +1853,55 @@ class _ReviewsState extends State<Reviews> {
           ),
         ),
         const SizedBox(height: 16),
-        Row(
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
           children: [
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.facebook, size: 20, color: Colors.white),
-              onPressed: () => _launchUrlString(facebookUrl),
-            ),
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.instagram, size: 20, color: Colors.white),
-              onPressed: () => _launchUrlString(instagramUrl),
-            ),
-            IconButton(
-              icon: const Icon(FontAwesomeIcons.linkedin, size: 20, color: Colors.white),
-              onPressed: () => _launchUrlString(linkedInUrl),
-            ),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.facebook, url: facebookUrl),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.instagram, url: instagramUrl),
+            _buildSocialButton(
+                icon: FontAwesomeIcons.linkedin, url: linkedInUrl),
           ],
         ),
       ],
     );
   }
+
+  Widget _buildSocialButton({required IconData icon, required String url}) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: accentGold.withOpacity(0.6)),
+        boxShadow: [
+          BoxShadow(
+            color: accentGold.withOpacity(0.10),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 18, color: accentGold),
+        onPressed: () => _launchUrlString(url),
+      ),
+    );
+  }
 }
 
-class StatData {
-  final double endValue;
-  final String suffix;
-  final String label;
-  final bool isDecimal;
-
-  StatData({
-    required this.endValue,
-    required this.suffix,
-    required this.label,
-    this.isDecimal = false,
-  });
-}
-
-class StatsSection extends StatefulWidget {
+// ============================================================
+// REVIEWS STATS SECTION
+// ============================================================
+class _ReviewsStats extends StatefulWidget {
   final bool isDesktop;
 
-  const StatsSection({super.key, required this.isDesktop});
+  const _ReviewsStats({super.key, required this.isDesktop});
 
   @override
-  State<StatsSection> createState() => _StatsSectionState();
+  State<_ReviewsStats> createState() => _ReviewsStatsState();
 }
 
-class _StatsSectionState extends State<StatsSection>
+class _ReviewsStatsState extends State<_ReviewsStats>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -1106,11 +1910,15 @@ class _StatsSectionState extends State<StatsSection>
 
   bool _hasAnimated = false;
 
-  final List<StatData> _stats = [
-    StatData(endValue: 4.9, suffix: "★", label: "AVERAGE RATING", isDecimal: true),
-    StatData(endValue: 60, suffix: "+", label: "CAMPAIGNS DELIVERED"),
-    StatData(endValue: 99, suffix: "%", label: "CLIENT RETENTION"),
-    StatData(endValue: 20, suffix: "+", label: "REVIEWS"),
+  final List<_StatData> _stats = [
+    _StatData(
+        endValue: 4.9,
+        suffix: "★",
+        label: "AVERAGE RATING",
+        isDecimal: true),
+    _StatData(endValue: 60, suffix: "+", label: "CAMPAIGNS DELIVERED"),
+    _StatData(endValue: 99, suffix: "%", label: "CLIENT RETENTION"),
+    _StatData(endValue: 20, suffix: "+", label: "REVIEWS"),
   ];
 
   @override
@@ -1177,35 +1985,43 @@ class _StatsSectionState extends State<StatsSection>
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            _ReviewsState.royalBlueMid,
+            _ReviewsState.royalBlue,
+          ],
+        ),
+      ),
       padding: EdgeInsets.symmetric(
-        vertical: 40,
+        vertical: 50,
         horizontal: widget.isDesktop ? 60 : 20,
       ),
       child: Center(
         child: Container(
-          color: Colors.white,
           constraints: const BoxConstraints(maxWidth: 1200),
           child: widget.isDesktop
               ? LayoutBuilder(
             builder: (context, constraints) {
+              int columns = 4;
+              if (constraints.maxWidth < 900) columns = 2;
+              final double spacing = 16;
+              final double w = (constraints.maxWidth -
+                  (spacing * (columns - 1))) /
+                  columns;
               return Wrap(
-                spacing: 16,
-                runSpacing: 16,
+                spacing: spacing,
+                runSpacing: spacing,
                 alignment: WrapAlignment.center,
                 children: List.generate(_stats.length, (index) {
-                  final item = _stats[index];
-                  double cardWidth =
-                      (constraints.maxWidth - (16 * (_stats.length - 1))) /
-                          _stats.length;
-                  if (cardWidth < 180) cardWidth = 180;
                   return SizedBox(
-                    width: cardWidth,
+                    width: w,
                     child: AnimatedBuilder(
                       animation: _animation,
-                      builder: (context, child) {
-                        return _buildStatCard(item, _animation.value);
-                      },
+                      builder: (context, child) =>
+                          _buildStatCard(_stats[index], _animation.value),
                     ),
                   );
                 }),
@@ -1213,7 +2029,7 @@ class _StatsSectionState extends State<StatsSection>
             },
           )
               : SizedBox(
-            height: 130,
+            height: 140,
             child: AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
@@ -1241,7 +2057,7 @@ class _StatsSectionState extends State<StatsSection>
     );
   }
 
-  Widget _buildStatCard(StatData item, double progress) {
+  Widget _buildStatCard(_StatData item, double progress) {
     double currentValue = item.endValue * progress;
     String formattedValue = item.isDecimal
         ? currentValue.toStringAsFixed(1)
@@ -1250,16 +2066,23 @@ class _StatsSectionState extends State<StatsSection>
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
       decoration: BoxDecoration(
-        color: _ReviewsState.darkCardBg,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.10),
+            Colors.white.withOpacity(0.03),
+          ],
+        ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: _ReviewsState.accentGold,
-          width: 1.5,
+          color: _ReviewsState.accentGold.withOpacity(0.6),
+          width: 1.4,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.18),
-            blurRadius: 10,
+            color: _ReviewsState.accentCyan.withOpacity(0.10),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -1268,15 +2091,24 @@ class _StatsSectionState extends State<StatsSection>
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              "$formattedValue${item.suffix}",
-              style: GoogleFonts.bellota(
-                fontSize: widget.isDesktop ? 32 : 24,
-                fontWeight: FontWeight.bold,
-                color: _ReviewsState.accentGold,
-                height: 1.0,
+          ShaderMask(
+            shaderCallback: (bounds) => const LinearGradient(
+              colors: [
+                _ReviewsState.accentGoldSoft,
+                _ReviewsState.accentGold,
+                _ReviewsState.accentGoldDeep,
+              ],
+            ).createShader(bounds),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                "$formattedValue${item.suffix}",
+                style: GoogleFonts.bellota(
+                  fontSize: widget.isDesktop ? 34 : 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  height: 1.0,
+                ),
               ),
             ),
           ),
@@ -1297,4 +2129,18 @@ class _StatsSectionState extends State<StatsSection>
       ),
     );
   }
+}
+
+class _StatData {
+  final double endValue;
+  final String suffix;
+  final String label;
+  final bool isDecimal;
+
+  _StatData({
+    required this.endValue,
+    required this.suffix,
+    required this.label,
+    this.isDecimal = false,
+  });
 }
