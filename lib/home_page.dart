@@ -582,13 +582,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 "We are\nGrow Socialee",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.bellota(
-                  fontSize: 17,
+                style: GoogleFonts.alegreyaSc( fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   height: 1.05,
-                  letterSpacing: 0.3,
-                ),
+                  letterSpacing: 0.3,)
               ),
             ),
           ),
@@ -988,15 +986,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   color: HomePage.accentGold, size: 16),
               const SizedBox(width: 8),
               Flexible(
-                child: Text(
-                  "PREMIUM SOCIAL GROWTH AGENCY",
-                  style: GoogleFonts.bellota(
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w700,
-                    color: HomePage.accentGold,
-                    letterSpacing: 2.2,
-                  ),
-                ),
+                child: Text("PREMIUM SOCIAL GROWTH AGENCY", style: GoogleFonts.playfairDisplay(fontSize: 10.5, fontWeight: FontWeight.w700, color: HomePage.accentGold, letterSpacing: 2.2)),
               ),
             ],
           ),
@@ -1005,7 +995,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Text(
           "Getting your name on top",
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: isDesktop ? 40 : 26,
             fontWeight: FontWeight.w500,
             color: Colors.white,
@@ -1024,7 +1014,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Text(
             "No.1 priority",
             textAlign: isDesktop ? TextAlign.left : TextAlign.center,
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: isDesktop ? 68 : 42,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -1037,7 +1027,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Text(
           "Premium social growth, influence & visibility — crafted for royalty. Trusted by brands, creators & leaders worldwide.",
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: isDesktop ? 16 : 14,
             color: HomePage.textSoft,
             height: 1.6,
@@ -1110,14 +1100,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ),
           icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
-          label: Text(
-            label,
-            style: GoogleFonts.bellota(
-              fontSize: 13,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.8,
-            ),
-          ),
+          label: Text(label, style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 0.8)),
           onPressed: onTap,
         ),
       ),
@@ -1146,7 +1129,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         icon: Icon(icon, size: 18, color: HomePage.accentCyan),
         label: Text(
           label,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 13,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.8,
@@ -1259,7 +1242,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     children: [
                       Text(
                         title,
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.alegreyaSc(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w700,
                           color: HomePage.accentGold,
@@ -1269,7 +1252,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       const SizedBox(height: 2),
                       Text(
                         value,
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -1279,7 +1262,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       const SizedBox(height: 4),
                       Text(
                         sub,
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: 10.5,
                           color: HomePage.textMuted,
                           fontWeight: FontWeight.w400,
@@ -1506,15 +1489,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             borderRadius: BorderRadius.circular(30),
             border: Border.all(color: HomePage.accentGold.withOpacity(0.6)),
           ),
-          child: Text(
-            "ABOUT GROW SOCIALEE",
-            style: GoogleFonts.bellota(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: HomePage.accentGold,
-              letterSpacing: 2.0,
-            ),
-          ),
+          child: Text("ABOUT GROW SOCIALEE", style: GoogleFonts.playfairDisplay(fontSize: 11, fontWeight: FontWeight.bold, color: HomePage.accentGold, letterSpacing: 2.0),),
         ),
         const SizedBox(height: 14),
         ShaderMask(
@@ -1527,19 +1502,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ).createShader(bounds),
           child: Text(
             "Grow Socialee",
-            style: GoogleFonts.bellota(
-              fontSize: 42,
+            style: GoogleFonts.alegreyaSc(  fontSize: 42,
               fontWeight: FontWeight.bold,
               color: Colors.white,
-              height: 1.1,
-            ),
+              height: 1.1,)
           ),
         ),
         const SizedBox(height: 16),
         Text(
           "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: HomePage.textMuted,
             height: 1.6,
@@ -1550,7 +1523,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Text(
           "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: HomePage.textMuted,
             height: 1.6,
@@ -1561,7 +1534,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Text(
           "Let's build your digital success together! 📩 Contact Grow Socialee today!",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: Colors.white,
             height: 1.5,
@@ -1572,7 +1545,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Text(
           "We understand social behaviours within online communities, cultures and subcultures.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             fontWeight: FontWeight.w300,
             color: Colors.white70,
@@ -1646,7 +1619,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Text(
                 "A Clearer Way to Build & Scale",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: isDesktop ? 38 : 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -1724,7 +1697,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ).createShader(bounds),
                     child: Text(
                       s["step"]!,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -1748,7 +1721,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 8),
               Text(
                 s["title"]!,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -1757,7 +1730,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 8),
               Text(
                 s["desc"]!,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: HomePage.textMuted,
                   height: 1.5,
@@ -1805,7 +1778,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Text(
                   "Frequently Asked Questions",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: isDesktop ? 38 : 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -1862,7 +1835,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         collapsedIconColor: HomePage.accentCyan,
                         title: Text(
                           faq["question"]!,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.playfairDisplay(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
@@ -1876,7 +1849,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 faq["answer"]!,
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.playfairDisplay(
                                   fontSize: 14,
                                   color: HomePage.textMuted,
                                   height: 1.6,
@@ -1911,7 +1884,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       child: Text(
         label,
-        style: GoogleFonts.bellota(
+        style: GoogleFonts.playfairDisplay(
           fontSize: 11,
           fontWeight: FontWeight.bold,
           color: color,
@@ -1991,7 +1964,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 14),
               Text(
                 "The Brands We're Working With",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: w > 900 ? 34 : 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -2220,7 +2193,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Text(
                 "What We've Built",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: screenWidth > 900 ? 36 : 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -2230,7 +2203,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Text(
                 "Creative showcases & production reels.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
                   color: HomePage.textMuted,
                 ),
@@ -2670,7 +2643,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: HomePage.accentGold,
@@ -2911,7 +2884,7 @@ class _StatsSectionState extends State<StatsSection>
                 fit: BoxFit.scaleDown,
                 child: Text(
                   "$formattedValue${item.suffix}",
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                     fontSize: widget.isDesktop ? 34 : 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -2926,7 +2899,7 @@ class _StatsSectionState extends State<StatsSection>
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.alegreyaSc(
                 fontSize: widget.isDesktop ? 11 : 10,
                 fontWeight: FontWeight.w600,
                 color: HomePage.textMuted,
