@@ -579,14 +579,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               ).createShader(bounds),
               child: Text(
-                "We are\nGrow Socialee",
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.alegreyaSc( fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  height: 1.05,
-                  letterSpacing: 0.3,)
+                  "We are\nGrow Socialee",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.alegreyaSc( fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.05,
+                    letterSpacing: 0.3,)
               ),
             ),
           ),
@@ -1501,11 +1501,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ],
           ).createShader(bounds),
           child: Text(
-            "Grow Socialee",
-            style: GoogleFonts.alegreyaSc(  fontSize: 42,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              height: 1.1,)
+              "Grow Socialee",
+              style: GoogleFonts.alegreyaSc(  fontSize: 42,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                height: 1.1,)
           ),
         ),
         const SizedBox(height: 16),

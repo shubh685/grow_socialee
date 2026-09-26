@@ -321,7 +321,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 "We are\nGrow Socialee",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -649,7 +649,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                           const SizedBox(width: 8),
                           Text(
                             "CHAPTER 03 · OUR CLIENTS",
-                            style: GoogleFonts.bellota(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 10.5,
                               fontWeight: FontWeight.bold,
                               color: ClientTheme.accentGold,
@@ -664,7 +664,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     Text(
                       "Trusted by",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.plusJakartaSans(
                         fontSize: isDesktop ? 24 : 18,
                         fontWeight: FontWeight.w400,
                         color: ClientTheme.textSoft,
@@ -683,7 +683,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       child: Text(
                         "50+ Visionary Brands",
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: isDesktop ? 52 : 30,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -695,7 +695,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     Text(
                       "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.plusJakartaSans(
                         fontSize: isDesktop ? 15 : 13.5,
                         color: ClientTheme.textMuted,
                         height: 1.6,
@@ -768,7 +768,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 ),
                 child: Text(
                   chips[i],
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w800,
                     color: isActive
@@ -892,7 +892,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 child: Text(
                   "Ready to Join Them?",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: isDesktop ? 36 : 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -904,7 +904,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Text(
                 "Let's build your brand's success story together.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.plusJakartaSans(
                   fontSize: 15,
                   color: ClientTheme.textMuted,
                   height: 1.6,
@@ -955,7 +955,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       size: 18, color: Color(0xFF1A1200)),
                   label: Text(
                     "START YOUR PROJECT",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.0,
@@ -1010,7 +1010,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             ),
             child: Text(
               "TRUSTED PARTNERSHIPS",
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.plusJakartaSans(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: ClientTheme.accentGold,
@@ -1022,7 +1022,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           Text(
             "The Brands We Work With",
             textAlign: TextAlign.center,
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: screenWidth > 900 ? 32 : 24,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -1546,7 +1546,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                       ? ClientTheme.accentWhite
                       : ClientTheme.textMuted,
                   height: 1.4,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
