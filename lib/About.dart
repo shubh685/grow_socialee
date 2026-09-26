@@ -102,8 +102,8 @@ class _AboutState extends State<About> {
     return Scaffold(
       backgroundColor: AboutTheme.darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(75),
-        child: _buildAppBar(isDesktop),
+        preferredSize: const Size.fromHeight(80),
+        child: _buildAppBar(screenWidth, isDesktop),
       ),
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: NotificationListener<ScrollNotification>(
@@ -113,6 +113,7 @@ class _AboutState extends State<About> {
           return false;
         },
         child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(
               child: _buildAGHeroBanner(screenWidth, isDesktop),
@@ -148,77 +149,193 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // APP BAR
+  // APP BAR — IDENTICAL NAVIGATION BAR TO HOME_PAGE.DART
   // ============================================================
-  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+  PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(75),
+      preferredSize: const Size.fromHeight(80),
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AboutTheme.royalBlue,
-              AboutTheme.royalBlueMid,
-            ],
-          ),
-          border: Border(
-            bottom: BorderSide(
-              color: AboutTheme.accentGold.withOpacity(0.6),
-              width: 1.5,
-            ),
-          ),
+          color: AboutTheme.royalBlue,
           boxShadow: [
             BoxShadow(
-              color: AboutTheme.accentCyan.withOpacity(0.15),
-              blurRadius: 16,
+              color: AboutTheme.accentGold.withOpacity(0.05),
+              blurRadius: 20,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () => Scaffold.of(context).openEndDrawer(),
-                    child: Container(
-                      width: 46,
-                      height: 46,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.08),
+                AboutTheme.royalBlueMid.withOpacity(0.6),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AboutTheme.accentGold.withOpacity(0.35),
+              width: 1.2,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildLogoHeader(),
+              if (isDesktop)
+                Row(
+                  children: [
+                    _buildNavButton("HOME", 0, () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ),
+                      );
+                    }),
+                    _buildNavButton("ABOUT", 1, () {}),
+                    _buildNavButton("CLIENTS", 2, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ClientLogoPage(),
+                        ),
+                      );
+                    }),
+                    _buildNavButton("SERVICES", 3, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Services(),
+                        ),
+                      );
+                    }),
+                    _buildNavButton("REVIEWS", 4, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Reviews(),
+                        ),
+                      );
+                    }),
+                    const SizedBox(width: 12),
+                    Container(
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: [
-                            AboutTheme.accentGold.withOpacity(0.22),
-                            AboutTheme.accentGoldDeep.withOpacity(0.12),
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGoldDeep,
                           ],
                         ),
-                        border: Border.all(
-                          color: AboutTheme.accentGold.withOpacity(0.7),
-                          width: 1.4,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.3),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Contact(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "CONTACT US",
+                          style: GoogleFonts.alegreyaSc(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF1A1200),
+                            letterSpacing: 1.0,
+                          ),
                         ),
                       ),
-                      child: const Icon(
-                        Icons.menu_rounded,
-                        color: AboutTheme.accentGold,
-                        size: 24,
+                    ),
+                  ],
+                )
+              else
+                Builder(
+                  builder: (context) => Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () => Scaffold.of(context).openEndDrawer(),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              AboutTheme.accentGold.withOpacity(0.2),
+                              AboutTheme.accentGoldDeep.withOpacity(0.1),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: AboutTheme.accentGold.withOpacity(0.7),
+                            width: 1.2,
+                          ),
+                        ),
+                        child: const Icon(Icons.menu_rounded,
+                            color: AboutTheme.accentGold, size: 22),
                       ),
                     ),
                   ),
                 ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String title, int index, VoidCallback onTap) {
+    final bool isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.alegreyaSc(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? AboutTheme.accentGold : AboutTheme.textSoft,
+                letterSpacing: 1.0,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(height: 2),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              width: isSelected ? 18 : 0,
+              decoration: BoxDecoration(
+                color: AboutTheme.accentGold,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),
@@ -227,7 +344,7 @@ class _AboutState extends State<About> {
 
   Widget _buildLogoHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -473,7 +590,7 @@ class _AboutState extends State<About> {
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: isSelected
@@ -765,8 +882,7 @@ class _AboutState extends State<About> {
                 ),
               ],
             ),
-            child:
-            Icon(icon, color: const Color(0xFF1A1200), size: 20),
+            child: Icon(icon, color: const Color(0xFF1A1200), size: 20),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -1494,7 +1610,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // FOOTER
+  // FOOTER — IDENTICAL DESIGN TO HOME_PAGE.DART
   // ============================================================
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -1515,11 +1631,12 @@ class _AboutState extends State<About> {
       child: Column(
         children: [
           Divider(
-              height: 1,
-              thickness: 1,
-              color: AboutTheme.accentGold.withOpacity(0.4)),
+            height: 1,
+            thickness: 1,
+            color: AboutTheme.accentGold.withOpacity(0.4),
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -1527,14 +1644,11 @@ class _AboutState extends State<About> {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                        flex: 2, child: _buildFooterBrandSection()),
+                    Expanded(flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 40),
-                    Expanded(
-                        flex: 2, child: _buildFooterContactSection()),
+                    Expanded(flex: 2, child: _buildFooterContactSection()),
                     const SizedBox(width: 40),
-                    Expanded(
-                        flex: 1, child: _buildFooterSocialSection()),
+                    Expanded(flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
@@ -1552,15 +1666,22 @@ class _AboutState extends State<About> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF05132B),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: Colors.white.withOpacity(0.08),
+                  width: 1,
+                ),
+              ),
+            ),
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: AboutTheme.textMuted,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 12,
+                  color: AboutTheme.textMuted.withOpacity(0.7),
+                  letterSpacing: 0.8,
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -1578,12 +1699,17 @@ class _AboutState extends State<About> {
           child: Image.asset(
             "assets/photos/Gro_Soc_Image.png",
             color: Colors.white,
+            errorBuilder: (context, error, stackTrace) => const Icon(
+              Icons.image,
+              color: Colors.white,
+              size: 40,
+            ),
           ),
         ),
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 14,
             color: AboutTheme.textMuted,
             height: 1.6,
@@ -1599,11 +1725,11 @@ class _AboutState extends State<About> {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.bellota(
-            fontSize: 14,
+          style: GoogleFonts.alegreyaSc(
+            fontSize: 15,
             fontWeight: FontWeight.bold,
             color: AboutTheme.accentGold,
-            letterSpacing: 1.0,
+            letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: 16),
@@ -1651,7 +1777,7 @@ class _AboutState extends State<About> {
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: isMultiLine
                       ? AboutTheme.accentWhite
@@ -1673,11 +1799,11 @@ class _AboutState extends State<About> {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.bellota(
-            fontSize: 14,
+          style: GoogleFonts.alegreyaSc(
+            fontSize: 15,
             fontWeight: FontWeight.bold,
             color: AboutTheme.accentGold,
-            letterSpacing: 1.0,
+            letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: 16),
@@ -2272,7 +2398,12 @@ class _TeamSectionState extends State<TeamSection>
               border:
               Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
             ),
-            child: Text("MEET OUR LEADERSHIP", style: GoogleFonts.playfairDisplay(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
+            child: Text("MEET OUR LEADERSHIP",
+                style: GoogleFonts.playfairDisplay(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: AboutTheme.accentGold,
+                    letterSpacing: 2.0)),
           ),
           const SizedBox(height: 14),
           Text(

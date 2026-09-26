@@ -15,26 +15,26 @@ import 'Services.dart';
 // ============================================================
 class ClientTheme {
   // Backgrounds (identical to HomePage)
-  static const Color royalBlue = Color(0xFF0A1F44);
-  static const Color royalBlueMid = Color(0xFF0F2A5C);
-  static const Color darkBg = Color(0xFF0A1F44);
-  static const Color darkCardBg = Color(0xFF0D2551);
-  static const Color glassCard = Color(0xFF13315C);
+  static const Color royalBlue = HomePage.royalBlue;
+  static const Color royalBlueMid = HomePage.royalBlueMid;
+  static const Color darkBg = HomePage.darkBg;
+  static const Color darkCardBg = HomePage.darkCardBg;
+  static const Color glassCard = HomePage.glassCard;
 
   // Gold accents
-  static const Color accentGold = Color(0xFFF5C842);
-  static const Color accentGoldDeep = Color(0xFFD4A017);
-  static const Color accentGoldSoft = Color(0xFFFFE08A);
+  static const Color accentGold = HomePage.accentGold;
+  static const Color accentGoldDeep = HomePage.accentGoldDeep;
+  static const Color accentGoldSoft = HomePage.accentGoldSoft;
 
   // Cyan accents
-  static const Color accentCyan = Color(0xFF4FC3F7);
-  static const Color accentCyanGlow = Color(0xFF29B6F6);
-  static const Color brandBlue = Color(0xFF1E88E5);
+  static const Color accentCyan = HomePage.accentCyan;
+  static const Color accentCyanGlow = HomePage.accentCyanGlow;
+  static const Color brandBlue = HomePage.brandBlue;
 
   // Text
-  static const Color accentWhite = Colors.white;
-  static const Color textMuted = Color(0xFFB8D4F0);
-  static const Color textSoft = Color(0xFFD6E6FA);
+  static const Color accentWhite = HomePage.accentWhite;
+  static const Color textMuted = HomePage.textMuted;
+  static const Color textSoft = HomePage.textSoft;
 }
 
 class ClientLogoPage extends StatefulWidget {
@@ -144,13 +144,13 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
+    final bool isDesktop = screenWidth >= Breakpoints.tablet;
 
     return Scaffold(
       backgroundColor: ClientTheme.darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(75),
-        child: _buildAppBar(isDesktop),
+        preferredSize: const Size.fromHeight(80),
+        child: _buildAppBar(screenWidth, isDesktop),
       ),
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: NotificationListener<ScrollNotification>(
@@ -159,6 +159,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           return false;
         },
         child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
           slivers: [
             // ✅ Hero section
             SliverToBoxAdapter(
@@ -202,77 +203,194 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   }
 
   // ============================================================
-  // APP BAR
+  // APP BAR (Matching HomePage NavBar)
   // ============================================================
-  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+  PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(75),
+      preferredSize: const Size.fromHeight(80),
       child: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              ClientTheme.royalBlue,
-              ClientTheme.royalBlueMid,
-            ],
-          ),
-          border: Border(
-            bottom: BorderSide(
-              color: ClientTheme.accentGold.withOpacity(0.6),
-              width: 1.5,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        color: ClientTheme.royalBlue,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.08),
+                  ClientTheme.royalBlueMid.withOpacity(0.6),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: ClientTheme.accentGold.withOpacity(0.35),
+                width: 1.2,
+              ),
             ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: ClientTheme.accentCyan.withOpacity(0.15),
-              blurRadius: 14,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () => Scaffold.of(context).openEndDrawer(),
-                    child: Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            ClientTheme.accentGold.withOpacity(0.22),
-                            ClientTheme.accentGoldDeep.withOpacity(0.12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildLogoHeader(),
+                if (isDesktop)
+                  Row(
+                    children: [
+                      _buildNavButton("HOME", 0, () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                      }),
+                      _buildNavButton("ABOUT", 1, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const About(),
+                          ),
+                        );
+                      }),
+                      _buildNavButton("CLIENTS", 2, () {}),
+                      _buildNavButton("SERVICES", 3, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Services(),
+                          ),
+                        );
+                      }),
+                      _buildNavButton("REVIEWS", 4, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Reviews(),
+                          ),
+                        );
+                      }),
+                      const SizedBox(width: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              ClientTheme.accentGoldSoft,
+                              ClientTheme.accentGoldDeep,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: ClientTheme.accentGold.withOpacity(0.3),
+                              blurRadius: 10,
+                            ),
                           ],
                         ),
-                        border: Border.all(
-                          color: ClientTheme.accentGold.withOpacity(0.7),
-                          width: 1.4,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Contact(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "CONTACT US",
+                            style: GoogleFonts.alegreyaSc(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF1A1200),
+                              letterSpacing: 1.0,
+                            ),
+                          ),
                         ),
                       ),
-                      child: const Icon(
-                        Icons.menu_rounded,
-                        color: ClientTheme.accentGold,
-                        size: 24,
+                    ],
+                  )
+                else
+                  Builder(
+                    builder: (context) => Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(50),
+                        onTap: () => Scaffold.of(context).openEndDrawer(),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                ClientTheme.accentGold.withOpacity(0.2),
+                                ClientTheme.accentGoldDeep.withOpacity(0.1),
+                              ],
+                            ),
+                            border: Border.all(
+                              color: ClientTheme.accentGold.withOpacity(0.7),
+                              width: 1.2,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.menu_rounded,
+                            color: ClientTheme.accentGold,
+                            size: 22,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String title, int index, VoidCallback onTap) {
+    final bool isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.alegreyaSc(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected
+                    ? ClientTheme.accentGold
+                    : ClientTheme.textSoft,
+                letterSpacing: 1.0,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(height: 2),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              width: isSelected ? 18 : 0,
+              decoration: BoxDecoration(
+                color: ClientTheme.accentGold,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),
@@ -280,9 +398,8 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   }
 
   Widget _buildLogoHeader() {
-    return Container(
-      height: 45,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -293,7 +410,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               gradient: LinearGradient(
                 colors: [
                   ClientTheme.accentGold.withOpacity(0.25),
-                  ClientTheme.accentGoldDeep.withOpacity(0.12),
+                  ClientTheme.accentGoldDeep.withOpacity(0.10),
                 ],
               ),
               border: Border.all(
@@ -321,11 +438,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 "We are\nGrow Socialee",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   height: 1.05,
+                  letterSpacing: 0.3,
                 ),
               ),
             ),
@@ -445,8 +563,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     onTap: () {
                       setState(() => _selectedIndex = 4);
                       Navigator.pop(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Reviews()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Reviews(),
+                        ),
+                      );
                     },
                   ),
                   _buildDrawerItem(
@@ -526,7 +648,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: isSelected
@@ -649,7 +771,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                           const SizedBox(width: 8),
                           Text(
                             "CHAPTER 03 · OUR CLIENTS",
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.playfairDisplay(
                               fontSize: 10.5,
                               fontWeight: FontWeight.bold,
                               color: ClientTheme.accentGold,
@@ -664,7 +786,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     Text(
                       "Trusted by",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: isDesktop ? 24 : 18,
                         fontWeight: FontWeight.w400,
                         color: ClientTheme.textSoft,
@@ -683,7 +805,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       child: Text(
                         "50+ Visionary Brands",
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.alegreyaSc(
                           fontSize: isDesktop ? 52 : 30,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -695,7 +817,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     Text(
                       "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: isDesktop ? 15 : 13.5,
                         color: ClientTheme.textMuted,
                         height: 1.6,
@@ -768,7 +890,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 ),
                 child: Text(
                   chips[i],
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w800,
                     color: isActive
@@ -892,7 +1014,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 child: Text(
                   "Ready to Join Them?",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: isDesktop ? 36 : 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -904,7 +1026,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               Text(
                 "Let's build your brand's success story together.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
                   color: ClientTheme.textMuted,
                   height: 1.6,
@@ -938,7 +1060,8 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const Contact()),
+                        builder: (context) => const Contact(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -946,16 +1069,21 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     shadowColor: Colors.transparent,
                     foregroundColor: const Color(0xFF1A1200),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 18),
+                      horizontal: 32,
+                      vertical: 18,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  icon: const Icon(Icons.arrow_forward_rounded,
-                      size: 18, color: Color(0xFF1A1200)),
+                  icon: const Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 18,
+                    color: Color(0xFF1A1200),
+                  ),
                   label: Text(
                     "START YOUR PROJECT",
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.0,
@@ -1010,7 +1138,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             ),
             child: Text(
               "TRUSTED PARTNERSHIPS",
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.playfairDisplay(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: ClientTheme.accentGold,
@@ -1022,7 +1150,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           Text(
             "The Brands We Work With",
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.alegreyaSc(
               fontSize: screenWidth > 900 ? 32 : 24,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -1362,7 +1490,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
+    final bool isDesktop = screenWidth >= Breakpoints.tablet;
 
     return Container(
       width: double.infinity,
@@ -1417,13 +1545,19 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                        flex: 2, child: _buildFooterBrandSection()),
+                      flex: 2,
+                      child: _buildFooterBrandSection(),
+                    ),
                     const SizedBox(width: 40),
                     Expanded(
-                        flex: 2, child: _buildFooterContactSection()),
+                      flex: 2,
+                      child: _buildFooterContactSection(),
+                    ),
                     const SizedBox(width: 40),
                     Expanded(
-                        flex: 1, child: _buildFooterSocialSection()),
+                      flex: 1,
+                      child: _buildFooterSocialSection(),
+                    ),
                   ],
                 )
                     : Column(
@@ -1445,7 +1579,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
             child: Center(
               child: Text(
                 "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: ClientTheme.textMuted,
                 ),
@@ -1467,12 +1601,17 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           child: Image.asset(
             "assets/photos/Gro_Soc_Image.png",
             color: Colors.white,
+            errorBuilder: (context, error, stackTrace) => const Icon(
+              Icons.image,
+              color: Colors.white,
+              size: 40,
+            ),
           ),
         ),
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 14,
             color: ClientTheme.textMuted,
             height: 1.6,
@@ -1488,7 +1627,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: ClientTheme.accentGold,
@@ -1540,7 +1679,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: isMultiLine
                       ? ClientTheme.accentWhite
@@ -1562,7 +1701,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: ClientTheme.accentGold,
@@ -1575,11 +1714,17 @@ class _AnimatedFooterState extends State<AnimatedFooter>
           runSpacing: 10,
           children: [
             _buildSocialButton(
-                icon: FontAwesomeIcons.facebook, url: widget.facebookUrl),
+              icon: FontAwesomeIcons.facebook,
+              url: widget.facebookUrl,
+            ),
             _buildSocialButton(
-                icon: FontAwesomeIcons.instagram, url: widget.instagramUrl),
+              icon: FontAwesomeIcons.instagram,
+              url: widget.instagramUrl,
+            ),
             _buildSocialButton(
-                icon: FontAwesomeIcons.linkedin, url: widget.linkedInUrl),
+              icon: FontAwesomeIcons.linkedin,
+              url: widget.linkedInUrl,
+            ),
           ],
         ),
       ],
@@ -1590,7 +1735,9 @@ class _AnimatedFooterState extends State<AnimatedFooter>
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: ClientTheme.accentGold.withOpacity(0.6)),
+        border: Border.all(
+          color: ClientTheme.accentGold.withOpacity(0.6),
+        ),
         boxShadow: [
           BoxShadow(
             color: ClientTheme.accentGold.withOpacity(0.10),

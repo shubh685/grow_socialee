@@ -424,7 +424,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: HomePage.darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(75),
+        preferredSize: const Size.fromHeight(80),
         child: _buildAppBar(screenWidth, isDesktop),
       ),
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
@@ -462,82 +462,207 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // APP BAR
+  // CREATIVE APP BAR / NAV BAR
   // ============================================================
   PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
     final bool isScrolled = _scrollOffset > 30;
     return PreferredSize(
-      preferredSize: const Size.fromHeight(75),
+      preferredSize: const Size.fromHeight(80),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isScrolled
-                ? [
-              HomePage.royalBlue.withOpacity(0.98),
-              HomePage.royalBlueMid.withOpacity(0.98),
-            ]
-                : [
-              HomePage.royalBlue,
-              HomePage.royalBlueMid,
-            ],
-          ),
-          border: Border(
-            bottom: BorderSide(
-              color: HomePage.accentGold.withOpacity(isScrolled ? 0.8 : 0.4),
-              width: 1.5,
-            ),
-          ),
+          color: isScrolled
+              ? HomePage.royalBlue.withOpacity(0.92)
+              : HomePage.royalBlue,
           boxShadow: [
             BoxShadow(
-              color: HomePage.accentCyan
-                  .withOpacity(isScrolled ? 0.25 : 0.12),
-              blurRadius: isScrolled ? 24 : 16,
+              color: HomePage.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              blurRadius: 20,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () => Scaffold.of(context).openEndDrawer(),
-                    child: Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            HomePage.accentGold.withOpacity(0.22),
-                            HomePage.accentGoldDeep.withOpacity(0.12),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: HomePage.accentGold.withOpacity(0.7),
-                          width: 1.4,
-                        ),
-                      ),
-                      child: const Icon(Icons.menu_rounded,
-                          color: HomePage.accentGold, size: 24),
-                    ),
-                  ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.08),
+                    HomePage.royalBlueMid.withOpacity(0.6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: HomePage.accentGold.withOpacity(0.35),
+                  width: 1.2,
                 ),
               ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildLogoHeader(),
+                  if (isDesktop)
+                    Row(
+                      children: [
+                        _buildNavButton("HOME", 0, () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()),
+                          );
+                        }),
+                        _buildNavButton("ABOUT", 1, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const About()),
+                          );
+                        }),
+                        _buildNavButton("CLIENTS", 2, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()),
+                          );
+                        }),
+                        _buildNavButton("SERVICES", 3, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()),
+                          );
+                        }),
+                        _buildNavButton("REVIEWS", 4, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Reviews()),
+                          );
+                        }),
+                        const SizedBox(width: 12),
+                        _HoverScale(
+                          scale: 1.05,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  HomePage.accentGoldSoft,
+                                  HomePage.accentGoldDeep,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: HomePage.accentGold.withOpacity(0.3),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Contact()),
+                                );
+                              },
+                              child: Text(
+                                "CONTACT US",
+                                style: GoogleFonts.alegreyaSc(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1A1200),
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Builder(
+                      builder: (context) => Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () => Scaffold.of(context).openEndDrawer(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  HomePage.accentGold.withOpacity(0.2),
+                                  HomePage.accentGoldDeep.withOpacity(0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: HomePage.accentGold.withOpacity(0.7),
+                                width: 1.2,
+                              ),
+                            ),
+                            child: const Icon(Icons.menu_rounded,
+                                color: HomePage.accentGold, size: 22),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            const SizedBox(width: 12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String title, int index, VoidCallback onTap) {
+    final bool isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.alegreyaSc(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? HomePage.accentGold : HomePage.textSoft,
+                letterSpacing: 1.0,
+              ),
+            ),
+            const SizedBox(height: 2),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              width: isSelected ? 18 : 0,
+              decoration: BoxDecoration(
+                color: HomePage.accentGold,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),
@@ -546,7 +671,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildLogoHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -570,23 +695,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           const SizedBox(width: 12),
           Flexible(
-            child: ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                colors: [
-                  HomePage.accentGoldSoft,
-                  HomePage.accentGold,
-                  HomePage.accentGoldDeep,
-                ],
-              ).createShader(bounds),
-              child: Text(
+            child: InkWell(
+              child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [
+                    HomePage.accentGoldSoft,
+                    HomePage.accentGold,
+                    HomePage.accentGoldDeep,
+                  ],
+                ).createShader(bounds),
+                child: Text(
                   "We are\nGrow Socialee",
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.alegreyaSc( fontSize: 17,
+                  style: GoogleFonts.alegreyaSc(
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     height: 1.05,
-                    letterSpacing: 0.3,)
+                    letterSpacing: 0.3,
+                  ),
+                ),
               ),
             ),
           ),
@@ -782,7 +911,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: isSelected
@@ -2211,11 +2340,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 36),
               LayoutBuilder(
                 builder: (context, constraints) {
-                  // Responsive grid breakpoints:
-                  //  - >= 1024 px : 4 columns (Desktop)
-                  //  - >= 700 px  : 3 columns (Tablet)
-                  //  - >= 480 px  : 2 columns (Large Mobile)
-                  //  - < 480 px   : 1 column  (Mobile)
                   int columns;
                   if (constraints.maxWidth < 480) {
                     columns = 1;
@@ -2256,31 +2380,49 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // FOOTER
+  // ATTRACTIVE CREATIVE FOOTER
   // ============================================================
   Widget _buildAGFooter(BuildContext context, double screenWidth) {
     final bool isDesktop = screenWidth >= Breakpoints.tablet;
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
             HomePage.royalBlue,
-            Color(0xFF05132B),
+            Color(0xFF030B1A),
           ],
         ),
+        boxShadow: [
+          BoxShadow(
+            color: HomePage.accentCyan.withOpacity(0.08),
+            blurRadius: 30,
+            offset: const Offset(0, -10),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Divider(
-              height: 1,
-              thickness: 1,
-              color: HomePage.accentGold.withOpacity(0.4)),
+          Container(
+            height: 2,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  HomePage.accentCyan,
+                  HomePage.accentGold,
+                  HomePage.accentCyan,
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
+            padding: EdgeInsets.symmetric(
+                vertical: 60, horizontal: isDesktop ? 60 : 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -2290,11 +2432,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     Expanded(
                         flex: 2, child: _buildFooterBrandSection()),
-                    const SizedBox(width: 40),
+                    const SizedBox(width: 50),
                     Expanded(
                         flex: 2,
                         child: _buildFooterContactSection()),
-                    const SizedBox(width: 40),
+                    const SizedBox(width: 50),
                     Expanded(
                         flex: 1, child: _buildFooterSocialSection()),
                   ],
@@ -2303,26 +2445,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFooterBrandSection(),
-                    const SizedBox(height: 36),
+                    const SizedBox(height: 40),
                     _buildFooterContactSection(),
-                    const SizedBox(height: 36),
+                    const SizedBox(height: 40),
                     _buildFooterSocialSection(),
                   ],
                 ),
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF05132B),
-            child: Center(
-              child: Text(
-                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: HomePage.textMuted,
-                ),
-                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -2335,14 +2463,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 45,
-          child: Image.asset(
-            "assets/photos/Gro_Soc_Image.png",
-            color: Colors.white,
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: HomePage.accentGold.withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: SizedBox(
+            height: 45,
+            child: Image.asset(
+              "assets/photos/Gro_Soc_Image.png",
+              color: Colors.white,
+            ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
           style: GoogleFonts.bellota(
@@ -2358,27 +2497,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.bellota(
-            fontSize: 14,
+          style: GoogleFonts.alegreyaSc(
+            fontSize: 15,
             fontWeight: FontWeight.bold,
             color: HomePage.accentGold,
-            letterSpacing: 1.0,
+            letterSpacing: 1.2,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
         _buildFooterLink(
           icon: Icons.location_on_outlined,
           text: addressQuery,
           onTap: () => _launchUrlString(googleMapsUrl),
           isMultiLine: true,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         _buildFooterLink(
           icon: Icons.phone_outlined,
           text: phoneNum,
           onTap: () => _makePhoneCall(phoneNum),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         _buildFooterLink(
           icon: Icons.email_outlined,
           text: emailAddr,
@@ -2396,27 +2535,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(6),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.03),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: HomePage.accentCyan.withOpacity(0.15),
+          ),
+        ),
         child: Row(
           crossAxisAlignment:
           isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
             Icon(icon, size: 18, color: HomePage.accentGold),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: isMultiLine
                       ? HomePage.accentWhite
                       : HomePage.textMuted,
                   height: 1.4,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -2432,17 +2578,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.bellota(
-            fontSize: 14,
+          style: GoogleFonts.alegreyaSc(
+            fontSize: 15,
             fontWeight: FontWeight.bold,
             color: HomePage.accentGold,
-            letterSpacing: 1.0,
+            letterSpacing: 1.2,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
         Wrap(
-          spacing: 10,
-          runSpacing: 10,
+          spacing: 12,
+          runSpacing: 12,
           children: [
             _buildSocialButton(
                 icon: FontAwesomeIcons.facebook, url: facebookUrl),
@@ -2462,11 +2608,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: HomePage.accentGold.withOpacity(0.6)),
+          gradient: LinearGradient(
+            colors: [
+              HomePage.accentGold.withOpacity(0.2),
+              HomePage.accentGoldDeep.withOpacity(0.1),
+            ],
+          ),
+          border: Border.all(color: HomePage.accentGold.withOpacity(0.7)),
           boxShadow: [
             BoxShadow(
-              color: HomePage.accentGold.withOpacity(0.10),
-              blurRadius: 8,
+              color: HomePage.accentGold.withOpacity(0.15),
+              blurRadius: 10,
             ),
           ],
         ),
