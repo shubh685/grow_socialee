@@ -2272,15 +2272,7 @@ class _TeamSectionState extends State<TeamSection>
               border:
               Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
             ),
-            child: Text(
-              "MEET OUR LEADERSHIP",
-              style: GoogleFonts.bellota(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AboutTheme.accentGold,
-                letterSpacing: 2.0,
-              ),
-            ),
+            child: Text("MEET OUR LEADERSHIP", style: GoogleFonts.bellota(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
           ),
           const SizedBox(height: 14),
           Text(
