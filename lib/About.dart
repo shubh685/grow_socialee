@@ -266,7 +266,7 @@ class _AboutState extends State<About> {
                 "We are\nGrow Socialee",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -618,7 +618,7 @@ class _AboutState extends State<About> {
               const SizedBox(width: 8),
               Text(
                 "CHAPTER 01 · WHO WE ARE",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
                   color: AboutTheme.accentGold,
@@ -632,7 +632,7 @@ class _AboutState extends State<About> {
         // "Crafting Digital" — small
         Text(
           "Crafting Digital",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 30,
             fontWeight: FontWeight.w500,
             color: Colors.white,
@@ -651,7 +651,7 @@ class _AboutState extends State<About> {
           ).createShader(bounds),
           child: Text(
             "Legacies",
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: 58,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -663,7 +663,7 @@ class _AboutState extends State<About> {
         const SizedBox(height: 18),
         Text(
           "Through Strategic Innovation.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 20,
             fontWeight: FontWeight.w400,
             color: AboutTheme.accentCyan,
@@ -673,7 +673,7 @@ class _AboutState extends State<About> {
         const SizedBox(height: 22),
         Text(
           "We combine creative thinking, data-driven strategy, and design excellence to help brands dominate their digital space.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: AboutTheme.textSoft,
             height: 1.6,
@@ -775,7 +775,7 @@ class _AboutState extends State<About> {
               children: [
                 Text(
                   label,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w800,
                     color: AboutTheme.accentGold,
@@ -785,7 +785,7 @@ class _AboutState extends State<About> {
                 const SizedBox(height: 2),
                 Text(
                   sub,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                     fontSize: 11.5,
                     color: AboutTheme.textMuted,
                     fontWeight: FontWeight.w400,
@@ -843,7 +843,7 @@ class _AboutState extends State<About> {
                   const SizedBox(width: 8),
                   Text(
                     it["label"] as String,
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w700,
                       color: AboutTheme.accentWhite,
@@ -1009,7 +1009,7 @@ class _AboutState extends State<About> {
                   children: [
                     Text(
                       "EST.",
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
                         color: const Color(0xFF1A1200),
@@ -1018,7 +1018,7 @@ class _AboutState extends State<About> {
                     ),
                     Text(
                       "Bhavnagar",
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF1A1200),
@@ -1051,7 +1051,7 @@ class _AboutState extends State<About> {
             const SizedBox(width: 10),
             Text(
               "ABOUT GROW SOCIALEE",
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.playfairDisplay(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: AboutTheme.accentGold,
@@ -1064,7 +1064,7 @@ class _AboutState extends State<About> {
         // Big heading
         Text(
           "Innovating Digital",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 34,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -1081,7 +1081,7 @@ class _AboutState extends State<About> {
           ).createShader(bounds),
           child: Text(
             "Excellence in Bhavnagar",
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: 34,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -1114,7 +1114,7 @@ class _AboutState extends State<About> {
               child: Text(
                 "We are Grow Socialee—a full-suite digital marketing agency based in Bhavnagar committed to scaling small and medium enterprises. Modern market dynamics demand more than an online presence; they require digital dominance.",
                 textAlign: TextAlign.justify,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
                   color: AboutTheme.textMuted,
                   height: 1.6,
@@ -1128,7 +1128,7 @@ class _AboutState extends State<About> {
         Text(
           "From custom social media strategies and video editing production to conversion-focused ad campaigns and brand identity design, our tailored solutions eliminate complexity and generate sustainable revenue growth.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: AboutTheme.textMuted,
             height: 1.6,
@@ -1139,7 +1139,7 @@ class _AboutState extends State<About> {
         Text(
           "At Grow Socialee, we believe every brand has a unique story waiting to be told. We combine creative thinking, strategic planning, and digital technology to transform ideas into impactful brand experiences that connect with the right audience and build lasting relationships.",
           textAlign: TextAlign.justify,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: AboutTheme.textMuted,
             height: 1.6,
@@ -1201,7 +1201,7 @@ class _AboutState extends State<About> {
         icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
         label: Text(
           label,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 13,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.0,
@@ -1346,7 +1346,7 @@ class _AboutState extends State<About> {
                 ),
                 child: Text(
                   "WHAT WE BRING TO THE TABLE",
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: AboutTheme.accentGold,
@@ -1358,7 +1358,7 @@ class _AboutState extends State<About> {
               Text(
                 "Integrated Digital Expertise",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: isDesktop ? 36 : 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -1436,7 +1436,7 @@ class _AboutState extends State<About> {
               const SizedBox(height: 8),
               Text(
                 cap["num"] as String,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: color,
@@ -1469,7 +1469,7 @@ class _AboutState extends State<About> {
               children: [
                 Text(
                   cap["title"] as String,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: AboutTheme.accentWhite,
@@ -1479,7 +1479,7 @@ class _AboutState extends State<About> {
                 const SizedBox(height: 8),
                 Text(
                   cap["desc"] as String,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                     fontSize: 13.5,
                     color: AboutTheme.textMuted,
                     height: 1.55,
@@ -1839,7 +1839,7 @@ class _ValuesSectionState extends State<ValuesSection>
       accentColor: AboutTheme.accentGold,
       content: Text(
         "To simplify digital growth for businesses by delivering impactful branding, creative visual design, strategic social media engagement, and revenue-focused advertising campaigns.",
-        style: GoogleFonts.bellota(
+        style: GoogleFonts.playfairDisplay(
             fontSize: 14, color: AboutTheme.textMuted, height: 1.6),
       ),
     );
@@ -1851,7 +1851,7 @@ class _ValuesSectionState extends State<ValuesSection>
       accentColor: AboutTheme.accentCyan,
       content: Text(
         "To empower small and medium enterprises to establish distinct online identities and gain competitive advantages in an ever-evolving digital world.",
-        style: GoogleFonts.bellota(
+        style: GoogleFonts.playfairDisplay(
             fontSize: 14, color: AboutTheme.textMuted, height: 1.6),
       ),
     );
@@ -1903,7 +1903,7 @@ class _ValuesSectionState extends State<ValuesSection>
             ),
             child: Text(
               "CORE PHILOSOPHY",
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.playfairDisplay(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 color: AboutTheme.accentGold,
@@ -1914,7 +1914,7 @@ class _ValuesSectionState extends State<ValuesSection>
           const SizedBox(height: 14),
           Text(
             "Driven by Strategy & Purpose",
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: widget.isDesktop ? 34 : 26,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -1997,7 +1997,7 @@ class _ValuesSectionState extends State<ValuesSection>
           ),
           child: Text(
             num,
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.playfairDisplay(
               fontSize: 10,
               fontWeight: FontWeight.w800,
               color: AboutTheme.accentGoldSoft,
@@ -2009,12 +2009,12 @@ class _ValuesSectionState extends State<ValuesSection>
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.playfairDisplay(
                   fontSize: 13, color: AboutTheme.textMuted, height: 1.5),
               children: [
                 TextSpan(
                   text: "$title: ",
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 13.5,
                     color: AboutTheme.accentWhite,
                     fontWeight: FontWeight.bold,
@@ -2023,7 +2023,7 @@ class _ValuesSectionState extends State<ValuesSection>
                 ),
                 TextSpan(
                   text: text,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                       fontSize: 13, color: AboutTheme.textMuted, height: 1.5),
                 ),
               ],
@@ -2109,7 +2109,7 @@ class _ValuesSectionState extends State<ValuesSection>
                     children: [
                       Text(
                         "CHAPTER $number",
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: 9.5,
                           fontWeight: FontWeight.w800,
                           color: accentColor,
@@ -2119,7 +2119,7 @@ class _ValuesSectionState extends State<ValuesSection>
                       const SizedBox(height: 3),
                       Text(
                         title,
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.alegreyaSc(
                           fontSize: 19,
                           fontWeight: FontWeight.bold,
                           color: AboutTheme.accentWhite,
@@ -2272,12 +2272,12 @@ class _TeamSectionState extends State<TeamSection>
               border:
               Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
             ),
-            child: Text("MEET OUR LEADERSHIP", style: GoogleFonts.bellota(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
+            child: Text("MEET OUR LEADERSHIP", style: GoogleFonts.playfairDisplay(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
           ),
           const SizedBox(height: 14),
           Text(
             "The Minds Behind the Agency",
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: widget.isDesktop ? 34 : 26,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -2405,7 +2405,7 @@ class _TeamSectionState extends State<TeamSection>
                   const SizedBox(width: 6),
                   Text(
                     designation.toUpperCase(),
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.playfairDisplay(
                       fontSize: 9,
                       fontWeight: FontWeight.w800,
                       color: const Color(0xFF1A1200),
@@ -2447,7 +2447,7 @@ class _TeamSectionState extends State<TeamSection>
                     backgroundColor: AboutTheme.darkCardBg,
                     child: Text(
                       initials,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: accentColor,
@@ -2461,7 +2461,7 @@ class _TeamSectionState extends State<TeamSection>
                 Text(
                   name,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 19,
                     fontWeight: FontWeight.bold,
                     color: AboutTheme.accentWhite,
@@ -2481,7 +2481,7 @@ class _TeamSectionState extends State<TeamSection>
                   ),
                   child: Text(
                     designation.toUpperCase(),
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.playfairDisplay(
                       fontSize: 10.5,
                       fontWeight: FontWeight.bold,
                       color: accentColor,
@@ -2494,7 +2494,7 @@ class _TeamSectionState extends State<TeamSection>
                 Text(
                   tagline,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                     fontSize: 12,
                     color: AboutTheme.textMuted,
                     fontWeight: FontWeight.w500,
