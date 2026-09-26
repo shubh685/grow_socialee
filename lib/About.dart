@@ -2238,7 +2238,7 @@ class _TeamSectionState extends State<TeamSection>
       tagline: "Client Relations",
       initials: "UB",
       accentColor: AboutTheme.accentCyan,
-      isFeatured: false,
+      isFeatured: true,
     );
 
     final subManagerCard = _buildTeamCard(
@@ -2247,7 +2247,7 @@ class _TeamSectionState extends State<TeamSection>
       tagline: "Operations",
       initials: "VJ",
       accentColor: AboutTheme.accentGoldSoft,
-      isFeatured: false,
+      isFeatured: true,
     );
 
     return Container(
@@ -2387,7 +2387,7 @@ class _TeamSectionState extends State<TeamSection>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Top ribbon bar (featured crown)
+          // Top ribbon bar (dynamically shows designation)
           if (isFeatured)
             Container(
               padding: const EdgeInsets.symmetric(vertical: 6),
@@ -2412,7 +2412,7 @@ class _TeamSectionState extends State<TeamSection>
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    "FOUNDER",
+                    designation.toUpperCase(),
                     style: GoogleFonts.bellota(
                       fontSize: 9,
                       fontWeight: FontWeight.w800,
