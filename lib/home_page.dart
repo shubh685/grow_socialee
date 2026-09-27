@@ -454,7 +454,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: _buildAGFaqSection(screenWidth, isDesktop),
           ),
           SliverToBoxAdapter(
-            child: _buildAGFooter(context, screenWidth),
+            child: _buildAGFooter(context), // Fixed: Pass only context
           ),
         ],
       ),
@@ -2382,47 +2382,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // ============================================================
   // ATTRACTIVE CREATIVE FOOTER
   // ============================================================
-  Widget _buildAGFooter(BuildContext context, double screenWidth) {
-    final bool isDesktop = screenWidth >= Breakpoints.tablet;
+  Widget _buildAGFooter(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isDesktop = screenWidth > 800;
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            HomePage.royalBlue,
-            Color(0xFF030B1A),
+            AboutTheme.royalBlue,
+            Color(0xFF05132B),
           ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: HomePage.accentCyan.withOpacity(0.08),
-            blurRadius: 30,
-            offset: const Offset(0, -10),
-          ),
-        ],
       ),
       child: Column(
         children: [
-          Container(
-            height: 2,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  HomePage.accentCyan,
-                  HomePage.accentGold,
-                  HomePage.accentCyan,
-                  Colors.transparent,
-                ],
-              ),
-            ),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: AboutTheme.accentGold.withOpacity(0.4),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: 60, horizontal: isDesktop ? 60 : 24),
+            padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 24),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -2430,24 +2414,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                        flex: 2, child: _buildFooterBrandSection()),
-                    const SizedBox(width: 50),
-                    Expanded(
-                        flex: 2,
-                        child: _buildFooterContactSection()),
-                    const SizedBox(width: 50),
-                    Expanded(
-                        flex: 1, child: _buildFooterSocialSection()),
+                    Expanded(flex: 2, child: _buildFooterBrandSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFooterBrandSection(),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 36),
                     _buildFooterContactSection(),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 36),
                     _buildFooterSocialSection(),
                   ],
                 ),
@@ -2463,29 +2443,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: HomePage.accentGold.withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: SizedBox(
-            height: 45,
-            child: Image.asset(
-              "assets/photos/Gro_Soc_Image.png",
+        SizedBox(
+          height: 45,
+          child: Image.asset(
+            "assets/photos/Gro_Soc_Image.png",
+            color: Colors.white,
+            errorBuilder: (context, error, stackTrace) => const Icon(
+              Icons.image,
               color: Colors.white,
+              size: 40,
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.bellota(
-              fontSize: 14, color: HomePage.textMuted, height: 1.6),
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 14,
+            color: AboutTheme.textMuted,
+            height: 1.6,
+          ),
         ),
       ],
     );
@@ -2500,24 +2477,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           style: GoogleFonts.alegreyaSc(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: HomePage.accentGold,
+            color: AboutTheme.accentGold,
             letterSpacing: 1.2,
           ),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 16),
         _buildFooterLink(
           icon: Icons.location_on_outlined,
           text: addressQuery,
           onTap: () => _launchUrlString(googleMapsUrl),
           isMultiLine: true,
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
         _buildFooterLink(
           icon: Icons.phone_outlined,
           text: phoneNum,
           onTap: () => _makePhoneCall(phoneNum),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
         _buildFooterLink(
           icon: Icons.email_outlined,
           text: emailAddr,
@@ -2535,22 +2512,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.03),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: HomePage.accentCyan.withOpacity(0.15),
-          ),
-        ),
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
         child: Row(
           crossAxisAlignment:
           isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: HomePage.accentGold),
-            const SizedBox(width: 12),
+            Icon(icon, size: 18, color: AboutTheme.accentGold),
+            const SizedBox(width: 10),
             Expanded(
               child: Text(
                 text,
@@ -2559,10 +2529,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: isMultiLine
-                      ? HomePage.accentWhite
-                      : HomePage.textMuted,
+                      ? AboutTheme.accentWhite
+                      : AboutTheme.textMuted,
                   height: 1.4,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -2581,14 +2551,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           style: GoogleFonts.alegreyaSc(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: HomePage.accentGold,
+            color: AboutTheme.accentGold,
             letterSpacing: 1.2,
           ),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 16),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: 10,
+          runSpacing: 10,
           children: [
             _buildSocialButton(
                 icon: FontAwesomeIcons.facebook, url: facebookUrl),
@@ -2603,29 +2573,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildSocialButton({required IconData icon, required String url}) {
-    return _HoverScale(
-      scale: 1.1,
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [
-              HomePage.accentGold.withOpacity(0.2),
-              HomePage.accentGoldDeep.withOpacity(0.1),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
+        boxShadow: [
+          BoxShadow(
+            color: AboutTheme.accentGold.withOpacity(0.10),
+            blurRadius: 8,
           ),
-          border: Border.all(color: HomePage.accentGold.withOpacity(0.7)),
-          boxShadow: [
-            BoxShadow(
-              color: HomePage.accentGold.withOpacity(0.15),
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: IconButton(
-          icon: Icon(icon, size: 18, color: HomePage.accentGold),
-          onPressed: () => _launchUrlString(url),
-        ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 18, color: AboutTheme.accentGold),
+        onPressed: () => _launchUrlString(url),
       ),
     );
   }

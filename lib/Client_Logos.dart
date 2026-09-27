@@ -10,6 +10,19 @@ import 'Reviews.dart';
 import 'contact.dart';
 import 'Services.dart';
 
+class Breakpoints {
+  static const double mobileSmall = 380;
+  static const double mobile = 600;
+  static const double tablet = 900;
+  static const double desktop = 1200;
+  static const double largeDesktop = 1500;
+
+  static bool isMobileSmall(double w) => w < mobileSmall;
+  static bool isMobile(double w) => w < mobile;
+  static bool isTablet(double w) => w >= mobile && w < tablet;
+  static bool isDesktop(double w) => w >= tablet;
+  static bool isLargeDesktop(double w) => w >= desktop;
+}
 // ============================================================
 // CLIENT LOGOS PAGE — THEME (matches HomePage royal blue + gold)
 // ============================================================
@@ -247,7 +260,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const About(),
+                            builder: (context) => const About(), // Keep const if About has a const constructor
                           ),
                         );
                       }),
@@ -507,7 +520,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     icon: Icons.home_rounded,
                     label: "HOME",
                     onTap: () {
-                      setState(() => _selectedIndex = 0);
+                      setState( () => _selectedIndex = 0);
                       Navigator.pop(context);
                       Navigator.pushReplacement(
                         context,
@@ -556,21 +569,21 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       );
                     },
                   ),
-                  _buildDrawerItem(
-                    index: 4,
-                    icon: Icons.chat_bubble_outline_rounded,
-                    label: "REVIEWS",
-                    onTap: () {
-                      setState(() => _selectedIndex = 4);
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Reviews(),
-                        ),
-                      );
-                    },
-                  ),
+                _buildDrawerItem(
+                  index: 4,
+                  icon: Icons.chat_bubble_outline_rounded,
+                  label: "REVIEWS",
+                  onTap: () {
+                    setState(() => _selectedIndex = 4);
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Reviews(), // Ensures no const modifier mismatch
+                      ),
+                    );
+                  },
+                ),
                   _buildDrawerItem(
                     index: 5,
                     icon: Icons.contact_phone_sharp,

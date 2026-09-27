@@ -1664,27 +1664,6 @@ class _AboutState extends State<About> {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: Colors.white.withOpacity(0.08),
-                  width: 1,
-                ),
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 12,
-                  color: AboutTheme.textMuted.withOpacity(0.7),
-                  letterSpacing: 0.8,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
