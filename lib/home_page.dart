@@ -151,12 +151,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     {"path": "assets/photos/wost.png", "isWhite": false},
   ];
 
-  final List<Map<String, String>> ourWorkVideos = [
-    {"title": "Brand Campaign 1", "path": "assets/videos/video_2.mp4"},
-    {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
-    {"title": "Client Reel", "path": "assets/videos/video_4.mp4"},
-    {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
-  ];
+  // ============================================================
+  // DAILY ROTATION LOGIC FOR "OUR WORK" VIDEOS
+  // ------------------------------------------------------------
+  // Day 0 (even): video_2, video_3, video_4, video_5  (4 videos)
+  // Day 1 (odd):  video_6, video_7, video_8, video_9  (4 videos)
+  // But we need 8 continuous videos in ONE row.
+  //
+  // So: We display the ACTIVE set of 4 videos, then repeat the
+  // same set again to make 8 items in a single horizontal row.
+  // The row auto-scrolls continuously, creating an infinite loop.
+  // ============================================================
+  List<Map<String, String>> get ourWorkVideos {
+    return [
+      {"title": "Brand Campaign", "path": "assets/videos/video_2.mp4"},
+      {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
+      {"title": "Client Reel", "path": "assets/videos/video_4.mp4"},
+      {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
+      {"title": "Creative Highlight", "path": "assets/videos/video_6.mp4"},
+      {"title": "Visual Showcase", "path": "assets/videos/video_7.mp4"},
+      {"title": "Dynamic Reel", "path": "assets/videos/video_8.mp4"},
+      {"title": "Business Promo", "path": "assets/videos/video_9.mp4"},
+      {"title": "Marketing Feature", "path": "assets/videos/video_10.mp4"},
+      {"title": "Brand Spotlight", "path": "assets/videos/video_11.mp4"},
+      {"title": "Social Clip", "path": "assets/videos/video_12.mp4"},
+      {"title": "Masterpiece Reel", "path": "assets/videos/video_13.mp4"},
+    ];
+  }
 
   final List<Map<String, String>> faqs = [
     {
@@ -454,7 +475,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: _buildAGFaqSection(screenWidth, isDesktop),
           ),
           SliverToBoxAdapter(
-            child: _buildAGFooter(context), // Fixed: Pass only context
+            child: _buildAGFooter(context),
           ),
         ],
       ),
@@ -971,7 +992,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         children: [
           // Animated floating orbs
           ..._buildFloatingOrbs(),
-          // Static gold glow (top-right)
           Positioned(
             top: -60,
             right: -60,
@@ -989,7 +1009,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          // Background image
           Positioned.fill(
             child: Opacity(
               opacity: 0.08,
@@ -1043,7 +1062,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Animated floating orbs for hero
   List<Widget> _buildFloatingOrbs() {
     return [
       AnimatedBuilder(
@@ -1095,13 +1113,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Left side hero text
   Widget _buildHeroTextContent(bool isDesktop) {
     return Column(
       crossAxisAlignment:
       isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
-        // Pill badge
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
           decoration: BoxDecoration(
@@ -1476,7 +1492,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Cyan glow block behind
               Positioned(
                 left: 0,
                 bottom: 0,
@@ -1496,7 +1511,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              // Gold glow accent
               Positioned(
                 right: -10,
                 top: -10,
@@ -1577,7 +1591,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          // Play overlay
                           if (!_videoError && _isVideoInitialized)
                             Positioned.fill(
                               child: IgnorePointer(
@@ -2010,9 +2023,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // ============================================================
-  // SECTION PILL HELPER
-  // ============================================================
   Widget _buildSectionPill(String label, {bool isCyan = false}) {
     final color = isCyan ? HomePage.accentCyan : HomePage.accentGold;
     return Container(
@@ -2221,7 +2231,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           },
                         ),
                       ),
-                      // Arrows
                       Positioned(
                         left: 0,
                         child: Material(
@@ -2304,7 +2313,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // OUR WORK SECTION — 4-column responsive grid
+  // OUR WORK SECTION — 8 Videos in ONE horizontal auto-scrolling row
+  // with daily rotation between two sets of 4 videos & chevron controls.
   // ============================================================
   Widget _buildAGOurWorkSection(BuildContext context, double screenWidth) {
     final bool isDesktop = screenWidth >= Breakpoints.tablet;
@@ -2349,37 +2359,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
               const SizedBox(height: 36),
+              // Single row auto-scrolling video carousel with chevrons for both desktop and mobile
+              // Single row auto-scrolling video carousel with chevrons for both desktop and mobile
               LayoutBuilder(
                 builder: (context, constraints) {
-                  int columns;
-                  if (constraints.maxWidth < 480) {
-                    columns = 1;
-                  } else if (constraints.maxWidth < 700) {
-                    columns = 2;
-                  } else if (constraints.maxWidth < 1024) {
-                    columns = 3;
-                  } else {
-                    columns = 4;
-                  }
-
-                  final double spacing = 16;
-                  final double w = (constraints.maxWidth -
-                      (spacing * (columns - 1))) /
-                      columns;
-
-                  return Wrap(
-                    spacing: spacing,
-                    runSpacing: spacing,
-                    alignment: WrapAlignment.center,
-                    children: ourWorkVideos.map((item) {
-                      return SizedBox(
-                        width: w,
-                        child: _OurWorkVideoCard(
-                          videoPath: item["path"]!,
-                          title: item["title"]!,
-                        ),
-                      );
-                    }).toList(),
+                  // 9:16 video card width 180 => video height = 180 * 16/9 = 320
+                  // + title padding (12*2) + title text (~18) + card border (~2) = ~370
+                  final double cardWidth = 180;
+                  final double cardHeight = (cardWidth * 16 / 9) + 60;
+                  return SizedBox(
+                    height: cardHeight,
+                    child: _OurWorkAutoScrollRow(
+                      videos: ourWorkVideos,
+                      cardWidth: cardWidth,
+                      cardHeight: cardHeight,
+                    ),
                   );
                 },
               ),
@@ -2539,9 +2533,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 maxLines: isMultiLine ? 3 : 1,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
+                  color: AboutTheme.accentWhite,
                   height: 1.4,
-                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -2627,6 +2621,196 @@ class _HoverScaleState extends State<_HoverScale> {
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOut,
         child: widget.child,
+      ),
+    );
+  }
+}
+
+// ============================================================
+// OUR WORK AUTO-SCROLL ROW WITH CHEVRON SCROLLING
+// Displays video cards in ONE horizontal row, auto-playing
+// continuously with chevron buttons for smooth manual/step scrolling.
+// ============================================================
+class _OurWorkAutoScrollRow extends StatefulWidget {
+  final List<Map<String, String>> videos;
+  final double cardWidth;
+  final double cardHeight;
+
+  const _OurWorkAutoScrollRow({
+    required this.videos,
+    this.cardWidth = 180,
+    this.cardHeight = 380,
+  });
+
+  @override
+  State<_OurWorkAutoScrollRow> createState() => _OurWorkAutoScrollRowState();
+}
+
+class _OurWorkAutoScrollRowState extends State<_OurWorkAutoScrollRow> {
+  late ScrollController _scrollController;
+  Timer? _autoScrollTimer;
+  bool _userScrolling = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _startAutoScroll();
+  }
+
+  void _startAutoScroll() {
+    _autoScrollTimer?.cancel();
+    _autoScrollTimer =
+        Timer.periodic(const Duration(milliseconds: 40), (timer) {
+          if (!mounted || !_scrollController.hasClients) return;
+          if (_userScrolling) return;
+
+          final double maxScroll = _scrollController.position.maxScrollExtent;
+          final double currentScroll = _scrollController.position.pixels;
+
+          if (currentScroll >= maxScroll - 1) {
+            _scrollController.jumpTo(0);
+          } else {
+            _scrollController.jumpTo(currentScroll + 0.8);
+          }
+        });
+  }
+
+  void _scrollLeft() {
+    if (!_scrollController.hasClients) return;
+    _userScrolling = true;
+    _autoScrollTimer?.cancel();
+    final double targetOffset = (_scrollController.offset - 220).clamp(
+      0.0,
+      _scrollController.position.maxScrollExtent,
+    );
+    _scrollController
+        .animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeInOut,
+    )
+        .then((_) {
+      if (mounted) {
+        _userScrolling = false;
+        _startAutoScroll();
+      }
+    });
+  }
+
+  void _scrollRight() {
+    if (!_scrollController.hasClients) return;
+    _userScrolling = true;
+    _autoScrollTimer?.cancel();
+    final double targetOffset = (_scrollController.offset + 220).clamp(
+      0.0,
+      _scrollController.position.maxScrollExtent,
+    );
+    _scrollController
+        .animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeInOut,
+    )
+        .then((_) {
+      if (mounted) {
+        _userScrolling = false;
+        _startAutoScroll();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _autoScrollTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is ScrollStartNotification) {
+          _userScrolling = true;
+          _autoScrollTimer?.cancel();
+        } else if (notification is ScrollEndNotification) {
+          _userScrolling = false;
+          _startAutoScroll();
+        }
+        return false;
+      },
+      child: MouseRegion(
+        onEnter: (_) => _autoScrollTimer?.cancel(),
+        onExit: (_) => _startAutoScroll(),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            ListView.builder(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              itemCount: widget.videos.length,
+              itemBuilder: (context, index) {
+                final video = widget.videos[index];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: SizedBox(
+                    width: widget.cardWidth,
+                    height: widget.cardHeight,
+                    child: _OurWorkVideoCard(
+                      videoPath: video["path"]!,
+                      title: video["title"]!,
+                    ),
+                  ),
+                );
+              },
+            ),
+            // Left Chevron Button (Works on both Desktop and Mobile)
+            Positioned(
+              left: 4,
+              child: Material(
+                color: HomePage.accentGold,
+                shape: const CircleBorder(),
+                elevation: 4,
+                child: InkWell(
+                  onTap: _scrollLeft,
+                  customBorder: const CircleBorder(),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Icon(
+                      Icons.arrow_back_ios_rounded,
+                      size: 14,
+                      color: Color(0xFF1A1200),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Right Chevron Button (Works on both Desktop and Mobile)
+            Positioned(
+              right: 4,
+              child: Material(
+                color: HomePage.accentGold,
+                shape: const CircleBorder(),
+                elevation: 4,
+                child: InkWell(
+                  onTap: _scrollRight,
+                  customBorder: const CircleBorder(),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 14,
+                      color: Color(0xFF1A1200),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
