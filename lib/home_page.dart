@@ -151,41 +151,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     {"path": "assets/photos/wost.png", "isWhite": false},
   ];
 
-  // ============================================================
-  // DAILY ROTATION LOGIC FOR "OUR WORK" VIDEOS
-  // ------------------------------------------------------------
-  // Day 0 (even): video_2, video_3, video_4, video_5  (4 videos)
-  // Day 1 (odd):  video_6, video_7, video_8, video_9  (4 videos)
-  // But we need 8 continuous videos in ONE row.
-  //
-  // So: We display the ACTIVE set of 4 videos, then repeat the
-  // same set again to make 8 items in a single horizontal row.
-  // The row auto-scrolls continuously, creating an infinite loop.
-  // ============================================================
-  List<Map<String, String>> get ourWorkVideos {
-    return [
-      {"title": "Brand Campaign", "path": "assets/videos/video_2.mp4"},
-      {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
-      {"title": "Client Reel", "path": "assets/videos/video_4.mp4"},
-      {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
-      {"title": "Creative Highlight", "path": "assets/videos/video_6.mp4"},
-      {"title": "Visual Showcase", "path": "assets/videos/video_7.mp4"},
-      {"title": "Dynamic Reel", "path": "assets/videos/video_8.mp4"},
-      {"title": "Business Promo", "path": "assets/videos/video_9.mp4"},
-      {"title": "Marketing Feature", "path": "assets/videos/video_10.mp4"},
-      {"title": "Brand Spotlight", "path": "assets/videos/video_11.mp4"},
-      {"title": "Social Clip", "path": "assets/videos/video_12.mp4"},
-      {"title": "Masterpiece Reel", "path": "assets/videos/video_13.mp4"},
-    ];
-  }
+  final List<Map<String, String>> ourWorkVideos = [
+    {"title": "Brand Campaign 1", "path": "assets/videos/video_2.mp4"},
+    {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
+    {"title": "Client Reel", "path": "assets/videos/video_4.mp4"},
+    {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
+  ];
 
-  // ===== Our Work video controllers cache (preloaded once) =====
-  final Map<String, VideoPlayerController> _ourWorkControllers = {};
-  final Set<String> _ourWorkInitialized = {};
-  final Set<String> _ourWorkErrors = {};
-  bool _ourWorkPreloaded = false;
-  final GlobalKey _ourWorkSectionKey = GlobalKey();   // <-- ADD
-  bool _ourWorkVisible = false;
   final List<Map<String, String>> faqs = [
     {
       "question": "How will you learn about my business?",
@@ -238,7 +210,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _initializeVideo();
     _scrollController.addListener(_onScroll);
     _initializeClientCarousel();
-    _preloadOurWorkVideos();
+
     _orbController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 12),
@@ -255,7 +227,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     _checkAndControlVideoPlayback();
     _statsKey.currentState?.checkVisibility();
-    _updateOurWorkPlayback();   // <-- ADD THIS
   }
 
   void _initializeClientCarousel() {
@@ -264,91 +235,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       viewportFraction: 0.15,
     );
     _startAutoScroll();
-  }
-
-  // ------------------------------------------------------------
-  // PRELOAD ALL "OUR WORK" VIDEOS IN PARALLEL
-  // Every controller is initialized at the same time so the row
-  // never has to load a video when it scrolls into view.
-  // Controllers are kept PAUSED — we only play them when the row
-  // becomes visible (see _updateOurWorkPlayback).
-  // ------------------------------------------------------------
-  Future<void> _preloadOurWorkVideos() async {
-    if (_ourWorkPreloaded) return;
-    _ourWorkPreloaded = true;
-
-    // Initialize all controllers in parallel — much faster than a
-    // sequential await chain, and no single timeout blocks the rest.
-    final futures = ourWorkVideos.map((v) async {
-      final path = v["path"]!;
-      if (_ourWorkControllers.containsKey(path)) return;
-
-      try {
-        final c = VideoPlayerController.asset(path);
-        c.setLooping(true);
-        c.setVolume(0.0);
-        _ourWorkControllers[path] = c;
-
-        await c.initialize().timeout(
-          const Duration(seconds: 20),
-          onTimeout: () {
-            _ourWorkErrors.add(path);
-            debugPrint('Timeout preloading $path');
-          },
-        );
-
-        if (!mounted) return;
-        if (!_ourWorkErrors.contains(path)) {
-          _ourWorkInitialized.add(path);
-          // Do NOT call play() here. Playing 12 videos at once kills
-          // frame rate. They play only when the row is on screen.
-        }
-      } catch (e) {
-        _ourWorkErrors.add(path);
-        debugPrint('Error preloading $path: $e');
-      }
-    }).toList();
-
-    await Future.wait(futures);
-    if (mounted) setState(() {});
-  }
-
-  // ------------------------------------------------------------
-  // Play / pause "Our Work" videos based on visibility.
-  // Saves CPU/GPU when the section is off-screen and prevents
-  // 12 videos decoding at the same time on first page load.
-  // ------------------------------------------------------------
-  void _updateOurWorkPlayback() {
-    if (!mounted) return;
-    if (_ourWorkInitialized.isEmpty) return;
-
-    bool visible = false;
-    final ctx = _ourWorkSectionKey.currentContext;
-    if (ctx != null) {
-      final box = ctx.findRenderObject() as RenderBox?;
-      if (box != null && box.hasSize) {
-        final pos = box.localToGlobal(Offset.zero);
-        final screenH = MediaQuery.of(context).size.height;
-        // Section is considered visible when any part is on screen
-        visible = (pos.dy < screenH) && (pos.dy + box.size.height > 0);
-      }
-    }
-
-    if (visible == _ourWorkVisible) return;
-    _ourWorkVisible = visible;
-
-    for (final entry in _ourWorkControllers.entries) {
-      final path = entry.key;
-      if (!_ourWorkInitialized.contains(path)) continue;
-      final c = entry.value;
-      try {
-        if (visible) {
-          if (!c.value.isPlaying) c.play();
-        } else {
-          if (c.value.isPlaying) c.pause();
-        }
-      } catch (_) {}
-    }
   }
 
   void _startAutoScroll() {
@@ -442,10 +328,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _stopAutoScroll();
-    for (final c in _ourWorkControllers.values) {
-      c.dispose();
-    }
-    _ourWorkControllers.clear();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _videoController.dispose();
@@ -572,7 +454,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: _buildAGFaqSection(screenWidth, isDesktop),
           ),
           SliverToBoxAdapter(
-            child: _buildAGFooter(context),
+            child: _buildAGFooter(context), // Fixed: Pass only context
           ),
         ],
       ),
@@ -1089,6 +971,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         children: [
           // Animated floating orbs
           ..._buildFloatingOrbs(),
+          // Static gold glow (top-right)
           Positioned(
             top: -60,
             right: -60,
@@ -1106,6 +989,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
           ),
+          // Background image
           Positioned.fill(
             child: Opacity(
               opacity: 0.08,
@@ -1159,6 +1043,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Animated floating orbs for hero
   List<Widget> _buildFloatingOrbs() {
     return [
       AnimatedBuilder(
@@ -1210,11 +1095,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Left side hero text
   Widget _buildHeroTextContent(bool isDesktop) {
     return Column(
       crossAxisAlignment:
       isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
+        // Pill badge
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
           decoration: BoxDecoration(
@@ -1589,6 +1476,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Stack(
             alignment: Alignment.center,
             children: [
+              // Cyan glow block behind
               Positioned(
                 left: 0,
                 bottom: 0,
@@ -1608,6 +1496,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+              // Gold glow accent
               Positioned(
                 right: -10,
                 top: -10,
@@ -1688,6 +1577,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
+                          // Play overlay
                           if (!_videoError && _isVideoInitialized)
                             Positioned.fill(
                               child: IgnorePointer(
@@ -2120,6 +2010,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  // ============================================================
+  // SECTION PILL HELPER
+  // ============================================================
   Widget _buildSectionPill(String label, {bool isCyan = false}) {
     final color = isCyan ? HomePage.accentCyan : HomePage.accentGold;
     return Container(
@@ -2328,6 +2221,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           },
                         ),
                       ),
+                      // Arrows
                       Positioned(
                         left: 0,
                         child: Material(
@@ -2410,8 +2304,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // OUR WORK SECTION — 8 Videos in ONE horizontal auto-scrolling row
-  // with daily rotation between two sets of 4 videos & chevron controls.
+  // OUR WORK SECTION — 4-column responsive grid
   // ============================================================
   Widget _buildAGOurWorkSection(BuildContext context, double screenWidth) {
     final bool isDesktop = screenWidth >= Breakpoints.tablet;
@@ -2456,26 +2349,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
               const SizedBox(height: 36),
-              // Single row auto-scrolling video carousel with chevrons for both desktop and mobile
-              // Single row auto-scrolling video carousel with chevrons for both desktop and mobile
               LayoutBuilder(
                 builder: (context, constraints) {
-                  final double cardWidth = 180;
-                  final double cardHeight = (cardWidth * 16 / 9) + 60;
-                  return Container(
-                      key: _ourWorkSectionKey,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            HomePage.darkBg,
-                            HomePage.royalBlueMid,
-                          ],
+                  int columns;
+                  if (constraints.maxWidth < 480) {
+                    columns = 1;
+                  } else if (constraints.maxWidth < 700) {
+                    columns = 2;
+                  } else if (constraints.maxWidth < 1024) {
+                    columns = 3;
+                  } else {
+                    columns = 4;
+                  }
+
+                  final double spacing = 16;
+                  final double w = (constraints.maxWidth -
+                      (spacing * (columns - 1))) /
+                      columns;
+
+                  return Wrap(
+                    spacing: spacing,
+                    runSpacing: spacing,
+                    alignment: WrapAlignment.center,
+                    children: ourWorkVideos.map((item) {
+                      return SizedBox(
+                        width: w,
+                        child: _OurWorkVideoCard(
+                          videoPath: item["path"]!,
+                          title: item["title"]!,
                         ),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: horizontal),
+                      );
+                    }).toList(),
                   );
                 },
               ),
@@ -2635,9 +2539,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 maxLines: isMultiLine ? 3 : 1,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: AboutTheme.accentWhite,
+                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
                   height: 1.4,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
                 ),
               ),
             ),
@@ -2729,244 +2633,15 @@ class _HoverScaleState extends State<_HoverScale> {
 }
 
 // ============================================================
-// OUR WORK AUTO-SCROLL ROW WITH CHEVRON SCROLLING
-// Uses preloaded VideoPlayerControllers so scrolling is smooth.
-// ============================================================
-// ============================================================
-// OUR WORK AUTO-SCROLL ROW WITH CHEVRON SCROLLING
-// Uses preloaded VideoPlayerControllers and only plays the cards
-// that are currently visible, so at most ~4 decoders run at once.
-// ============================================================
-class _OurWorkAutoScrollRow extends StatefulWidget {
-  final List<Map<String, String>> videos;
-  final double cardWidth;
-  final double cardHeight;
-  final Map<String, VideoPlayerController> controllers;
-  final Set<String> initialized;
-  final Set<String> errors;
-  final bool sectionVisible;
-
-  const _OurWorkAutoScrollRow({
-    required this.videos,
-    required this.controllers,
-    required this.initialized,
-    required this.errors,
-    required this.sectionVisible,
-    this.cardWidth = 180,
-    this.cardHeight = 380,
-  });
-
-  @override
-  State<_OurWorkAutoScrollRow> createState() => _OurWorkAutoScrollRowState();
-}
-
-class _OurWorkAutoScrollRowState extends State<_OurWorkAutoScrollRow> {
-  late ScrollController _scrollController;
-  Timer? _autoScrollTimer;
-  bool _userScrolling = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _startAutoScroll();
-  }
-
-  @override
-  void didUpdateWidget(covariant _OurWorkAutoScrollRow oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // When the parent toggles section visibility, push new state
-    // to every card so they can play/pause instantly.
-    if (oldWidget.sectionVisible != widget.sectionVisible) {
-      setState(() {});
-    }
-  }
-
-  void _startAutoScroll() {
-    _autoScrollTimer?.cancel();
-    _autoScrollTimer =
-        Timer.periodic(const Duration(milliseconds: 40), (timer) {
-          if (!mounted || !_scrollController.hasClients) return;
-          if (_userScrolling) return;
-
-          final double maxScroll = _scrollController.position.maxScrollExtent;
-          final double currentScroll = _scrollController.position.pixels;
-
-          if (currentScroll >= maxScroll - 1) {
-            _scrollController.jumpTo(0);
-          } else {
-            _scrollController.jumpTo(currentScroll + 0.8);
-          }
-        });
-  }
-
-  void _scrollLeft() {
-    if (!_scrollController.hasClients) return;
-    _userScrolling = true;
-    _autoScrollTimer?.cancel();
-    final double targetOffset = (_scrollController.offset - 220).clamp(
-      0.0,
-      _scrollController.position.maxScrollExtent,
-    );
-    _scrollController
-        .animateTo(
-      targetOffset,
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeInOut,
-    )
-        .then((_) {
-      if (mounted) {
-        _userScrolling = false;
-        _startAutoScroll();
-      }
-    });
-  }
-
-  void _scrollRight() {
-    if (!_scrollController.hasClients) return;
-    _userScrolling = true;
-    _autoScrollTimer?.cancel();
-    final double targetOffset = (_scrollController.offset + 220).clamp(
-      0.0,
-      _scrollController.position.maxScrollExtent,
-    );
-    _scrollController
-        .animateTo(
-      targetOffset,
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeInOut,
-    )
-        .then((_) {
-      if (mounted) {
-        _userScrolling = false;
-        _startAutoScroll();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _autoScrollTimer?.cancel();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        if (notification is ScrollStartNotification) {
-          _userScrolling = true;
-          _autoScrollTimer?.cancel();
-        } else if (notification is ScrollEndNotification) {
-          _userScrolling = false;
-          _startAutoScroll();
-        }
-        return false;
-      },
-      child: MouseRegion(
-        onEnter: (_) => _autoScrollTimer?.cancel(),
-        onExit: (_) => _startAutoScroll(),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              itemCount: widget.videos.length,
-              addAutomaticKeepAlives: true,
-              addRepaintBoundaries: true,
-              cacheExtent: 800,
-              itemBuilder: (context, index) {
-                final video = widget.videos[index];
-                final path = video["path"]!;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: SizedBox(
-                    width: widget.cardWidth,
-                    height: widget.cardHeight,
-                    child: _OurWorkVideoCard(
-                      videoPath: path,
-                      title: video["title"]!,
-                      controller: widget.controllers[path],
-                      isInitialized: widget.initialized.contains(path),
-                      hasError: widget.errors.contains(path),
-                      sectionVisible: widget.sectionVisible,
-                    ),
-                  ),
-                );
-              },
-            ),
-            Positioned(
-              left: 4,
-              child: Material(
-                color: HomePage.accentGold,
-                shape: const CircleBorder(),
-                elevation: 4,
-                child: InkWell(
-                  onTap: _scrollLeft,
-                  customBorder: const CircleBorder(),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      size: 14,
-                      color: Color(0xFF1A1200),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              right: 4,
-              child: Material(
-                color: HomePage.accentGold,
-                shape: const CircleBorder(),
-                elevation: 4,
-                child: InkWell(
-                  onTap: _scrollRight,
-                  customBorder: const CircleBorder(),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 14,
-                      color: Color(0xFF1A1200),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ============================================================
 // OUR WORK VIDEO CARD
-// ============================================================
-// ============================================================
-// OUR WORK VIDElready-initialized VideoPlayerController.
 // ============================================================
 class _OurWorkVideoCard extends StatefulWidget {
   final String videoPath;
   final String title;
-  final VideoPlayerController? controller;
-  final bool isInitialized;
-  final bool hasError;
-  final bool sectionVisible;
 
   const _OurWorkVideoCard({
     required this.videoPath,
     required this.title,
-    required this.controller,
-    required this.isInitialized,
-    required this.hasError,
-    required this.sectionVisible,
   });
 
   @override
@@ -2974,38 +2649,33 @@ class _OurWorkVideoCard extends StatefulWidget {
 }
 
 class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
+  late VideoPlayerController _controller;
+  bool _hasError = false;
+
   @override
   void initState() {
     super.initState();
-    _sync();
+    _controller = VideoPlayerController.asset(widget.videoPath);
+    _controller.setLooping(true);
+    _controller.setVolume(0.0);
+    _controller.initialize().then((_) {
+      if (!mounted) return;
+      setState(() {});
+      _controller.play();
+    }).catchError((err) {
+      if (!mounted) return;
+      setState(() => _hasError = true);
+    });
   }
 
   @override
-  void didUpdateWidget(covariant _OurWorkVideoCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _sync();
-  }
-
-  void _sync() {
-    final c = widget.controller;
-    if (c == null || !widget.isInitialized || widget.hasError) return;
-    try {
-      if (widget.sectionVisible) {
-        if (!c.value.isPlaying) c.play();
-      } else {
-        if (c.value.isPlaying) c.pause();
-      }
-    } catch (_) {}
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final c = widget.controller;
-    final ready = !widget.hasError &&
-        c != null &&
-        widget.isInitialized &&
-        c.value.isInitialized;
-
     return _HoverScale(
       scale: 1.03,
       child: Container(
@@ -3034,24 +2704,16 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
-                child: ready
+            ClipRRect(
+              borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(16)),
+              child: AspectRatio(
+                aspectRatio: 9 / 16,
+                child: !_hasError
                     ? Stack(
-                  fit: StackFit.expand,
                   alignment: Alignment.center,
                   children: [
-                    FittedBox(
-                      fit: BoxFit.cover,
-                      clipBehavior: Clip.hardEdge,
-                      child: SizedBox(
-                        width: c.value.size.width,
-                        height: c.value.size.height,
-                        child: VideoPlayer(c),
-                      ),
-                    ),
+                    VideoPlayer(_controller),
                     Positioned(
                       bottom: 8,
                       right: 8,
@@ -3087,7 +2749,13 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                     ),
                   ],
                 )
-                    : _buildPlaceholder(),
+                    : Container(
+                  color: HomePage.glassCard,
+                  child: const Center(
+                    child: Icon(Icons.broken_image,
+                        color: Colors.grey),
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -3105,25 +2773,6 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPlaceholder() {
-    return Container(
-      color: HomePage.glassCard,
-      child: Center(
-        child: widget.hasError
-            ? const Icon(Icons.broken_image, color: Colors.grey)
-            : const SizedBox(
-          width: 26,
-          height: 26,
-          child: CircularProgressIndicator(
-            strokeWidth: 2.2,
-            valueColor:
-            AlwaysStoppedAnimation<Color>(HomePage.accentGold),
-          ),
         ),
       ),
     );
