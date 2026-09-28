@@ -495,31 +495,34 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            height: 50,
-            width: 50,
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  HomePage.accentGold.withOpacity(0.25),
-                  HomePage.accentGoldDeep.withOpacity(0.10),
-                ],
+          InkWell(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
+            child: Container(
+              height: 50,
+              width: 50,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    HomePage.accentGold.withOpacity(0.25),
+                    HomePage.accentGoldDeep.withOpacity(0.10),
+                  ],
+                ),
+                border: Border.all(
+                  color: HomePage.accentGold.withOpacity(0.7),
+                  width: 1.2,
+                ),
               ),
-              border: Border.all(
-                color: HomePage.accentGold.withOpacity(0.7),
-                width: 1.2,
-              ),
-            ),
-            child: ClipOval(
-              child: Image.asset(
-                "assets/photos/img.png",
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.broken_image,
-                  color: HomePage.accentGold,
-                  size: 24,
+              child: ClipOval(
+                child: Image.asset(
+                  "assets/photos/img.png",
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.broken_image,
+                    color: HomePage.accentGold,
+                    size: 24,
+                  ),
                 ),
               ),
             ),

@@ -122,6 +122,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late PageController _clientPageController;
   Timer? _carouselTimer;
   int _currentLogoPage = 0;
+
+  // Our Work Video Carousel Controllers & Timers
+  late PageController _workPageController;
+  Timer? _workCarouselTimer;
+  int _currentWorkPage = 0;
+
   final GlobalKey<_StatsSectionState> _statsKey =
   GlobalKey<_StatsSectionState>();
 
@@ -154,8 +160,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final List<Map<String, String>> ourWorkVideos = [
     {"title": "Brand Campaign 1", "path": "assets/videos/video_2.mp4"},
     {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
-    {"title": "Client Reel", "path": "assets/videos/video_4.mp4"},
-    {"title": "Promotional Short", "path": "assets/videos/video_5.mp4"},
+    {"title": "Client Reel 1", "path": "assets/videos/video_4.mp4"},
+    {"title": "Promotional Short 1", "path": "assets/videos/video_5.mp4"},
+    {"title": "Creative Spotlight", "path": "assets/videos/video_6.mp4"},
+    {"title": "Brand Storytelling", "path": "assets/videos/video_7.mp4"},
+    {"title": "Dynamic Promo", "path": "assets/videos/video_8.mp4"},
+    {"title": "High-End Showcase", "path": "assets/videos/video_9.mp4"},
+    {"title": "Targeted Reel", "path": "assets/videos/video_10.mp4"},
+    {"title": "Engagement Short", "path": "assets/videos/video_11.mp4"},
+    {"title": "Corporate Highlight", "path": "assets/videos/video_12.mp4"},
+    {"title": "Masterpiece Final", "path": "assets/videos/video_13.mp4"},
   ];
 
   final List<Map<String, String>> faqs = [
@@ -210,6 +224,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _initializeVideo();
     _scrollController.addListener(_onScroll);
     _initializeClientCarousel();
+    _initializeWorkCarousel();
 
     _orbController = AnimationController(
       vsync: this,
@@ -235,6 +250,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       viewportFraction: 0.15,
     );
     _startAutoScroll();
+  }
+
+  void _initializeWorkCarousel() {
+    _workPageController = PageController(
+      initialPage: 0,
+      viewportFraction: 0.22,
+    );
+    _startWorkAutoScroll();
   }
 
   void _startAutoScroll() {
@@ -263,6 +286,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _carouselTimer?.cancel();
   }
 
+  void _startWorkAutoScroll() {
+    _workCarouselTimer?.cancel();
+    _workCarouselTimer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_workPageController.hasClients && ourWorkVideos.isNotEmpty) {
+        if (_currentWorkPage < ourWorkVideos.length - 1) {
+          _currentWorkPage++;
+        } else {
+          _currentWorkPage = 0;
+        }
+        _workPageController.animateToPage(
+          _currentWorkPage,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _stopWorkAutoScroll() {
+    _workCarouselTimer?.cancel();
+  }
+
   void _nextPage() {
     if (!mounted) return;
     if (_clientPageController.hasClients && clientLogos.isNotEmpty) {
@@ -281,6 +330,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       int prev =
           (_currentLogoPage - 1 + clientLogos.length) % clientLogos.length;
       _clientPageController.animateToPage(
+        prev,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _nextWorkPage() {
+    if (!mounted) return;
+    if (_workPageController.hasClients && ourWorkVideos.isNotEmpty) {
+      int next = (_currentWorkPage + 1) % ourWorkVideos.length;
+      _workPageController.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _previousWorkPage() {
+    if (!mounted) return;
+    if (_workPageController.hasClients && ourWorkVideos.isNotEmpty) {
+      int prev =
+          (_currentWorkPage - 1 + ourWorkVideos.length) % ourWorkVideos.length;
+      _workPageController.animateToPage(
         prev,
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
@@ -328,10 +402,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _stopAutoScroll();
+    _stopWorkAutoScroll();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _videoController.dispose();
     _clientPageController.dispose();
+    _workPageController.dispose();
     _orbController.dispose();
     super.dispose();
   }
@@ -454,7 +530,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: _buildAGFaqSection(screenWidth, isDesktop),
           ),
           SliverToBoxAdapter(
-            child: _buildAGFooter(context), // Fixed: Pass only context
+            child: _buildAGFooter(context),
           ),
         ],
       ),
@@ -505,94 +581,108 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildLogoHeader(),
+                  // 1. Wrapped in Flexible to prevent logo text overflow on resize
+                  Flexible(
+                    flex: 3,
+                    child: _buildLogoHeader(),
+                  ),
+                  const SizedBox(width: 8),
                   if (isDesktop)
-                    Row(
-                      children: [
-                        _buildNavButton("HOME", 0, () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomePage()),
-                          );
-                        }),
-                        _buildNavButton("ABOUT", 1, () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const About()),
-                          );
-                        }),
-                        _buildNavButton("CLIENTS", 2, () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ClientLogoPage()),
-                          );
-                        }),
-                        _buildNavButton("SERVICES", 3, () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Services()),
-                          );
-                        }),
-                        _buildNavButton("REVIEWS", 4, () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Reviews()),
-                          );
-                        }),
-                        const SizedBox(width: 12),
-                        _HoverScale(
-                          scale: 1.05,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  HomePage.accentGoldSoft,
-                                  HomePage.accentGoldDeep,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: HomePage.accentGold.withOpacity(0.3),
-                                  blurRadius: 10,
-                                ),
-                              ],
-                            ),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 12),
-                                shape: RoundedRectangleBorder(
+                  // 2. Wrapped in Flexible and SingleChildScrollView to prevent button overflow
+                    Flexible(
+                      flex: 7,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            _buildNavButton("HOME", 0, () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomePage()),
+                              );
+                            }),
+                            _buildNavButton("ABOUT", 1, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const About()),
+                              );
+                            }),
+                            _buildNavButton("CLIENTS", 2, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ClientLogoPage()),
+                              );
+                            }),
+                            _buildNavButton("SERVICES", 3, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Services()),
+                              );
+                            }),
+                            _buildNavButton("REVIEWS", 4, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Reviews()),
+                              );
+                            }),
+                            const SizedBox(width: 12),
+                            _HoverScale(
+                              scale: 1.05,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      HomePage.accentGoldSoft,
+                                      HomePage.accentGoldDeep,
+                                    ],
+                                  ),
                                   borderRadius: BorderRadius.circular(30),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: HomePage.accentGold.withOpacity(0.3),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Contact()),
-                                );
-                              },
-                              child: Text(
-                                "CONTACT US",
-                                style: GoogleFonts.alegreyaSc(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF1A1200),
-                                  letterSpacing: 1.0,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Contact()),
+                                    );
+                                  },
+                                  child: Text(
+                                    "CONTACT US",
+                                    style: GoogleFonts.alegreyaSc(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF1A1200),
+                                      letterSpacing: 1.0,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     )
                   else
                     Builder(
@@ -675,31 +765,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            height: 50,
-            width: 50,
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  HomePage.accentGold.withOpacity(0.25),
-                  HomePage.accentGoldDeep.withOpacity(0.10),
-                ],
+          InkWell(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
+            child: Container(
+              height: 50,
+              width: 50,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    HomePage.accentGold.withOpacity(0.25),
+                    HomePage.accentGoldDeep.withOpacity(0.10),
+                  ],
+                ),
+                border: Border.all(
+                  color: HomePage.accentGold.withOpacity(0.7),
+                  width: 1.2,
+                ),
               ),
-              border: Border.all(
-                color: HomePage.accentGold.withOpacity(0.7),
-                width: 1.2,
-              ),
-            ),
-            child: ClipOval(
-              child: Image.asset(
-                "assets/photos/img.png",
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.broken_image,
-                  color: HomePage.accentGold,
-                  size: 24,
+              child: ClipOval(
+                child: Image.asset(
+                  "assets/photos/img.png",
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.broken_image,
+                    color: HomePage.accentGold,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -944,18 +1037,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // HERO BANNER
+  // HERO BANNER (Matched to Reference Card Layout & Proportions)
   // ============================================================
-  Widget _buildAGHeroBanner(
-      double screenWidth, bool isDesktop, bool isLargeDesktop) {
-    final double heroPaddingV = isLargeDesktop
-        ? 130
-        : isDesktop
-        ? 100
-        : 60;
+  Widget _buildAGHeroBanner(double screenWidth, bool isDesktop, bool isLargeDesktop) {
+    final double heroPaddingV = isLargeDesktop ? 50 : isDesktop ? 40 : 30;
 
     return Container(
       width: double.infinity,
+      constraints: BoxConstraints(
+        minHeight: isDesktop ? 220 : 200,
+      ),
       decoration: const BoxDecoration(
         gradient: RadialGradient(
           center: Alignment(0.6, -0.3),
@@ -969,9 +1060,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       child: Stack(
         children: [
-          // Animated floating orbs
           ..._buildFloatingOrbs(),
-          // Static gold glow (top-right)
           Positioned(
             top: -60,
             right: -60,
@@ -989,7 +1078,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          // Background image
           Positioned.fill(
             child: Opacity(
               opacity: 0.08,
@@ -1018,10 +1106,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex: 5,
+                      flex: 6,
                       child: _buildHeroTextContent(isDesktop),
                     ),
-                    const SizedBox(width: 48),
+                    const SizedBox(width: 32),
                     Expanded(
                       flex: 4,
                       child: _buildHeroStatCards(isDesktop),
@@ -1031,7 +1119,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     : Column(
                   children: [
                     _buildHeroTextContent(isDesktop),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 24),
                     _buildHeroStatCards(isDesktop),
                   ],
                 ),
@@ -1095,26 +1183,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Left side hero text
+  // Hero text content customized to exact layout requirements
   Widget _buildHeroTextContent(bool isDesktop) {
     return Column(
       crossAxisAlignment:
       isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // Pill badge
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
             color: HomePage.accentGold.withOpacity(0.12),
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
               color: HomePage.accentGold.withOpacity(0.6),
-              width: 1.2,
+              width: 1.0,
             ),
             boxShadow: [
               BoxShadow(
                 color: HomePage.accentGold.withOpacity(0.10),
-                blurRadius: 10,
+                blurRadius: 8,
                 spreadRadius: 0,
               ),
             ],
@@ -1123,26 +1212,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.workspace_premium_rounded,
-                  color: HomePage.accentGold, size: 16),
-              const SizedBox(width: 8),
+                  color: HomePage.accentGold, size: 14),
+              const SizedBox(width: 6),
               Flexible(
-                child: Text("PREMIUM SOCIAL GROWTH AGENCY", style: GoogleFonts.playfairDisplay(fontSize: 10.5, fontWeight: FontWeight.w700, color: HomePage.accentGold, letterSpacing: 2.2)),
+                child: Text(
+                  "PREMIUM SOCIAL GROWTH AGENCY",
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                    color: HomePage.accentGold,
+                    letterSpacing: 1.8,
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 14),
+
+        // Main heading with clean proportional scaling
         Text(
           "Getting your name on top",
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
           style: GoogleFonts.alegreyaSc(
-            fontSize: isDesktop ? 40 : 26,
+            fontSize: isDesktop ? 36 : 24,
             fontWeight: FontWeight.w500,
             color: Colors.white,
             height: 1.15,
           ),
         ),
         const SizedBox(height: 4),
+
+        // Sub-heading gradient text with optimized font scaling
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
             colors: [
@@ -1155,29 +1256,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             "No.1 priority",
             textAlign: isDesktop ? TextAlign.left : TextAlign.center,
             style: GoogleFonts.alegreyaSc(
-              fontSize: isDesktop ? 68 : 42,
+              fontSize: isDesktop ? 58 : 38,
               fontWeight: FontWeight.bold,
               color: Colors.white,
               height: 1.05,
-              letterSpacing: -1,
+              letterSpacing: -0.5,
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 14),
+
+        // Description text
         Text(
           "Premium social growth, influence & visibility — crafted for royalty. Trusted by brands, creators & leaders worldwide.",
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
           style: GoogleFonts.playfairDisplay(
-            fontSize: isDesktop ? 16 : 14,
+            fontSize: isDesktop ? 13.5 : 12.5,
             color: HomePage.textSoft,
-            height: 1.6,
+            height: 1.4,
             fontWeight: FontWeight.w300,
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 20),
+
+        // Action Buttons
         Wrap(
-          spacing: 16,
-          runSpacing: 14,
+          spacing: 12,
+          runSpacing: 12,
           alignment: isDesktop ? WrapAlignment.start : WrapAlignment.center,
           children: [
             _buildGoldGradientButton(
@@ -1223,8 +1328,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           boxShadow: [
             BoxShadow(
               color: HomePage.accentGold.withOpacity(0.30),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -1233,14 +1338,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
             foregroundColor: const Color(0xFF1A1200),
-            padding:
-            const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50),
             ),
           ),
-          icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
-          label: Text(label, style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 0.8)),
+          icon: Icon(icon, size: 15, color: const Color(0xFF1A1200)),
+          label: Text(label,
+              style: GoogleFonts.playfairDisplay(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6)),
           onPressed: onTap,
         ),
       ),
@@ -1257,22 +1365,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         style: OutlinedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: Colors.white.withOpacity(0.06),
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           side: BorderSide(
             color: HomePage.accentCyan.withOpacity(0.8),
-            width: 1.6,
+            width: 1.4,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),
         ),
-        icon: Icon(icon, size: 18, color: HomePage.accentCyan),
+        icon: Icon(icon, size: 15, color: HomePage.accentCyan),
         label: Text(
           label,
           style: GoogleFonts.playfairDisplay(
-            fontSize: 13,
+            fontSize: 11.5,
             fontWeight: FontWeight.bold,
-            letterSpacing: 0.8,
+            letterSpacing: 0.6,
           ),
         ),
         onPressed: onTap,
@@ -1305,7 +1413,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: cards.map((c) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.only(bottom: 12),
           child: _buildGlassStatCard(
             icon: c["icon"] as IconData,
             title: c["title"] as String,
@@ -1326,11 +1434,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return _HoverScale(
       scale: 1.02,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -1340,7 +1448,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   Colors.white.withOpacity(0.04),
                 ],
               ),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: HomePage.accentCyan.withOpacity(0.35),
                 width: 1.2,
@@ -1356,7 +1464,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
@@ -1373,9 +1481,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ],
                   ),
                   child:
-                  Icon(icon, color: const Color(0xFF1A1200), size: 22),
+                  Icon(icon, color: const Color(0xFF1A1200), size: 20),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1383,7 +1491,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       Text(
                         title,
                         style: GoogleFonts.alegreyaSc(
-                          fontSize: 12.5,
+                          fontSize: 11.5,
                           fontWeight: FontWeight.w700,
                           color: HomePage.accentGold,
                           letterSpacing: 0.5,
@@ -1393,17 +1501,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       Text(
                         value,
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 17,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           height: 1.1,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
                         sub,
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 10.5,
+                          fontSize: 10,
                           color: HomePage.textMuted,
                           fontWeight: FontWeight.w400,
                         ),
@@ -1476,7 +1584,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Cyan glow block behind
               Positioned(
                 left: 0,
                 bottom: 0,
@@ -1496,7 +1603,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              // Gold glow accent
               Positioned(
                 right: -10,
                 top: -10,
@@ -1577,7 +1683,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          // Play overlay
                           if (!_videoError && _isVideoInitialized)
                             Positioned.fill(
                               child: IgnorePointer(
@@ -2221,7 +2326,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           },
                         ),
                       ),
-                      // Arrows
                       Positioned(
                         left: 0,
                         child: Material(
@@ -2304,7 +2408,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // OUR WORK SECTION — 4-column responsive grid
+  // OUR WORK SECTION — Video Carousel with video_2 to video_13
   // ============================================================
   Widget _buildAGOurWorkSection(BuildContext context, double screenWidth) {
     final bool isDesktop = screenWidth >= Breakpoints.tablet;
@@ -2341,7 +2445,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
               const SizedBox(height: 8),
               Text(
-                "Creative showcases & production reels.",
+                "Creative showcases & production reels from Video 2 to Video 13.",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
@@ -2351,37 +2455,164 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 36),
               LayoutBuilder(
                 builder: (context, constraints) {
-                  int columns;
-                  if (constraints.maxWidth < 480) {
-                    columns = 1;
-                  } else if (constraints.maxWidth < 700) {
-                    columns = 2;
-                  } else if (constraints.maxWidth < 1024) {
-                    columns = 3;
+                  final double w = constraints.maxWidth;
+                  double viewportFraction;
+
+                  if (w > 1200) {
+                    viewportFraction = 0.22;
+                  } else if (w > 900) {
+                    viewportFraction = 0.30;
+                  } else if (w > 600) {
+                    viewportFraction = 0.45;
                   } else {
-                    columns = 4;
+                    viewportFraction = 0.75;
                   }
 
-                  final double spacing = 16;
-                  final double w = (constraints.maxWidth -
-                      (spacing * (columns - 1))) /
-                      columns;
+                  if (_workPageController.viewportFraction != viewportFraction) {
+                    final int currentPage =
+                    _workPageController.hasClients &&
+                        _workPageController.page != null
+                        ? _workPageController.page!.round()
+                        : _currentWorkPage;
+                    _workPageController = PageController(
+                      initialPage: currentPage,
+                      viewportFraction: viewportFraction,
+                    );
+                  }
 
-                  return Wrap(
-                    spacing: spacing,
-                    runSpacing: spacing,
-                    alignment: WrapAlignment.center,
-                    children: ourWorkVideos.map((item) {
-                      return SizedBox(
-                        width: w,
-                        child: _OurWorkVideoCard(
-                          videoPath: item["path"]!,
-                          title: item["title"]!,
-                        ),
-                      );
-                    }).toList(),
+                  return MouseRegion(
+                    onEnter: (_) => _stopWorkAutoScroll(),
+                    onExit: (_) => _startWorkAutoScroll(),
+                    child: SizedBox(
+                      height: 440,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          NotificationListener<ScrollNotification>(
+                            onNotification: (ScrollNotification notification) {
+                              if (notification is ScrollStartNotification) {
+                                _stopWorkAutoScroll();
+                              } else if (notification is ScrollEndNotification) {
+                                _startWorkAutoScroll();
+                              }
+                              return false;
+                            },
+                            child: PageView.builder(
+                              controller: _workPageController,
+                              onPageChanged: (int index) {
+                                if (mounted) {
+                                  setState(() => _currentWorkPage = index);
+                                }
+                              },
+                              itemCount: ourWorkVideos.length,
+                              itemBuilder: (context, index) {
+                                final item = ourWorkVideos[index];
+                                return AnimatedBuilder(
+                                  animation: _workPageController,
+                                  builder: (context, child) {
+                                    double value = 1.0;
+                                    if (_workPageController
+                                        .position.haveDimensions) {
+                                      value =
+                                      (_workPageController.page! - index);
+                                      value = (1 - (value.abs() * 0.10))
+                                          .clamp(0.90, 1.0);
+                                    }
+                                    return Center(
+                                      child: Transform.scale(
+                                        scale: value,
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: _OurWorkVideoCard(
+                                      videoPath: item["path"]!,
+                                      title: item["title"]!,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          // Chevron Controls
+                          Positioned(
+                            left: 0,
+                            child: Material(
+                              color: HomePage.accentGold,
+                              shape: const CircleBorder(),
+                              elevation: 4,
+                              child: InkWell(
+                                onTap: _previousWorkPage,
+                                customBorder: const CircleBorder(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  child: const Icon(
+                                    Icons.arrow_back_ios_rounded,
+                                    size: 16,
+                                    color: Color(0xFF1A1200),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            child: Material(
+                              color: HomePage.accentGold,
+                              shape: const CircleBorder(),
+                              elevation: 4,
+                              child: InkWell(
+                                onTap: _nextWorkPage,
+                                customBorder: const CircleBorder(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  child: const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 16,
+                                    color: Color(0xFF1A1200),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
+              ),
+              const SizedBox(height: 16),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    ourWorkVideos.length,
+                        (index) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      width: _currentWorkPage == index ? 18 : 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        gradient: _currentWorkPage == index
+                            ? const LinearGradient(
+                          colors: [
+                            HomePage.accentGoldSoft,
+                            HomePage.accentGoldDeep,
+                          ],
+                        )
+                            : null,
+                        color: _currentWorkPage == index
+                            ? null
+                            : Colors.white24,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -2539,9 +2770,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 maxLines: isMultiLine ? 3 : 1,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
+                  color: AboutTheme.accentWhite,
                   height: 1.4,
-                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -2633,7 +2864,7 @@ class _HoverScaleState extends State<_HoverScale> {
 }
 
 // ============================================================
-// OUR WORK VIDEO CARD
+// OUR WORK VIDEO CARD (Fixed Layout & Render Flow)
 // ============================================================
 class _OurWorkVideoCard extends StatefulWidget {
   final String videoPath;
@@ -2651,21 +2882,32 @@ class _OurWorkVideoCard extends StatefulWidget {
 class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
   late VideoPlayerController _controller;
   bool _hasError = false;
+  bool _isReady = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(widget.videoPath);
-    _controller.setLooping(true);
-    _controller.setVolume(0.0);
-    _controller.initialize().then((_) {
+    _initVideoFast();
+  }
+
+  Future<void> _initVideoFast() async {
+    try {
+      _controller = VideoPlayerController.asset(widget.videoPath);
+      _controller.setLooping(true);
+      _controller.setVolume(0.0);
+
+      // Initialize and immediately play once buffered/ready
+      await _controller.initialize();
       if (!mounted) return;
-      setState(() {});
+
+      setState(() {
+        _isReady = true;
+      });
       _controller.play();
-    }).catchError((err) {
+    } catch (err) {
       if (!mounted) return;
       setState(() => _hasError = true);
-    });
+    }
   }
 
   @override
@@ -2679,6 +2921,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
     return _HoverScale(
       scale: 1.03,
       child: Container(
+        width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -2704,16 +2947,22 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
-              child: AspectRatio(
-                aspectRatio: 9 / 16,
-                child: !_hasError
+            Expanded(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                child: !_hasError && _isReady
                     ? Stack(
+                  fit: StackFit.expand,
                   alignment: Alignment.center,
                   children: [
-                    VideoPlayer(_controller),
+                    FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: _controller.value.size.width,
+                        height: _controller.value.size.height,
+                        child: VideoPlayer(_controller),
+                      ),
+                    ),
                     Positioned(
                       bottom: 8,
                       right: 8,
@@ -2724,8 +2973,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                           color: Colors.black.withOpacity(0.55),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color:
-                            HomePage.accentGold.withOpacity(0.6),
+                            color: HomePage.accentGold.withOpacity(0.6),
                           ),
                         ),
                         child: Row(
@@ -2752,21 +3000,29 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                     : Container(
                   color: HomePage.glassCard,
                   child: const Center(
-                    child: Icon(Icons.broken_image,
-                        color: Colors.grey),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: HomePage.accentGold,
+                        strokeWidth: 2,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            Container(
+              height: 55,
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+              alignment: Alignment.center,
               child: Text(
                 widget.title,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.alegreyaSc(
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: HomePage.accentGold,
                 ),
