@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -81,7 +82,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     {"path": "assets/photos/ved_icu.png", "isWhite": false, "featured": false},
     {"path": "assets/photos/wost.png", "isWhite": false, "featured": false},
   ];
-
+  double _scrollOffset = 0;
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
   final String phoneNum = "+919408518168";
@@ -219,150 +220,179 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   // APP BAR (Matching HomePage NavBar)
   // ============================================================
   PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
+    final bool isScrolled = _scrollOffset > 30;
     return PreferredSize(
       preferredSize: const Size.fromHeight(80),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        color: ClientTheme.royalBlue,
+        decoration: BoxDecoration(
+          color: isScrolled
+              ? HomePage.royalBlue.withOpacity(0.92)
+              : HomePage.royalBlue,
+          boxShadow: [
+            BoxShadow(
+              color: HomePage.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.white.withOpacity(0.08),
-                  ClientTheme.royalBlueMid.withOpacity(0.6),
-                ],
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.08),
+                    HomePage.royalBlueMid.withOpacity(0.6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: HomePage.accentGold.withOpacity(0.35),
+                  width: 1.2,
+                ),
               ),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: ClientTheme.accentGold.withOpacity(0.35),
-                width: 1.2,
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildLogoHeader(),
-                if (isDesktop)
-                  Row(
-                    children: [
-                      _buildNavButton("HOME", 0, () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-                      }),
-                      _buildNavButton("ABOUT", 1, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const About(), // Keep const if About has a const constructor
-                          ),
-                        );
-                      }),
-                      _buildNavButton("CLIENTS", 2, () {}),
-                      _buildNavButton("SERVICES", 3, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Services(),
-                          ),
-                        );
-                      }),
-                      _buildNavButton("REVIEWS", 4, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Reviews(),
-                          ),
-                        );
-                      }),
-                      const SizedBox(width: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [
-                              ClientTheme.accentGoldSoft,
-                              ClientTheme.accentGoldDeep,
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: ClientTheme.accentGold.withOpacity(0.3),
-                              blurRadius: 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 1. Wrapped in Flexible to prevent logo text overflow on resize
+                  Flexible(
+                    flex: 3,
+                    child: _buildLogoHeader(),
+                  ),
+                  const SizedBox(width: 8),
+                  if (isDesktop)
+                  // 2. Wrapped in Flexible and SingleChildScrollView to prevent button overflow
+                    Flexible(
+                      flex: 7,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            _buildNavButton("HOME", 0, () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomePage()),
+                              );
+                            }),
+                            _buildNavButton("ABOUT", 1, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const About()),
+                              );
+                            }),
+                            _buildNavButton("CLIENTS", 2, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ClientLogoPage()),
+                              );
+                            }),
+                            _buildNavButton("SERVICES", 3, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Services()),
+                              );
+                            }),
+                            _buildNavButton("REVIEWS", 4, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Reviews()),
+                              );
+                            }),
+                            const SizedBox(width: 12),
+                            _HoverScale(
+                              scale: 1.05,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      HomePage.accentGoldSoft,
+                                      HomePage.accentGoldDeep,
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(30),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: HomePage.accentGold.withOpacity(0.3),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Contact()),
+                                    );
+                                  },
+                                  child: Text(
+                                    "CONTACT US",
+                                    style: GoogleFonts.alegreyaSc(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF1A1200),
+                                      letterSpacing: 1.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Contact(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "CONTACT US",
-                            style: GoogleFonts.alegreyaSc(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF1A1200),
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                        ),
                       ),
-                    ],
-                  )
-                else
-                  Builder(
-                    builder: (context) => Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () => Scaffold.of(context).openEndDrawer(),
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                ClientTheme.accentGold.withOpacity(0.2),
-                                ClientTheme.accentGoldDeep.withOpacity(0.1),
-                              ],
+                    )
+                  else
+                    Builder(
+                      builder: (context) => Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () => Scaffold.of(context).openEndDrawer(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  HomePage.accentGold.withOpacity(0.2),
+                                  HomePage.accentGoldDeep.withOpacity(0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: HomePage.accentGold.withOpacity(0.7),
+                                width: 1.2,
+                              ),
                             ),
-                            border: Border.all(
-                              color: ClientTheme.accentGold.withOpacity(0.7),
-                              width: 1.2,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.menu_rounded,
-                            color: ClientTheme.accentGold,
-                            size: 22,
+                            child: const Icon(Icons.menu_rounded,
+                                color: HomePage.accentGold, size: 22),
                           ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -761,12 +791,36 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 90 : 55,
-              horizontal: 24,
+              vertical: isDesktop ? 28 : 18,
+              horizontal: isDesktop ? 40 : 16,
             ),
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: const BoxConstraints(maxWidth: 1150),
+                // Framed Glassmorphic Card Container matching AG Hero layout
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white.withOpacity(0.06),
+                      Colors.white.withOpacity(0.02),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: ClientTheme.accentGold.withOpacity(0.3),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ClientTheme.royalBlueMid.withOpacity(0.4),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.all(isDesktop ? 48 : 24),
                 child: Column(
                   children: [
                     // Chapter marker
@@ -819,6 +873,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                         height: 1.2,
                       ),
                     ),
+                    const SizedBox(height: 6),
                     // Big gradient headline
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
@@ -840,14 +895,17 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: isDesktop ? 15 : 13.5,
-                        color: ClientTheme.textMuted,
-                        height: 1.6,
-                        fontWeight: FontWeight.w300,
+                    Container(
+                      constraints: const BoxConstraints(maxWidth: 750),
+                      child: Text(
+                        "We take small business people into the path of progress by completing digital marketing services and we are doing it with love.",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: isDesktop ? 15 : 13.5,
+                          color: ClientTheme.textMuted,
+                          height: 1.6,
+                          fontWeight: FontWeight.w300,
+                        ),
                       ),
                     ),
                   ],
@@ -1758,6 +1816,37 @@ class _AnimatedFooterState extends State<AnimatedFooter>
       child: IconButton(
         icon: Icon(icon, size: 18, color: ClientTheme.accentGold),
         onPressed: () => widget.onLaunchUrl(url),
+      ),
+    );
+  }
+}
+
+// ============================================================
+// HOVER SCALE WRAPPER (Desktop hover effect)
+// ============================================================
+class _HoverScale extends StatefulWidget {
+  final Widget child;
+  final double scale;
+  const _HoverScale({required this.child, this.scale = 1.05});
+
+  @override
+  State<_HoverScale> createState() => _HoverScaleState();
+}
+
+class _HoverScaleState extends State<_HoverScale> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < Breakpoints.tablet;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedScale(
+        scale: (_hovering && !isMobile) ? widget.scale : 1.0,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        child: widget.child,
       ),
     );
   }

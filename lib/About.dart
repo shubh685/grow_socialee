@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,7 +46,7 @@ class About extends StatefulWidget {
 
 class _AboutState extends State<About> {
   int _selectedIndex = 1;
-
+  double _scrollOffset = 0;
   final GlobalKey<_ValuesSectionState> _valuesKey =
   GlobalKey<_ValuesSectionState>();
   final GlobalKey<_TeamSectionState> _teamKey = GlobalKey<_TeamSectionState>();
@@ -152,152 +153,180 @@ class _AboutState extends State<About> {
   // APP BAR — IDENTICAL NAVIGATION BAR TO HOME_PAGE.DART
   // ============================================================
   PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
+    final bool isScrolled = _scrollOffset > 30;
     return PreferredSize(
       preferredSize: const Size.fromHeight(80),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: AboutTheme.royalBlue,
+          color: isScrolled
+              ? HomePage.royalBlue.withOpacity(0.92)
+              : HomePage.royalBlue,
           boxShadow: [
             BoxShadow(
-              color: AboutTheme.accentGold.withOpacity(0.05),
+              color: HomePage.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white.withOpacity(0.08),
-                AboutTheme.royalBlueMid.withOpacity(0.6),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AboutTheme.accentGold.withOpacity(0.35),
-              width: 1.2,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildLogoHeader(),
-              if (isDesktop)
-                Row(
-                  children: [
-                    _buildNavButton("HOME", 0, () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
-                    }),
-                    _buildNavButton("ABOUT", 1, () {}),
-                    _buildNavButton("CLIENTS", 2, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ClientLogoPage(),
-                        ),
-                      );
-                    }),
-                    _buildNavButton("SERVICES", 3, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Services(),
-                        ),
-                      );
-                    }),
-                    _buildNavButton("REVIEWS", 4, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Reviews(),
-                        ),
-                      );
-                    }),
-                    const SizedBox(width: 12),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            AboutTheme.accentGoldSoft,
-                            AboutTheme.accentGoldDeep,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.08),
+                    HomePage.royalBlueMid.withOpacity(0.6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: HomePage.accentGold.withOpacity(0.35),
+                  width: 1.2,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 1. Wrapped in Flexible to prevent logo text overflow on resize
+                  Flexible(
+                    flex: 3,
+                    child: _buildLogoHeader(),
+                  ),
+                  const SizedBox(width: 8),
+                  if (isDesktop)
+                  // 2. Wrapped in Flexible and SingleChildScrollView to prevent button overflow
+                    Flexible(
+                      flex: 7,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            _buildNavButton("HOME", 0, () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomePage()),
+                              );
+                            }),
+                            _buildNavButton("ABOUT", 1, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const About()),
+                              );
+                            }),
+                            _buildNavButton("CLIENTS", 2, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ClientLogoPage()),
+                              );
+                            }),
+                            _buildNavButton("SERVICES", 3, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Services()),
+                              );
+                            }),
+                            _buildNavButton("REVIEWS", 4, () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Reviews()),
+                              );
+                            }),
+                            const SizedBox(width: 12),
+                            _HoverScale(
+                              scale: 1.05,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      HomePage.accentGoldSoft,
+                                      HomePage.accentGoldDeep,
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(30),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: HomePage.accentGold.withOpacity(0.3),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Contact()),
+                                    );
+                                  },
+                                  child: Text(
+                                    "CONTACT US",
+                                    style: GoogleFonts.alegreyaSc(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF1A1200),
+                                      letterSpacing: 1.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AboutTheme.accentGold.withOpacity(0.3),
-                            blurRadius: 10,
-                          ),
-                        ],
                       ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Contact(),
+                    )
+                  else
+                    Builder(
+                      builder: (context) => Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () => Scaffold.of(context).openEndDrawer(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  HomePage.accentGold.withOpacity(0.2),
+                                  HomePage.accentGoldDeep.withOpacity(0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: HomePage.accentGold.withOpacity(0.7),
+                                width: 1.2,
+                              ),
                             ),
-                          );
-                        },
-                        child: Text(
-                          "CONTACT US",
-                          style: GoogleFonts.alegreyaSc(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1A1200),
-                            letterSpacing: 1.0,
+                            child: const Icon(Icons.menu_rounded,
+                                color: HomePage.accentGold, size: 22),
                           ),
                         ),
                       ),
                     ),
-                  ],
-                )
-              else
-                Builder(
-                  builder: (context) => Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(50),
-                      onTap: () => Scaffold.of(context).openEndDrawer(),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              AboutTheme.accentGold.withOpacity(0.2),
-                              AboutTheme.accentGoldDeep.withOpacity(0.1),
-                            ],
-                          ),
-                          border: Border.all(
-                            color: AboutTheme.accentGold.withOpacity(0.7),
-                            width: 1.2,
-                          ),
-                        ),
-                        child: const Icon(Icons.menu_rounded,
-                            color: AboutTheme.accentGold, size: 22),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -689,23 +718,47 @@ class _AboutState extends State<About> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 90 : 55,
-              horizontal: isDesktop ? 60 : 22,
+              vertical: isDesktop ? 28 : 18,
+              horizontal: isDesktop ? 40 : 16,
             ),
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1150),
+                // Framed Container Wrapper
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white.withOpacity(0.06),
+                      Colors.white.withOpacity(0.02),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: AboutTheme.accentGold.withOpacity(0.3),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AboutTheme.royalBlueMid.withOpacity(0.4),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.all(isDesktop ? 48 : 24),
                 child: isDesktop
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex: 6,
+                      flex: 7,
                       child: _buildHeroLeftText(),
                     ),
-                    const SizedBox(width: 40),
+                    const SizedBox(width: 48),
                     Expanded(
-                      flex: 4,
+                      flex: 5,
                       child: _buildHeroRightBadges(),
                     ),
                   ],
@@ -953,7 +1006,7 @@ class _AboutState extends State<About> {
         ),
       ),
       padding: EdgeInsets.symmetric(
-        vertical: isDesktop ? 28 : 20,
+        vertical: isDesktop ? 18 : 16,
         horizontal: isDesktop ? 60 : 20,
       ),
       child: Center(
@@ -2629,4 +2682,49 @@ class _TeamSectionState extends State<TeamSection>
       ),
     );
   }
+}
+
+// ============================================================
+// HOVER SCALE WRAPPER (Desktop hover effect)
+// ============================================================
+class _HoverScale extends StatefulWidget {
+  final Widget child;
+  final double scale;
+  const _HoverScale({required this.child, this.scale = 1.05});
+
+  @override
+  State<_HoverScale> createState() => _HoverScaleState();
+}
+
+class _HoverScaleState extends State<_HoverScale> {
+  bool _hovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < Breakpoints.tablet;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedScale(
+        scale: (_hovering && !isMobile) ? widget.scale : 1.0,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+class Breakpoints {
+  static const double mobileSmall = 380;
+  static const double mobile = 600;
+  static const double tablet = 900;
+  static const double desktop = 1200;
+  static const double largeDesktop = 1500;
+
+  static bool isMobileSmall(double w) => w < mobileSmall;
+  static bool isMobile(double w) => w < mobile;
+  static bool isTablet(double w) => w >= mobile && w < tablet;
+  static bool isDesktop(double w) => w >= tablet;
+  static bool isLargeDesktop(double w) => w >= desktop;
 }
