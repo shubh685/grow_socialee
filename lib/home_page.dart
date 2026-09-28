@@ -179,6 +179,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ];
   }
 
+  // ===== Our Work video controllers cache (preloaded once) =====
+  final Map<String, VideoPlayerController> _ourWorkControllers = {};
+  final Set<String> _ourWorkInitialized = {};
+  final Set<String> _ourWorkErrors = {};
+  bool _ourWorkPreloaded = false;
+  final GlobalKey _ourWorkSectionKey = GlobalKey();   // <-- ADD
+  bool _ourWorkVisible = false;
   final List<Map<String, String>> faqs = [
     {
       "question": "How will you learn about my business?",
@@ -231,7 +238,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _initializeVideo();
     _scrollController.addListener(_onScroll);
     _initializeClientCarousel();
-
+    _preloadOurWorkVideos();
     _orbController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 12),
@@ -248,6 +255,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     _checkAndControlVideoPlayback();
     _statsKey.currentState?.checkVisibility();
+    _updateOurWorkPlayback();   // <-- ADD THIS
   }
 
   void _initializeClientCarousel() {
@@ -256,6 +264,91 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       viewportFraction: 0.15,
     );
     _startAutoScroll();
+  }
+
+  // ------------------------------------------------------------
+  // PRELOAD ALL "OUR WORK" VIDEOS IN PARALLEL
+  // Every controller is initialized at the same time so the row
+  // never has to load a video when it scrolls into view.
+  // Controllers are kept PAUSED — we only play them when the row
+  // becomes visible (see _updateOurWorkPlayback).
+  // ------------------------------------------------------------
+  Future<void> _preloadOurWorkVideos() async {
+    if (_ourWorkPreloaded) return;
+    _ourWorkPreloaded = true;
+
+    // Initialize all controllers in parallel — much faster than a
+    // sequential await chain, and no single timeout blocks the rest.
+    final futures = ourWorkVideos.map((v) async {
+      final path = v["path"]!;
+      if (_ourWorkControllers.containsKey(path)) return;
+
+      try {
+        final c = VideoPlayerController.asset(path);
+        c.setLooping(true);
+        c.setVolume(0.0);
+        _ourWorkControllers[path] = c;
+
+        await c.initialize().timeout(
+          const Duration(seconds: 20),
+          onTimeout: () {
+            _ourWorkErrors.add(path);
+            debugPrint('Timeout preloading $path');
+          },
+        );
+
+        if (!mounted) return;
+        if (!_ourWorkErrors.contains(path)) {
+          _ourWorkInitialized.add(path);
+          // Do NOT call play() here. Playing 12 videos at once kills
+          // frame rate. They play only when the row is on screen.
+        }
+      } catch (e) {
+        _ourWorkErrors.add(path);
+        debugPrint('Error preloading $path: $e');
+      }
+    }).toList();
+
+    await Future.wait(futures);
+    if (mounted) setState(() {});
+  }
+
+  // ------------------------------------------------------------
+  // Play / pause "Our Work" videos based on visibility.
+  // Saves CPU/GPU when the section is off-screen and prevents
+  // 12 videos decoding at the same time on first page load.
+  // ------------------------------------------------------------
+  void _updateOurWorkPlayback() {
+    if (!mounted) return;
+    if (_ourWorkInitialized.isEmpty) return;
+
+    bool visible = false;
+    final ctx = _ourWorkSectionKey.currentContext;
+    if (ctx != null) {
+      final box = ctx.findRenderObject() as RenderBox?;
+      if (box != null && box.hasSize) {
+        final pos = box.localToGlobal(Offset.zero);
+        final screenH = MediaQuery.of(context).size.height;
+        // Section is considered visible when any part is on screen
+        visible = (pos.dy < screenH) && (pos.dy + box.size.height > 0);
+      }
+    }
+
+    if (visible == _ourWorkVisible) return;
+    _ourWorkVisible = visible;
+
+    for (final entry in _ourWorkControllers.entries) {
+      final path = entry.key;
+      if (!_ourWorkInitialized.contains(path)) continue;
+      final c = entry.value;
+      try {
+        if (visible) {
+          if (!c.value.isPlaying) c.play();
+        } else {
+          if (c.value.isPlaying) c.pause();
+        }
+      } catch (_) {}
+    }
   }
 
   void _startAutoScroll() {
@@ -349,6 +442,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _stopAutoScroll();
+    for (final c in _ourWorkControllers.values) {
+      c.dispose();
+    }
+    _ourWorkControllers.clear();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _videoController.dispose();
@@ -2363,17 +2460,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               // Single row auto-scrolling video carousel with chevrons for both desktop and mobile
               LayoutBuilder(
                 builder: (context, constraints) {
-                  // 9:16 video card width 180 => video height = 180 * 16/9 = 320
-                  // + title padding (12*2) + title text (~18) + card border (~2) = ~370
                   final double cardWidth = 180;
                   final double cardHeight = (cardWidth * 16 / 9) + 60;
-                  return SizedBox(
-                    height: cardHeight,
-                    child: _OurWorkAutoScrollRow(
-                      videos: ourWorkVideos,
-                      cardWidth: cardWidth,
-                      cardHeight: cardHeight,
-                    ),
+                  return Container(
+                      key: _ourWorkSectionKey,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            HomePage.darkBg,
+                            HomePage.royalBlueMid,
+                          ],
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: horizontal),
                   );
                 },
               ),
@@ -2628,16 +2730,28 @@ class _HoverScaleState extends State<_HoverScale> {
 
 // ============================================================
 // OUR WORK AUTO-SCROLL ROW WITH CHEVRON SCROLLING
-// Displays video cards in ONE horizontal row, auto-playing
-// continuously with chevron buttons for smooth manual/step scrolling.
+// Uses preloaded VideoPlayerControllers so scrolling is smooth.
+// ============================================================
+// ============================================================
+// OUR WORK AUTO-SCROLL ROW WITH CHEVRON SCROLLING
+// Uses preloaded VideoPlayerControllers and only plays the cards
+// that are currently visible, so at most ~4 decoders run at once.
 // ============================================================
 class _OurWorkAutoScrollRow extends StatefulWidget {
   final List<Map<String, String>> videos;
   final double cardWidth;
   final double cardHeight;
+  final Map<String, VideoPlayerController> controllers;
+  final Set<String> initialized;
+  final Set<String> errors;
+  final bool sectionVisible;
 
   const _OurWorkAutoScrollRow({
     required this.videos,
+    required this.controllers,
+    required this.initialized,
+    required this.errors,
+    required this.sectionVisible,
     this.cardWidth = 180,
     this.cardHeight = 380,
   });
@@ -2656,6 +2770,16 @@ class _OurWorkAutoScrollRowState extends State<_OurWorkAutoScrollRow> {
     super.initState();
     _scrollController = ScrollController();
     _startAutoScroll();
+  }
+
+  @override
+  void didUpdateWidget(covariant _OurWorkAutoScrollRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // When the parent toggles section visibility, push new state
+    // to every card so they can play/pause instantly.
+    if (oldWidget.sectionVisible != widget.sectionVisible) {
+      setState(() {});
+    }
   }
 
   void _startAutoScroll() {
@@ -2752,22 +2876,29 @@ class _OurWorkAutoScrollRowState extends State<_OurWorkAutoScrollRow> {
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 28),
               itemCount: widget.videos.length,
+              addAutomaticKeepAlives: true,
+              addRepaintBoundaries: true,
+              cacheExtent: 800,
               itemBuilder: (context, index) {
                 final video = widget.videos[index];
+                final path = video["path"]!;
                 return Padding(
                   padding: const EdgeInsets.only(right: 16),
                   child: SizedBox(
                     width: widget.cardWidth,
                     height: widget.cardHeight,
                     child: _OurWorkVideoCard(
-                      videoPath: video["path"]!,
+                      videoPath: path,
                       title: video["title"]!,
+                      controller: widget.controllers[path],
+                      isInitialized: widget.initialized.contains(path),
+                      hasError: widget.errors.contains(path),
+                      sectionVisible: widget.sectionVisible,
                     ),
                   ),
                 );
               },
             ),
-            // Left Chevron Button (Works on both Desktop and Mobile)
             Positioned(
               left: 4,
               child: Material(
@@ -2788,7 +2919,6 @@ class _OurWorkAutoScrollRowState extends State<_OurWorkAutoScrollRow> {
                 ),
               ),
             ),
-            // Right Chevron Button (Works on both Desktop and Mobile)
             Positioned(
               right: 4,
               child: Material(
@@ -2819,13 +2949,24 @@ class _OurWorkAutoScrollRowState extends State<_OurWorkAutoScrollRow> {
 // ============================================================
 // OUR WORK VIDEO CARD
 // ============================================================
+// ============================================================
+// OUR WORK VIDElready-initialized VideoPlayerController.
+// ============================================================
 class _OurWorkVideoCard extends StatefulWidget {
   final String videoPath;
   final String title;
+  final VideoPlayerController? controller;
+  final bool isInitialized;
+  final bool hasError;
+  final bool sectionVisible;
 
   const _OurWorkVideoCard({
     required this.videoPath,
     required this.title,
+    required this.controller,
+    required this.isInitialized,
+    required this.hasError,
+    required this.sectionVisible,
   });
 
   @override
@@ -2833,33 +2974,38 @@ class _OurWorkVideoCard extends StatefulWidget {
 }
 
 class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
-  late VideoPlayerController _controller;
-  bool _hasError = false;
-
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(widget.videoPath);
-    _controller.setLooping(true);
-    _controller.setVolume(0.0);
-    _controller.initialize().then((_) {
-      if (!mounted) return;
-      setState(() {});
-      _controller.play();
-    }).catchError((err) {
-      if (!mounted) return;
-      setState(() => _hasError = true);
-    });
+    _sync();
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void didUpdateWidget(covariant _OurWorkVideoCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _sync();
+  }
+
+  void _sync() {
+    final c = widget.controller;
+    if (c == null || !widget.isInitialized || widget.hasError) return;
+    try {
+      if (widget.sectionVisible) {
+        if (!c.value.isPlaying) c.play();
+      } else {
+        if (c.value.isPlaying) c.pause();
+      }
+    } catch (_) {}
   }
 
   @override
   Widget build(BuildContext context) {
+    final c = widget.controller;
+    final ready = !widget.hasError &&
+        c != null &&
+        widget.isInitialized &&
+        c.value.isInitialized;
+
     return _HoverScale(
       scale: 1.03,
       child: Container(
@@ -2888,16 +3034,24 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
-              child: AspectRatio(
-                aspectRatio: 9 / 16,
-                child: !_hasError
+            Expanded(
+              child: ClipRRect(
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16)),
+                child: ready
                     ? Stack(
+                  fit: StackFit.expand,
                   alignment: Alignment.center,
                   children: [
-                    VideoPlayer(_controller),
+                    FittedBox(
+                      fit: BoxFit.cover,
+                      clipBehavior: Clip.hardEdge,
+                      child: SizedBox(
+                        width: c.value.size.width,
+                        height: c.value.size.height,
+                        child: VideoPlayer(c),
+                      ),
+                    ),
                     Positioned(
                       bottom: 8,
                       right: 8,
@@ -2933,13 +3087,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                     ),
                   ],
                 )
-                    : Container(
-                  color: HomePage.glassCard,
-                  child: const Center(
-                    child: Icon(Icons.broken_image,
-                        color: Colors.grey),
-                  ),
-                ),
+                    : _buildPlaceholder(),
               ),
             ),
             Padding(
@@ -2957,6 +3105,25 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: HomePage.glassCard,
+      child: Center(
+        child: widget.hasError
+            ? const Icon(Icons.broken_image, color: Colors.grey)
+            : const SizedBox(
+          width: 26,
+          height: 26,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.2,
+            valueColor:
+            AlwaysStoppedAnimation<Color>(HomePage.accentGold),
+          ),
         ),
       ),
     );
