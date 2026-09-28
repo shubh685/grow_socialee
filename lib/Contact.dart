@@ -496,46 +496,44 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  accentGold.withOpacity(0.25),
-                  accentGoldDeep.withOpacity(0.10),
-                ],
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    HomePage.accentGold.withOpacity(0.25),
+                    HomePage.accentGoldDeep.withOpacity(0.10),
+                  ],
+                ),
+                border: Border.all(
+                  color: HomePage.accentGold.withOpacity(0.7),
+                  width: 1.2,
+                ),
               ),
-              border: Border.all(
-                color: accentGold.withOpacity(0.7),
-                width: 1.2,
-              ),
-            ),
-            child: const Icon(
-              Icons.workspace_premium_rounded,
-              color: accentGold,
-              size: 18,
-            ),
+              child: Image.asset("assets/photos/img.png")
           ),
           const SizedBox(width: 12),
           Flexible(
-            child: ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                colors: [
-                  accentGoldSoft,
-                  accentGold,
-                  accentGoldDeep,
-                ],
-              ).createShader(bounds),
-              child: Text(
-                "We are\nGrow Socialee",
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.alegreyaSc(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  height: 1.05,
-                  letterSpacing: 0.3,
+            child: InkWell(
+              child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [
+                    HomePage.accentGoldSoft,
+                    HomePage.accentGold,
+                    HomePage.accentGoldDeep,
+                  ],
+                ).createShader(bounds),
+                child: Text(
+                  "We are\nGrow Socialee",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.alegreyaSc(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.05,
+                    letterSpacing: 0.3,
+                  ),
                 ),
               ),
             ),

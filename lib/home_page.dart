@@ -690,8 +690,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 width: 1.2,
               ),
             ),
-            child: const Icon(Icons.workspace_premium_rounded,
-                color: HomePage.accentGold, size: 18),
+            child: Image.asset("assets/photos/img.png")
           ),
           const SizedBox(width: 12),
           Flexible(
