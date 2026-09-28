@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,6 +20,7 @@ class Reviews extends StatefulWidget {
 
 class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   int _selectedIndex = 4;
+  double _scrollOffset = 0;
 
   // ===== THEME (matches home_page.dart) =====
   static const Color royalBlue = Color(0xFF0A1F44);
@@ -38,9 +40,6 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   static const Color accentWhite = Colors.white;
   static const Color textMuted = Color(0xFFB8D4F0);
   static const Color textSoft = Color(0xFFD6E6FA);
-
-  // Compatibility aliases
-  static const Color textMutedLegacy = Color(0xFFB8D4F0);
 
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<_ReviewsStatsState> _statsKey = GlobalKey<_ReviewsStatsState>();
@@ -100,6 +99,10 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
 
   void _onScrollCheck() {
     if (mounted) {
+      final offset = _scrollController.hasClients ? _scrollController.offset : 0.0;
+      if ((offset - _scrollOffset).abs() > 5) {
+        setState(() => _scrollOffset = offset);
+      }
       _statsKey.currentState?.checkVisibility();
     }
   }
@@ -149,13 +152,13 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
+    final bool isDesktop = screenWidth >= 900; // Matches HomePage breakpoint standard
 
     return Scaffold(
       backgroundColor: darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(75),
-        child: _buildAppBar(isDesktop),
+        preferredSize: const Size.fromHeight(80),
+        child: _buildAppBar(screenWidth, isDesktop),
       ),
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: CustomScrollView(
@@ -198,77 +201,202 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // APP BAR
+  // APP BAR (Synced with home_page.dart)
   // ============================================================
-  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+  PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
+    final bool isScrolled = _scrollOffset > 30;
     return PreferredSize(
-      preferredSize: const Size.fromHeight(75),
-      child: Container(
+      preferredSize: const Size.fromHeight(80),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              royalBlue,
-              royalBlueMid,
-            ],
-          ),
-          border: Border(
-            bottom: BorderSide(
-              color: accentGold.withOpacity(0.6),
-              width: 1.5,
-            ),
-          ),
+          color: isScrolled ? royalBlue.withOpacity(0.92) : royalBlue,
           boxShadow: [
             BoxShadow(
-              color: accentCyan.withOpacity(0.15),
-              blurRadius: 14,
-              offset: const Offset(0, 2),
+              color: accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () => Scaffold.of(context).openEndDrawer(),
-                    child: Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            accentGold.withOpacity(0.22),
-                            accentGoldDeep.withOpacity(0.12),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: accentGold.withOpacity(0.7),
-                          width: 1.4,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.menu_rounded,
-                        color: accentGold,
-                        size: 24,
-                      ),
-                    ),
-                  ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.08),
+                    royalBlueMid.withOpacity(0.6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: accentGold.withOpacity(0.35),
+                  width: 1.2,
                 ),
               ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildLogoHeader(),
+                  if (isDesktop)
+                    Row(
+                      children: [
+                        _buildNavButton("HOME", 0, () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()),
+                          );
+                        }),
+                        _buildNavButton("ABOUT", 1, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const About()),
+                          );
+                        }),
+                        _buildNavButton("CLIENTS", 2, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()),
+                          );
+                        }),
+                        _buildNavButton("SERVICES", 3, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()),
+                          );
+                        }),
+                        _buildNavButton("REVIEWS", 4, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Reviews()),
+                          );
+                        }),
+                        const SizedBox(width: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                accentGoldSoft,
+                                accentGoldDeep,
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentGold.withOpacity(0.3),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Contact()),
+                              );
+                            },
+                            child: Text(
+                              "CONTACT US",
+                              style: GoogleFonts.alegreyaSc(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1A1200),
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Builder(
+                      builder: (context) => Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () => Scaffold.of(context).openEndDrawer(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  accentGold.withOpacity(0.2),
+                                  accentGoldDeep.withOpacity(0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: accentGold.withOpacity(0.7),
+                                width: 1.2,
+                              ),
+                            ),
+                            child: const Icon(Icons.menu_rounded,
+                                color: accentGold, size: 22),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            const SizedBox(width: 12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String title, int index, VoidCallback onTap) {
+    final bool isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.alegreyaSc(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? accentGold : textSoft,
+                letterSpacing: 1.0,
+              ),
+            ),
+            const SizedBox(height: 2),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              width: isSelected ? 18 : 0,
+              decoration: BoxDecoration(
+                color: accentGold,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),
@@ -276,9 +404,8 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   }
 
   Widget _buildLogoHeader() {
-    return Container(
-      height: 45,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -289,7 +416,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
               gradient: LinearGradient(
                 colors: [
                   accentGold.withOpacity(0.25),
-                  accentGoldDeep.withOpacity(0.12),
+                  accentGoldDeep.withOpacity(0.10),
                 ],
               ),
               border: Border.all(
@@ -317,11 +444,12 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 "We are\nGrow Socialee",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   height: 1.05,
+                  letterSpacing: 0.3,
                 ),
               ),
             ),
@@ -332,7 +460,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // END DRAWER
+  // END DRAWER (Synced with home_page.dart)
   // ============================================================
   Widget _buildEndDrawer(double screenWidth, bool isDesktop) {
     return Drawer(
@@ -437,6 +565,10 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                     onTap: () {
                       setState(() => _selectedIndex = 4);
                       Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Reviews()));
                     },
                   ),
                   _buildDrawerItem(
@@ -514,7 +646,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: isSelected
@@ -557,7 +689,6 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
       ),
       child: Stack(
         children: [
-          // Floating orbs
           ..._buildFloatingOrbs(),
           Positioned(
             top: -60,
@@ -707,7 +838,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
               const SizedBox(width: 8),
               Text(
                 "CHAPTER 05 · CLIENT TESTIMONIALS",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
                   color: accentGold,
@@ -720,7 +851,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
         const SizedBox(height: 22),
         Text(
           "Proven Impact &",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 26,
             fontWeight: FontWeight.w500,
             color: Colors.white,
@@ -737,7 +868,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
           ).createShader(bounds),
           child: Text(
             "Authentic Voices.",
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: 42,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -749,7 +880,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
         const SizedBox(height: 20),
         Text(
           "Discover real experiences from brand owners and business partners who transformed their digital footprint with Grow Socialee.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: textSoft,
             height: 1.6,
@@ -757,7 +888,6 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
           ),
         ),
         const SizedBox(height: 28),
-        // Pulsing live indicator
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
@@ -795,7 +925,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
               const SizedBox(width: 10),
               Text(
                 "20+ VERIFIED REVIEWS ON GOOGLE",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   color: accentCyan,
@@ -842,7 +972,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
             children: [
               Text(
                 "GOOGLE RATING",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
                   color: accentCyan,
@@ -885,7 +1015,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 ).createShader(bounds),
                 child: Text(
                   "4.9",
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 62,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -898,7 +1028,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Text(
                   "/ 5.0",
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                     fontSize: 16,
                     color: textMuted,
                     fontWeight: FontWeight.w500,
@@ -948,7 +1078,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
           ).createShader(bounds),
           child: Text(
             value,
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -959,7 +1089,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
         const SizedBox(height: 2),
         Text(
           label,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 11,
             color: textMuted,
             fontWeight: FontWeight.w500,
@@ -1020,13 +1150,12 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
             ),
             child: Stack(
               children: [
-                // Giant quote mark
                 Positioned(
                   top: -30,
                   right: -10,
                   child: Text(
                     '"',
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 180,
                       fontWeight: FontWeight.bold,
                       color: accentGold.withOpacity(0.12),
@@ -1071,7 +1200,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                               const SizedBox(width: 6),
                               Text(
                                 "FEATURED STORY",
-                                style: GoogleFonts.bellota(
+                                style: GoogleFonts.alegreyaSc(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w800,
                                   color: const Color(0xFF1A1200),
@@ -1096,7 +1225,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                     const SizedBox(height: 22),
                     Text(
                       '"${featured["review"]!}"',
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: isDesktop ? 17 : 14.5,
                         fontWeight: FontWeight.w400,
                         color: Colors.white,
@@ -1131,7 +1260,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                             backgroundColor: royalBlue,
                             child: Text(
                               featured["name"]![0],
-                              style: GoogleFonts.bellota(
+                              style: GoogleFonts.alegreyaSc(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: accentGold,
@@ -1145,7 +1274,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                           children: [
                             Text(
                               featured["name"]!,
-                              style: GoogleFonts.bellota(
+                              style: GoogleFonts.playfairDisplay(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: accentGold,
@@ -1153,7 +1282,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                             ),
                             Text(
                               featured["company"]!,
-                              style: GoogleFonts.bellota(
+                              style: GoogleFonts.playfairDisplay(
                                 fontSize: 13,
                                 color: textMuted,
                               ),
@@ -1270,7 +1399,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 ),
                 child: Text(
                   "CLIENT STORIES",
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: accentGold,
@@ -1289,7 +1418,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 child: Text(
                   "What People Say About Grow Socialee",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: isDesktop ? 34 : 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -1362,7 +1491,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
             right: 0,
             child: Text(
               '"',
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.alegreyaSc(
                 fontSize: 120,
                 fontWeight: FontWeight.bold,
                 color: accent.withOpacity(0.12),
@@ -1402,7 +1531,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                     ),
                     child: Text(
                       rev["tag"]!,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         color: accent,
@@ -1415,7 +1544,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
               const SizedBox(height: 18),
               Text(
                 '"${rev["review"]!}"',
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
                   color: Colors.white,
                   height: 1.65,
@@ -1450,7 +1579,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                       backgroundColor: royalBlue,
                       child: Text(
                         rev["name"]![0],
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.alegreyaSc(
                           fontWeight: FontWeight.bold,
                           color: accent,
                           fontSize: 16,
@@ -1465,7 +1594,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                       children: [
                         Text(
                           rev["name"]!,
-                          style: GoogleFonts.bellota(
+                          style: GoogleFonts.playfairDisplay(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -1473,7 +1602,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                         ),
                         Text(
                           rev["company"]!,
-                          style: GoogleFonts.bellota(
+                          style: GoogleFonts.playfairDisplay(
                             fontSize: 12,
                             color: textMuted,
                           ),
@@ -1548,7 +1677,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
             Text(
               "Read More Reviews On Google",
               textAlign: TextAlign.center,
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.alegreyaSc(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -1558,7 +1687,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
             Text(
               "Check out our verified customer feedback and location details directly on Google Maps.",
               textAlign: TextAlign.center,
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.playfairDisplay(
                 fontSize: 13,
                 color: textMuted,
               ),
@@ -1596,7 +1725,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 children: [
                   Text(
                     "Read More Reviews On Google",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -1605,7 +1734,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                   const SizedBox(height: 6),
                   Text(
                     "Check out our verified customer feedback and location details directly on Google Maps.",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.playfairDisplay(
                       fontSize: 14,
                       color: textMuted,
                     ),
@@ -1659,7 +1788,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
         ),
         label: Text(
           "VIEW ON GOOGLE MAPS",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 12,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.0,
@@ -1671,11 +1800,11 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // FOOTER
+  // FOOTER (Synced exactly with home_page.dart footer pattern)
   // ============================================================
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
+    final bool isDesktop = screenWidth >= 900;
 
     return Container(
       width: double.infinity,
@@ -1725,19 +1854,6 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF05132B),
-            child: Center(
-              child: Text(
-                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: textMuted,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -1757,7 +1873,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 14,
             color: textMuted,
             height: 1.6,
@@ -1773,7 +1889,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: accentGold,
@@ -1825,7 +1941,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: isMultiLine ? Colors.white : textMuted,
                   height: 1.4,
@@ -1845,7 +1961,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: accentGold,
@@ -2103,7 +2219,7 @@ class _ReviewsStatsState extends State<_ReviewsStats>
               fit: BoxFit.scaleDown,
               child: Text(
                 "$formattedValue${item.suffix}",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: widget.isDesktop ? 34 : 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -2118,7 +2234,7 @@ class _ReviewsStatsState extends State<_ReviewsStats>
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.playfairDisplay(
               fontSize: widget.isDesktop ? 11 : 10,
               fontWeight: FontWeight.w600,
               color: _ReviewsState.textMuted,

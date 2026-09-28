@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -222,13 +223,13 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 850;
+    final bool isDesktop = screenWidth >= 900;
 
     return Scaffold(
       backgroundColor: darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(75),
-        child: _buildAppBar(isDesktop),
+        preferredSize: const Size.fromHeight(80),
+        child: _buildAppBar(screenWidth, isDesktop),
       ),
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: CustomScrollView(
@@ -292,77 +293,196 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // APP BAR
+  // APP BAR (Exact match to homepage.dart)
   // ============================================================
-  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+  PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(75),
+      preferredSize: const Size.fromHeight(80),
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              royalBlue,
-              royalBlueMid,
-            ],
-          ),
-          border: Border(
-            bottom: BorderSide(
-              color: accentGold.withOpacity(0.6),
-              width: 1.5,
-            ),
-          ),
+          color: royalBlue,
           boxShadow: [
             BoxShadow(
-              color: accentCyan.withOpacity(0.15),
-              blurRadius: 14,
-              offset: const Offset(0, 2),
+              color: accentGold.withOpacity(0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () => Scaffold.of(context).openEndDrawer(),
-                    child: Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            accentGold.withOpacity(0.22),
-                            accentGoldDeep.withOpacity(0.12),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: accentGold.withOpacity(0.7),
-                          width: 1.4,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.menu_rounded,
-                        color: accentGold,
-                        size: 24,
-                      ),
-                    ),
-                  ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.08),
+                    royalBlueMid.withOpacity(0.6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: accentGold.withOpacity(0.35),
+                  width: 1.2,
                 ),
               ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildLogoHeader(),
+                  if (isDesktop)
+                    Row(
+                      children: [
+                        _buildNavButton("HOME", 0, () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()),
+                          );
+                        }),
+                        _buildNavButton("ABOUT", 1, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const About()),
+                          );
+                        }),
+                        _buildNavButton("CLIENTS", 2, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()),
+                          );
+                        }),
+                        _buildNavButton("SERVICES", 3, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()),
+                          );
+                        }),
+                        _buildNavButton("REVIEWS", 4, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Reviews()),
+                          );
+                        }),
+                        const SizedBox(width: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                accentGoldSoft,
+                                accentGoldDeep,
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentGold.withOpacity(0.3),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() => _selectedIndex = 5);
+                            },
+                            child: Text(
+                              "CONTACT US",
+                              style: GoogleFonts.alegreyaSc(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1A1200),
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Builder(
+                      builder: (context) => Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () => Scaffold.of(context).openEndDrawer(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  accentGold.withOpacity(0.2),
+                                  accentGoldDeep.withOpacity(0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: accentGold.withOpacity(0.7),
+                                width: 1.2,
+                              ),
+                            ),
+                            child: const Icon(Icons.menu_rounded,
+                                color: accentGold, size: 22),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            const SizedBox(width: 12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String title, int index, VoidCallback onTap) {
+    final bool isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.alegreyaSc(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? accentGold : textSoft,
+                letterSpacing: 1.0,
+              ),
+            ),
+            const SizedBox(height: 2),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              width: isSelected ? 18 : 0,
+              decoration: BoxDecoration(
+                color: accentGold,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),
@@ -370,9 +490,8 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   }
 
   Widget _buildLogoHeader() {
-    return Container(
-      height: 45,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -383,7 +502,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               gradient: LinearGradient(
                 colors: [
                   accentGold.withOpacity(0.25),
-                  accentGoldDeep.withOpacity(0.12),
+                  accentGoldDeep.withOpacity(0.10),
                 ],
               ),
               border: Border.all(
@@ -411,11 +530,12 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 "We are\nGrow Socialee",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   height: 1.05,
+                  letterSpacing: 0.3,
                 ),
               ),
             ),
@@ -426,7 +546,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // END DRAWER
+  // END DRAWER (Exact match to homepage.dart)
   // ============================================================
   Widget _buildEndDrawer(double screenWidth, bool isDesktop) {
     return Drawer(
@@ -606,7 +726,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: isSelected
@@ -631,7 +751,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // HERO BANNER — Left: chapter + headline, Right: trust strip card
+  // HERO BANNER
   // ============================================================
   Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
@@ -715,7 +835,6 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Chapter pill
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
           decoration: BoxDecoration(
@@ -744,7 +863,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               Flexible(
                 child: Text(
                   "CHAPTER 06 · GET IN TOUCH",
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w700,
                     color: accentGold,
@@ -759,7 +878,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         const SizedBox(height: 22),
         Text(
           "Let's Build Something",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 26,
             fontWeight: FontWeight.w500,
             color: Colors.white,
@@ -776,7 +895,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
           ).createShader(bounds),
           child: Text(
             "Great Together.",
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: 46,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -788,7 +907,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         const SizedBox(height: 18),
         Text(
           "Get prompt responses from a friendly, professional and knowledgeable team.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
             color: textSoft,
             height: 1.6,
@@ -816,9 +935,6 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
     );
   }
 
-  // ============================================================
-  // TRUST STRIP CARD (from uploaded image, side of chapter)
-  // ============================================================
   Widget _buildTrustStripCard() {
     final List<Map<String, dynamic>> trustItems = [
       {
@@ -865,7 +981,6 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       ),
       child: Column(
         children: [
-          // Header row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -895,7 +1010,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                   const SizedBox(width: 10),
                   Text(
                     "WHY CHOOSE US",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
                       color: accentCyan,
@@ -928,7 +1043,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                     const SizedBox(width: 6),
                     Text(
                       "OPEN",
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w800,
                         color: Colors.greenAccent,
@@ -941,7 +1056,6 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
             ],
           ),
           const SizedBox(height: 18),
-          // Trust items in 2x2 grid
           Wrap(
             spacing: 12,
             runSpacing: 12,
@@ -996,7 +1110,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
           const SizedBox(width: 10),
           Text(
             label,
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: 11,
               fontWeight: FontWeight.w800,
               color: accentWhite,
@@ -1097,7 +1211,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
         label: Text(
           label,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 13,
             fontWeight: FontWeight.w800,
             letterSpacing: 0.8,
@@ -1129,7 +1243,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       icon: Icon(icon, size: 18, color: accentCyan),
       label: Text(
         label,
-        style: GoogleFonts.bellota(
+        style: GoogleFonts.alegreyaSc(
           fontSize: 13,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.8,
@@ -1139,9 +1253,6 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
     );
   }
 
-  // ============================================================
-  // ORNAMENT DIVIDER
-  // ============================================================
   Widget _buildOrnamentDivider() {
     return Container(
       width: double.infinity,
@@ -1242,7 +1353,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                     children: [
                       Text(
                         "Send Us A Message",
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.alegreyaSc(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: accentGold,
@@ -1251,7 +1362,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                       const SizedBox(height: 4),
                       Text(
                         "Fill out the form below and we'll reply shortly.",
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: 14,
                           color: textMuted,
                           fontWeight: FontWeight.w300,
@@ -1291,7 +1402,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                       selected: isSelected,
                       selectedColor: accentGold,
                       backgroundColor: royalBlue,
-                      labelStyle: GoogleFonts.bellota(
+                      labelStyle: GoogleFonts.alegreyaSc(
                         color:
                         isSelected ? const Color(0xFF1A1200) : textMuted,
                         fontWeight:
@@ -1359,7 +1470,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               decoration: InputDecoration(
                 labelText: "Select Service",
                 labelStyle:
-                GoogleFonts.bellota(color: textMuted, fontSize: 14),
+                GoogleFonts.playfairDisplay(color: textMuted, fontSize: 14),
                 prefixIcon: const Icon(Icons.cleaning_services_outlined,
                     color: accentCyan, size: 20),
                 filled: true,
@@ -1463,7 +1574,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                         child: Text(
                           "SUBMIT INQUIRY",
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.bellota(
+                          style: GoogleFonts.alegreyaSc(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
                             color: const Color(0xFF1A1200),
@@ -1498,7 +1609,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       style: GoogleFonts.plusJakartaSans(fontSize: 14, color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.bellota(color: textMuted, fontSize: 14),
+        labelStyle: GoogleFonts.playfairDisplay(color: textMuted, fontSize: 14),
         prefixIcon: Icon(icon, color: accentCyan, size: 20),
         filled: true,
         fillColor: royalBlue,
@@ -1580,7 +1691,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                   children: [
                     Text(
                       "Fast Response Guarantee",
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -1589,7 +1700,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                     const SizedBox(height: 4),
                     Text(
                       "We usually respond within 2 working hours during business times.",
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: 13,
                         color: textMuted,
                         fontWeight: FontWeight.w300,
@@ -1685,7 +1796,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: accentGold,
@@ -1694,7 +1805,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: 13,
                         color: textMuted,
                         height: 1.4,
@@ -1745,7 +1856,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                 actionLabel,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.bellota(
+                                style: GoogleFonts.alegreyaSc(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.greenAccent,
@@ -1764,7 +1875,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                               actionLabel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.bellota(
+                              style: GoogleFonts.alegreyaSc(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: accentCyan,
@@ -1790,7 +1901,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // GOOGLE MAP SECTION (Animated Radar)
+  // GOOGLE MAP SECTION
   // ============================================================
   Widget _buildGoogleMapSection() {
     return Container(
@@ -1905,7 +2016,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                   "Grow Socialee",
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
-                                  style: GoogleFonts.bellota(
+                                  style: GoogleFonts.alegreyaSc(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -1921,7 +2032,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                   "4.9 (13)",
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
-                                  style: GoogleFonts.bellota(
+                                  style: GoogleFonts.alegreyaSc(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: accentGold,
@@ -1935,7 +2046,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                             "Leela Efcee, Waghawadi Rd, Bhavnagar",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.bellota(
+                            style: GoogleFonts.playfairDisplay(
                                 fontSize: 12, color: textMuted),
                           ),
                         ],
@@ -1977,7 +2088,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                               "View Map",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.bellota(
+                              style: GoogleFonts.alegreyaSc(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -2032,7 +2143,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                 "Get Directions",
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.bellota(
+                                style: GoogleFonts.alegreyaSc(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                   color: const Color(0xFF1A1200),
@@ -2054,7 +2165,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // FOOTER
+  // FOOTER (Exact match to homepage.dart)
   // ============================================================
   Widget _buildAGFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -2108,20 +2219,6 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF05132B),
-            child: Center(
-              child: Text(
-                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: textMuted,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -2146,7 +2243,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 14,
             color: textMuted,
             height: 1.6,
@@ -2162,7 +2259,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: accentGold,
@@ -2214,7 +2311,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   color: isMultiLine ? Colors.white : textMuted,
                   height: 1.4,
@@ -2234,7 +2331,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: accentGold,

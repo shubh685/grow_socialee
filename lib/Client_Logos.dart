@@ -1586,20 +1586,6 @@ class _AnimatedFooterState extends State<AnimatedFooter>
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF05132B),
-            child: Center(
-              child: Text(
-                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 13,
-                  color: ClientTheme.textMuted,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
         ],
       ),
     );

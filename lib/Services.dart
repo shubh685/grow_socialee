@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,22 +14,7 @@ import 'home_page.dart';
 class Services extends StatefulWidget {
   const Services({super.key});
 
-  @override
-  State<Services> createState() => _ServicesState();
-}
-
-class _ServicesState extends State<Services> with TickerProviderStateMixin {
-  int _selectedIndex = 3;
-  int _selectedServiceIndex = 0;
-
-  late AnimationController _transitionController;
-  late Animation<Offset> _slideAnimation;
-  late Animation<double> _fadeAnimation;
-
-  late AnimationController _orbController;
-  late AnimationController _pulseController;
-
-  // ===== THEME (matches home_page.dart) =====
+  // ===== THEME (matches homepage.dart) =====
   static const Color royalBlue = Color(0xFF0A1F44);
   static const Color royalBlueMid = Color(0xFF0F2A5C);
   static const Color darkBg = Color(0xFF0A1F44);
@@ -44,6 +32,23 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   static const Color accentWhite = Colors.white;
   static const Color textMuted = Color(0xFFB8D4F0);
   static const Color textSoft = Color(0xFFD6E6FA);
+
+  @override
+  State<Services> createState() => _ServicesState();
+}
+
+class _ServicesState extends State<Services> with TickerProviderStateMixin {
+  int _selectedIndex = 3;
+  int _selectedServiceIndex = 0;
+  double _scrollOffset = 0;
+  final ScrollController _scrollController = ScrollController();
+
+  late AnimationController _transitionController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+
+  late AnimationController _orbController;
+  late AnimationController _pulseController;
 
   final String addressQuery =
       "First Floor, Leela Efcee, 103, Waghawadi Rd., Hill Drive, Bhavnagar, Gujarat 364002";
@@ -119,7 +124,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     },
   ];
 
-  // Preserved reviews data
   final List<Map<String, String>> clientReviews = [
     {
       "name": "Venisha Chitalia",
@@ -139,7 +143,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     },
   ];
 
-  // "How We Work" steps
   final List<Map<String, dynamic>> howWeWorkSteps = [
     {
       "num": "01",
@@ -170,6 +173,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
 
     _transitionController = AnimationController(
       vsync: this,
@@ -201,8 +205,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     )..repeat(reverse: true);
   }
 
+  void _onScroll() {
+    if (!mounted) return;
+    final offset = _scrollController.hasClients ? _scrollController.offset : 0.0;
+    if ((offset - _scrollOffset).abs() > 5) {
+      setState(() => _scrollOffset = offset);
+    }
+  }
+
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _transitionController.dispose();
     _orbController.dispose();
     _pulseController.dispose();
@@ -254,16 +268,17 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
+    final bool isDesktop = screenWidth >= 900;
 
     return Scaffold(
-      backgroundColor: darkBg,
+      backgroundColor: Services.darkBg,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(75),
-        child: _buildAppBar(isDesktop),
+        preferredSize: const Size.fromHeight(80),
+        child: _buildAppBar(screenWidth, isDesktop),
       ),
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: CustomScrollView(
+        controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverToBoxAdapter(
@@ -299,77 +314,204 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // APP BAR
+  // APP BAR (Matches homepage.dart)
   // ============================================================
-  PreferredSizeWidget _buildAppBar(bool isDesktop) {
+  PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
+    final bool isScrolled = _scrollOffset > 30;
     return PreferredSize(
-      preferredSize: const Size.fromHeight(75),
-      child: Container(
+      preferredSize: const Size.fromHeight(80),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              royalBlue,
-              royalBlueMid,
-            ],
-          ),
-          border: Border(
-            bottom: BorderSide(
-              color: accentGold.withOpacity(0.6),
-              width: 1.5,
-            ),
-          ),
+          color: isScrolled
+              ? Services.royalBlue.withOpacity(0.92)
+              : Services.royalBlue,
           boxShadow: [
             BoxShadow(
-              color: accentCyan.withOpacity(0.15),
-              blurRadius: 14,
-              offset: const Offset(0, 2),
+              color: Services.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          titleSpacing: 0,
-          title: _buildLogoHeader(),
-          actions: [
-            Builder(
-              builder: (context) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () => Scaffold.of(context).openEndDrawer(),
-                    child: Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            accentGold.withOpacity(0.22),
-                            accentGoldDeep.withOpacity(0.12),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: accentGold.withOpacity(0.7),
-                          width: 1.4,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.menu_rounded,
-                        color: accentGold,
-                        size: 24,
-                      ),
-                    ),
-                  ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.08),
+                    Services.royalBlueMid.withOpacity(0.6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Services.accentGold.withOpacity(0.35),
+                  width: 1.2,
                 ),
               ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildLogoHeader(),
+                  if (isDesktop)
+                    Row(
+                      children: [
+                        _buildNavButton("HOME", 0, () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()),
+                          );
+                        }),
+                        _buildNavButton("ABOUT", 1, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const About()),
+                          );
+                        }),
+                        _buildNavButton("CLIENTS", 2, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ClientLogoPage()),
+                          );
+                        }),
+                        _buildNavButton("SERVICES", 3, () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Services()),
+                          );
+                        }),
+                        _buildNavButton("REVIEWS", 4, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Reviews()),
+                          );
+                        }),
+                        const SizedBox(width: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                Services.accentGoldSoft,
+                                Services.accentGoldDeep,
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Services.accentGold.withOpacity(0.3),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Contact()),
+                              );
+                            },
+                            child: Text(
+                              "CONTACT US",
+                              style: GoogleFonts.alegreyaSc(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1A1200),
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Builder(
+                      builder: (context) => Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () => Scaffold.of(context).openEndDrawer(),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Services.accentGold.withOpacity(0.2),
+                                  Services.accentGoldDeep.withOpacity(0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: Services.accentGold.withOpacity(0.7),
+                                width: 1.2,
+                              ),
+                            ),
+                            child: const Icon(Icons.menu_rounded,
+                                color: Services.accentGold, size: 22),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            const SizedBox(width: 12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(String title, int index, VoidCallback onTap) {
+    final bool isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.alegreyaSc(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? Services.accentGold : Services.textSoft,
+                letterSpacing: 1.0,
+              ),
+            ),
+            const SizedBox(height: 2),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 2,
+              width: isSelected ? 18 : 0,
+              decoration: BoxDecoration(
+                color: Services.accentGold,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),
@@ -377,9 +519,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
   Widget _buildLogoHeader() {
-    return Container(
-      height: 45,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -389,40 +530,38 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  accentGold.withOpacity(0.25),
-                  accentGoldDeep.withOpacity(0.12),
+                  Services.accentGold.withOpacity(0.25),
+                  Services.accentGoldDeep.withOpacity(0.10),
                 ],
               ),
               border: Border.all(
-                color: accentGold.withOpacity(0.7),
+                color: Services.accentGold.withOpacity(0.7),
                 width: 1.2,
               ),
             ),
-            child: const Icon(
-              Icons.workspace_premium_rounded,
-              color: accentGold,
-              size: 18,
-            ),
+            child: const Icon(Icons.workspace_premium_rounded,
+                color: Services.accentGold, size: 18),
           ),
           const SizedBox(width: 12),
           Flexible(
             child: ShaderMask(
               shaderCallback: (bounds) => const LinearGradient(
                 colors: [
-                  accentGoldSoft,
-                  accentGold,
-                  accentGoldDeep,
+                  Services.accentGoldSoft,
+                  Services.accentGold,
+                  Services.accentGoldDeep,
                 ],
               ).createShader(bounds),
               child: Text(
                 "We are\nGrow Socialee",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   height: 1.05,
+                  letterSpacing: 0.3,
                 ),
               ),
             ),
@@ -433,12 +572,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // END DRAWER
+  // END DRAWER (Matches homepage.dart)
   // ============================================================
   Widget _buildEndDrawer(double screenWidth, bool isDesktop) {
     return Drawer(
-      width: isDesktop ? 380 : screenWidth * 0.8,
-      backgroundColor: royalBlue,
+      width: isDesktop ? 380 : math.min(screenWidth * 0.85, 340),
+      backgroundColor: Services.royalBlue,
       child: SafeArea(
         child: Column(
           children: [
@@ -451,8 +590,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    royalBlueMid,
-                    glassCard,
+                    Services.royalBlueMid,
+                    Services.glassCard,
                   ],
                 ),
               ),
@@ -472,7 +611,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               ),
             ),
             Divider(
-                height: 1, thickness: 1, color: accentGold.withOpacity(0.4)),
+                height: 1,
+                thickness: 1,
+                color: Services.accentGold.withOpacity(0.4)),
             const SizedBox(height: 12),
             Expanded(
               child: ListView(
@@ -559,9 +700,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    accentGoldSoft,
-                    accentGold,
-                    accentGoldDeep,
+                    Services.accentGoldSoft,
+                    Services.accentGold,
+                    Services.accentGoldDeep,
                   ],
                 ),
               ),
@@ -589,14 +730,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           onTap: onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               gradient: isSelected
                   ? const LinearGradient(
                 colors: [
-                  accentGoldSoft,
-                  accentGold,
-                  accentGoldDeep,
+                  Services.accentGoldSoft,
+                  Services.accentGold,
+                  Services.accentGoldDeep,
                 ],
               )
                   : null,
@@ -604,16 +746,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             ),
             child: Row(
               children: [
-                Icon(
-                  icon,
-                  size: 20,
-                  color: isSelected ? const Color(0xFF1A1200) : Colors.white,
-                ),
+                Icon(icon,
+                    size: 20,
+                    color:
+                    isSelected ? const Color(0xFF1A1200) : Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: isSelected
@@ -624,11 +765,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   ),
                 ),
                 if (isSelected)
-                  const Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
-                    color: Color(0xFF1A1200),
-                  ),
+                  const Icon(Icons.arrow_forward_ios_rounded,
+                      size: 14, color: Color(0xFF1A1200)),
               ],
             ),
           ),
@@ -638,7 +776,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // HERO BANNER — Chapter Pill + How We Work side by side
+  // HERO BANNER
   // ============================================================
   Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
@@ -649,16 +787,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           radius: 1.4,
           colors: [
             Color(0xFF173F7B),
-            royalBlue,
+            Services.royalBlue,
             Color(0xFF061733),
           ],
         ),
       ),
       child: Stack(
         children: [
-          // Animated floating orbs
           ..._buildFloatingOrbs(),
-          // Static gold glow top-right
           Positioned(
             top: -60,
             right: -60,
@@ -669,14 +805,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    accentGold.withOpacity(0.10),
+                    Services.accentGold.withOpacity(0.10),
                     Colors.transparent,
                   ],
                 ),
               ),
             ),
           ),
-          // Background image
           Positioned.fill(
             child: Opacity(
               opacity: 0.08,
@@ -726,39 +861,38 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     );
   }
 
-  // Animated floating orbs
   List<Widget> _buildFloatingOrbs() {
     return [
       AnimatedBuilder(
         animation: _orbController,
         builder: (context, _) {
-          final t = _orbController.value * 2 * 3.14159;
+          final t = _orbController.value * 2 * math.pi;
           return Positioned(
-            top: 100 + (t.sin() * 30),
-            left: 40 + (t.cos() * 20),
-            child: _orb(140, accentCyan.withOpacity(0.10)),
+            top: 100 + (math.sin(t) * 30),
+            left: 40 + (math.cos(t) * 20),
+            child: _orb(140, Services.accentCyan.withOpacity(0.10)),
           );
         },
       ),
       AnimatedBuilder(
         animation: _orbController,
         builder: (context, _) {
-          final t = _orbController.value * 2 * 3.14159 + 1.5;
+          final t = _orbController.value * 2 * math.pi + 1.5;
           return Positioned(
-            bottom: 80 + (t.sin() * 40),
-            right: 60 + (t.cos() * 30),
-            child: _orb(180, accentGold.withOpacity(0.08)),
+            bottom: 80 + (math.sin(t) * 40),
+            right: 60 + (math.cos(t) * 30),
+            child: _orb(180, Services.accentGold.withOpacity(0.08)),
           );
         },
       ),
       AnimatedBuilder(
         animation: _orbController,
         builder: (context, _) {
-          final t = _orbController.value * 2 * 3.14159 + 3.0;
+          final t = _orbController.value * 2 * math.pi + 3.0;
           return Positioned(
-            top: 300 + (t.sin() * 25),
-            right: 200 + (t.cos() * 20),
-            child: _orb(90, accentCyan.withOpacity(0.14)),
+            top: 300 + (math.sin(t) * 25),
+            right: 200 + (math.cos(t) * 20),
+            child: _orb(90, Services.accentCyan.withOpacity(0.14)),
           );
         },
       ),
@@ -778,24 +912,22 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     );
   }
 
-  // ===== Left: Chapter pill + heading =====
   Widget _buildHeroLeftText() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Chapter pill
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
           decoration: BoxDecoration(
-            color: accentGold.withOpacity(0.12),
+            color: Services.accentGold.withOpacity(0.12),
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
-              color: accentGold.withOpacity(0.6),
+              color: Services.accentGold.withOpacity(0.6),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: accentGold.withOpacity(0.10),
+                color: Services.accentGold.withOpacity(0.10),
                 blurRadius: 10,
               ),
             ],
@@ -805,16 +937,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             children: [
               const Icon(
                 Icons.workspace_premium_rounded,
-                color: accentGold,
+                color: Services.accentGold,
                 size: 16,
               ),
               const SizedBox(width: 8),
               Text(
                 "CHAPTER 04 · OUR SERVICES",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
-                  color: accentGold,
+                  color: Services.accentGold,
                   letterSpacing: 2.2,
                 ),
               ),
@@ -822,28 +954,26 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           ),
         ),
         const SizedBox(height: 22),
-        // Small "Getting your name on top is our"
         Text(
           "Getting your name on top is our",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 24,
             fontWeight: FontWeight.w500,
             color: Colors.white,
             height: 1.2,
           ),
         ),
-        // Big gradient "No.1 priority"
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
             colors: [
-              accentGoldSoft,
-              accentGold,
-              accentGoldDeep,
+              Services.accentGoldSoft,
+              Services.accentGold,
+              Services.accentGoldDeep,
             ],
           ).createShader(bounds),
           child: Text(
             "No.1 priority.",
-            style: GoogleFonts.bellota(
+            style: GoogleFonts.alegreyaSc(
               fontSize: 52,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -855,9 +985,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         const SizedBox(height: 18),
         Text(
           "We make sure you receive the attention your business deserves. We are not just a social media agency — we provide a multi-channel variance of services tailored for growth.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: textSoft,
+            color: Services.textSoft,
             height: 1.6,
             fontWeight: FontWeight.w300,
           ),
@@ -886,7 +1016,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     );
   }
 
-  // ===== Right: How We Work Panel =====
   Widget _buildHowWeWorkPanel() {
     return Container(
       padding: const EdgeInsets.all(22),
@@ -901,12 +1030,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: accentCyan.withOpacity(0.35),
+          color: Services.accentCyan.withOpacity(0.35),
           width: 1.3,
         ),
         boxShadow: [
           BoxShadow(
-            color: accentCyan.withOpacity(0.12),
+            color: Services.accentCyan.withOpacity(0.12),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -928,10 +1057,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                         height: 8,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: accentCyan,
+                          color: Services.accentCyan,
                           boxShadow: [
                             BoxShadow(
-                              color: accentCyan.withOpacity(
+                              color: Services.accentCyan.withOpacity(
                                   0.4 + 0.5 * _pulseController.value),
                               blurRadius: 10,
                               spreadRadius: 2,
@@ -944,10 +1073,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   const SizedBox(width: 10),
                   Text(
                     "HOW WE WORK",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w800,
-                      color: accentCyan,
+                      color: Services.accentCyan,
                       letterSpacing: 2.0,
                     ),
                   ),
@@ -955,20 +1084,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               ),
               Text(
                 "STEP · 4",
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: textMuted,
+                  color: Services.textMuted,
                   letterSpacing: 1.5,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 18),
-          // 4 steps in vertical layout with connector line
           Stack(
             children: [
-              // Vertical connector line
               Positioned(
                 left: 21,
                 top: 20,
@@ -980,8 +1107,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        accentCyan.withOpacity(0.6),
-                        accentGold.withOpacity(0.6),
+                        Services.accentCyan.withOpacity(0.6),
+                        Services.accentGold.withOpacity(0.6),
                       ],
                     ),
                   ),
@@ -1006,7 +1133,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Circle icon
         Container(
           width: 44,
           height: 44,
@@ -1014,18 +1140,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             shape: BoxShape.circle,
             gradient: const LinearGradient(
               colors: [
-                accentGoldSoft,
-                accentGold,
-                accentGoldDeep,
+                Services.accentGoldSoft,
+                Services.accentGold,
+                Services.accentGoldDeep,
               ],
             ),
             border: Border.all(
-              color: royalBlue,
+              color: Services.royalBlue,
               width: 3,
             ),
             boxShadow: [
               BoxShadow(
-                color: accentGold.withOpacity(0.35),
+                color: Services.accentGold.withOpacity(0.35),
                 blurRadius: 10,
                 spreadRadius: 1,
               ),
@@ -1048,17 +1174,17 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   children: [
                     Text(
                       "${step["num"]} · ",
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
-                        color: accentCyan,
+                        color: Services.accentCyan,
                         letterSpacing: 1.2,
                       ),
                     ),
                     Flexible(
                       child: Text(
                         step["title"] as String,
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -1071,9 +1197,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 const SizedBox(height: 3),
                 Text(
                   step["desc"] as String,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.playfairDisplay(
                     fontSize: 12,
-                    color: textMuted,
+                    color: Services.textMuted,
                     fontWeight: FontWeight.w400,
                     height: 1.4,
                   ),
@@ -1097,15 +1223,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            accentGoldSoft,
-            accentGold,
-            accentGoldDeep,
+            Services.accentGoldSoft,
+            Services.accentGold,
+            Services.accentGoldDeep,
           ],
         ),
         borderRadius: BorderRadius.circular(50),
         boxShadow: [
           BoxShadow(
-            color: accentGold.withOpacity(0.35),
+            color: Services.accentGold.withOpacity(0.35),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -1124,7 +1250,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
         label: Text(
           label,
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 13,
             fontWeight: FontWeight.w800,
             letterSpacing: 0.8,
@@ -1146,17 +1272,17 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         backgroundColor: Colors.white.withOpacity(0.06),
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
         side: BorderSide(
-          color: accentCyan.withOpacity(0.8),
+          color: Services.accentCyan.withOpacity(0.8),
           width: 1.6,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
       ),
-      icon: Icon(icon, size: 18, color: accentCyan),
+      icon: Icon(icon, size: 18, color: Services.accentCyan),
       label: Text(
         label,
-        style: GoogleFonts.bellota(
+        style: GoogleFonts.alegreyaSc(
           fontSize: 13,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.8,
@@ -1177,8 +1303,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            royalBlue,
-            royalBlueMid,
+            Services.royalBlue,
+            Services.royalBlueMid,
           ],
         ),
       ),
@@ -1191,13 +1317,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           constraints: const BoxConstraints(maxWidth: 1250),
           child: Column(
             children: [
-              // Section pill
               _buildSectionPill("WHAT WE OFFER"),
               const SizedBox(height: 14),
               Text(
                 "Tailored Growth Solutions",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.alegreyaSc(
                   fontSize: isDesktop ? 36 : 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -1261,16 +1386,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: accentGold.withOpacity(0.15),
+        color: Services.accentGold.withOpacity(0.15),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: accentGold.withOpacity(0.6)),
+        border: Border.all(color: Services.accentGold.withOpacity(0.6)),
       ),
       child: Text(
         label,
-        style: GoogleFonts.bellota(
+        style: GoogleFonts.alegreyaSc(
           fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: accentGold,
+          color: Services.accentGold,
           letterSpacing: 2.0,
         ),
       ),
@@ -1300,8 +1425,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                accentGold.withOpacity(0.14),
-                accentGoldDeep.withOpacity(0.06),
+                Services.accentGold.withOpacity(0.14),
+                Services.accentGoldDeep.withOpacity(0.06),
               ],
             )
                 : LinearGradient(
@@ -1314,13 +1439,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSelected ? accentGold : accentCyan.withOpacity(0.25),
+              color: isSelected
+                  ? Services.accentGold
+                  : Services.accentCyan.withOpacity(0.25),
               width: isSelected ? 1.8 : 1.0,
             ),
             boxShadow: [
               BoxShadow(
                 color: isSelected
-                    ? accentGold.withOpacity(0.25)
+                    ? Services.accentGold.withOpacity(0.25)
                     : Colors.black.withOpacity(0.10),
                 blurRadius: isSelected ? 16 : 6,
                 spreadRadius: isSelected ? 1 : 0,
@@ -1335,25 +1462,28 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   gradient: isSelected
                       ? const LinearGradient(
-                    colors: [accentGoldSoft, accentGoldDeep],
+                    colors: [
+                      Services.accentGoldSoft,
+                      Services.accentGoldDeep
+                    ],
                   )
                       : LinearGradient(
                     colors: [
-                      accentCyan.withOpacity(0.20),
-                      accentCyan.withOpacity(0.08),
+                      Services.accentCyan.withOpacity(0.20),
+                      Services.accentCyan.withOpacity(0.08),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isSelected
-                        ? accentGold
-                        : accentCyan.withOpacity(0.4),
+                        ? Services.accentGold
+                        : Services.accentCyan.withOpacity(0.4),
                     width: 1,
                   ),
                 ),
                 child: Icon(
                   service["icon"] as IconData,
-                  color: isSelected ? const Color(0xFF1A1200) : accentCyan,
+                  color: isSelected ? const Color(0xFF1A1200) : Services.accentCyan,
                   size: 22,
                 ),
               ),
@@ -1367,10 +1497,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       service["title"] as String,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: isSelected ? accentGold : Colors.white,
+                        color: isSelected ? Services.accentGold : Colors.white,
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -1378,10 +1508,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       service["desc"] as String,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: 12,
                         color: isSelected
-                            ? textSoft
+                            ? Services.textSoft
                             : Colors.white.withOpacity(0.55),
                         height: 1.2,
                         fontWeight: FontWeight.w300,
@@ -1394,7 +1524,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: isSelected ? accentGold : Colors.white24,
+                color: isSelected ? Services.accentGold : Colors.white24,
               ),
             ],
           ),
@@ -1420,12 +1550,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: accentGold.withOpacity(0.6),
+          color: Services.accentGold.withOpacity(0.6),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: accentGold.withOpacity(0.15),
+            color: Services.accentGold.withOpacity(0.15),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -1450,12 +1580,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [accentGoldSoft, accentGoldDeep],
+                        colors: [
+                          Services.accentGoldSoft,
+                          Services.accentGoldDeep
+                        ],
                       ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: accentGold.withOpacity(0.35),
+                          color: Services.accentGold.withOpacity(0.35),
                           blurRadius: 14,
                           offset: const Offset(0, 4),
                         ),
@@ -1476,18 +1609,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: accentCyan.withOpacity(0.18),
+                            color: Services.accentCyan.withOpacity(0.18),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: accentCyan.withOpacity(0.55),
+                              color: Services.accentCyan.withOpacity(0.55),
                             ),
                           ),
                           child: Text(
                             activeService["tag"] as String,
-                            style: GoogleFonts.bellota(
+                            style: GoogleFonts.alegreyaSc(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: accentCyan,
+                              color: Services.accentCyan,
                               letterSpacing: 1.2,
                             ),
                           ),
@@ -1495,11 +1628,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                         const SizedBox(height: 8),
                         ShaderMask(
                           shaderCallback: (bounds) => const LinearGradient(
-                            colors: [accentGoldSoft, accentGoldDeep],
+                            colors: [
+                              Services.accentGoldSoft,
+                              Services.accentGoldDeep
+                            ],
                           ).createShader(bounds),
                           child: Text(
                             activeService["title"] as String,
-                            style: GoogleFonts.bellota(
+                            style: GoogleFonts.alegreyaSc(
                               fontSize: isDesktop ? 26 : 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -1514,9 +1650,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               const SizedBox(height: 22),
               Text(
                 activeService["desc"] as String,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
-                  color: textMuted,
+                  color: Services.textMuted,
                   height: 1.6,
                   fontWeight: FontWeight.w300,
                 ),
@@ -1529,7 +1665,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     height: 2,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [accentGold, accentCyan],
+                        colors: [Services.accentGold, Services.accentCyan],
                       ),
                       borderRadius: BorderRadius.circular(1),
                     ),
@@ -1537,7 +1673,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   const SizedBox(width: 10),
                   Text(
                     "WHAT WE DELIVER",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.alegreyaSc(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -1561,7 +1697,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       color: Colors.white.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: accentCyan.withOpacity(0.35),
+                        color: Services.accentCyan.withOpacity(0.35),
                       ),
                     ),
                     child: Row(
@@ -1570,13 +1706,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                         const Icon(
                           Icons.check_circle_rounded,
                           size: 16,
-                          color: accentGold,
+                          color: Services.accentGold,
                         ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
                             item,
-                            style: GoogleFonts.bellota(
+                            style: GoogleFonts.playfairDisplay(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -1601,7 +1737,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   Widget _buildOrnamentDivider() {
     return Container(
       width: double.infinity,
-      color: royalBlueMid,
+      color: Services.royalBlueMid,
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Center(
         child: Row(
@@ -1614,7 +1750,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 gradient: LinearGradient(
                   colors: [
                     Colors.transparent,
-                    accentGold.withOpacity(0.6),
+                    Services.accentGold.withOpacity(0.6),
                   ],
                 ),
               ),
@@ -1627,11 +1763,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 height: 10,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [accentGoldSoft, accentGoldDeep],
+                    colors: [Services.accentGoldSoft, Services.accentGoldDeep],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: accentGold.withOpacity(0.5),
+                      color: Services.accentGold.withOpacity(0.5),
                       blurRadius: 10,
                     ),
                   ],
@@ -1645,7 +1781,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    accentGold.withOpacity(0.6),
+                    Services.accentGold.withOpacity(0.6),
                     Colors.transparent,
                   ],
                 ),
@@ -1668,8 +1804,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            royalBlueMid,
-            royalBlue,
+            Services.royalBlueMid,
+            Services.royalBlue,
           ],
         ),
       ),
@@ -1686,12 +1822,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               const SizedBox(height: 14),
               ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
-                  colors: [accentGoldSoft, accentGold, accentGoldDeep],
+                  colors: [
+                    Services.accentGoldSoft,
+                    Services.accentGold,
+                    Services.accentGoldDeep
+                  ],
                 ).createShader(bounds),
                 child: Text(
                   "What People Say About Grow Socialee",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.bellota(
+                  style: GoogleFonts.alegreyaSc(
                     fontSize: isDesktop ? 34 : 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -1745,13 +1885,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: index.isEven
-              ? accentGold.withOpacity(0.55)
-              : accentCyan.withOpacity(0.45),
+              ? Services.accentGold.withOpacity(0.55)
+              : Services.accentCyan.withOpacity(0.45),
           width: 1.4,
         ),
         boxShadow: [
           BoxShadow(
-            color: (index.isEven ? accentGold : accentCyan).withOpacity(0.12),
+            color: (index.isEven ? Services.accentGold : Services.accentCyan)
+                .withOpacity(0.12),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -1759,16 +1900,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       ),
       child: Stack(
         children: [
-          // Big quote mark
           Positioned(
             top: -20,
             right: 0,
             child: Text(
               '"',
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.playfairDisplay(
                 fontSize: 120,
                 fontWeight: FontWeight.bold,
-                color: (index.isEven ? accentGold : accentCyan)
+                color: (index.isEven ? Services.accentGold : Services.accentCyan)
                     .withOpacity(0.15),
                 height: 1,
               ),
@@ -1787,7 +1927,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                         i < ratingVal.floor()
                             ? Icons.star_rounded
                             : Icons.star_half_rounded,
-                        color: accentGold,
+                        color: Services.accentGold,
                         size: 18,
                       ),
                     ),
@@ -1798,18 +1938,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: accentGold.withOpacity(0.15),
+                      color: Services.accentGold.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: accentGold.withOpacity(0.5),
+                        color: Services.accentGold.withOpacity(0.5),
                       ),
                     ),
                     child: Text(
                       rev["tag"]!,
-                      style: GoogleFonts.bellota(
+                      style: GoogleFonts.alegreyaSc(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: accentGold,
+                        color: Services.accentGold,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -1819,7 +1959,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               const SizedBox(height: 18),
               Text(
                 '"${rev["review"]!}"',
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
                   color: Colors.white,
                   height: 1.65,
@@ -1837,23 +1977,26 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
-                        colors: [accentGoldSoft, accentGoldDeep],
+                        colors: [
+                          Services.accentGoldSoft,
+                          Services.accentGoldDeep
+                        ],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: accentGold.withOpacity(0.35),
+                          color: Services.accentGold.withOpacity(0.35),
                           blurRadius: 10,
                         ),
                       ],
                     ),
                     child: CircleAvatar(
                       radius: 20,
-                      backgroundColor: royalBlue,
+                      backgroundColor: Services.royalBlue,
                       child: Text(
                         rev["name"]![0],
-                        style: GoogleFonts.bellota(
+                        style: GoogleFonts.alegreyaSc(
                           fontWeight: FontWeight.bold,
-                          color: accentGold,
+                          color: Services.accentGold,
                           fontSize: 16,
                         ),
                       ),
@@ -1866,7 +2009,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       children: [
                         Text(
                           rev["name"]!,
-                          style: GoogleFonts.bellota(
+                          style: GoogleFonts.alegreyaSc(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -1874,9 +2017,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                         ),
                         Text(
                           rev["company"]!,
-                          style: GoogleFonts.bellota(
+                          style: GoogleFonts.alegreyaSc(
                             fontSize: 12,
-                            color: textMuted,
+                            color: Services.textMuted,
                           ),
                         ),
                       ],
@@ -1909,12 +2052,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: accentGold.withOpacity(0.6),
+          color: Services.accentGold.withOpacity(0.6),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: accentGold.withOpacity(0.20),
+            color: Services.accentGold.withOpacity(0.20),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
@@ -1926,12 +2069,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             ? Column(
           children: [
             const Icon(Icons.rocket_launch_rounded,
-                color: accentGold, size: 34),
+                color: Services.accentGold, size: 34),
             const SizedBox(height: 14),
             Text(
               "Ready to Scale Your Online Brand Presence?",
               textAlign: TextAlign.center,
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.alegreyaSc(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -1941,9 +2084,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             Text(
               "Get in touch with our team in Bhavnagar today for a complimentary growth session.",
               textAlign: TextAlign.center,
-              style: GoogleFonts.bellota(
+              style: GoogleFonts.playfairDisplay(
                 fontSize: 13,
-                color: textMuted,
+                color: Services.textMuted,
                 fontWeight: FontWeight.w300,
               ),
             ),
@@ -1963,7 +2106,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             : Row(
           children: [
             const Icon(Icons.rocket_launch_rounded,
-                color: accentGold, size: 40),
+                color: Services.accentGold, size: 40),
             const SizedBox(width: 20),
             Expanded(
               child: Column(
@@ -1971,7 +2114,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 children: [
                   Text(
                     "Ready to Scale Your Online Brand Presence?",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.playfairDisplay(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -1980,9 +2123,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   const SizedBox(height: 8),
                   Text(
                     "Get in touch with our team in Bhavnagar today for a complimentary growth session.",
-                    style: GoogleFonts.bellota(
+                    style: GoogleFonts.playfairDisplay(
                       fontSize: 14,
-                      color: textMuted,
+                      color: Services.textMuted,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
@@ -2007,11 +2150,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
   // ============================================================
-  // FOOTER
+  // FOOTER (Matches homepage.dart)
   // ============================================================
   Widget _buildAGFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth > 800;
+    final bool isDesktop = screenWidth >= 900;
 
     return Container(
       width: double.infinity,
@@ -2020,7 +2163,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            royalBlue,
+            Services.royalBlue,
             Color(0xFF05132B),
           ],
         ),
@@ -2028,7 +2171,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       child: Column(
         children: [
           Divider(
-              height: 1, thickness: 1, color: accentGold.withOpacity(0.4)),
+              height: 1,
+              thickness: 1,
+              color: Services.accentGold.withOpacity(0.4)),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
             child: Center(
@@ -2061,19 +2206,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            color: const Color(0xFF05132B),
-            child: Center(
-              child: Text(
-                "© ${DateTime.now().year} Grow Socialee. All rights reserved.",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: textMuted,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -2093,9 +2225,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.playfairDisplay(
             fontSize: 14,
-            color: textMuted,
+            color: Services.textMuted,
             height: 1.6,
           ),
         ),
@@ -2109,10 +2241,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: accentGold,
+            color: Services.accentGold,
             letterSpacing: 1.0,
           ),
         ),
@@ -2154,16 +2286,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           crossAxisAlignment:
           isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: accentGold),
+            Icon(icon, size: 18, color: Services.accentGold),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.bellota(
+                style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: isMultiLine ? Colors.white : textMuted,
+                  color: isMultiLine ? Colors.white : Services.textMuted,
                   height: 1.4,
                   fontWeight: FontWeight.w700,
                 ),
@@ -2181,10 +2313,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       children: [
         Text(
           "CONNECT WITH US",
-          style: GoogleFonts.bellota(
+          style: GoogleFonts.alegreyaSc(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: accentGold,
+            color: Services.accentGold,
             letterSpacing: 1.0,
           ),
         ),
@@ -2209,30 +2341,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: accentGold.withOpacity(0.6)),
+        border: Border.all(color: Services.accentGold.withOpacity(0.6)),
         boxShadow: [
           BoxShadow(
-            color: accentGold.withOpacity(0.10),
+            color: Services.accentGold.withOpacity(0.10),
             blurRadius: 8,
           ),
         ],
       ),
       child: IconButton(
-        icon: Icon(icon, size: 18, color: accentGold),
+        icon: Icon(icon, size: 18, color: Services.accentGold),
         onPressed: () => _launchUrlString(url),
       ),
     );
-  }
-}
-
-// Extension helper for double sin/cos
-extension _MathExt on double {
-  double sin() {
-    // Simple approximation isn't needed — Dart has dart:math
-    // We'll just make sure imports work
-    return 0;
-  }
-  double cos() {
-    return 0;
   }
 }
