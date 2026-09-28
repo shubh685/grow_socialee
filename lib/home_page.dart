@@ -676,7 +676,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            height: 50,
+            width: 50,
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
@@ -690,7 +692,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 width: 1.2,
               ),
             ),
-            child: Image.asset("assets/photos/img.png")
+            child: ClipOval(
+              child: Image.asset(
+                "assets/photos/img.png",
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.broken_image,
+                  color: HomePage.accentGold,
+                  size: 24,
+                ),
+              ),
+            ),
           ),
           const SizedBox(width: 12),
           Flexible(
@@ -2527,11 +2539,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 maxLines: isMultiLine ? 3 : 1,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: isMultiLine
-                      ? AboutTheme.accentWhite
-                      : AboutTheme.textMuted,
+                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
                   height: 1.4,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
                 ),
               ),
             ),

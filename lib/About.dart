@@ -349,21 +349,33 @@ class _AboutState extends State<About> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    HomePage.accentGold.withOpacity(0.25),
-                    HomePage.accentGoldDeep.withOpacity(0.10),
-                  ],
-                ),
-                border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.7),
-                  width: 1.2,
+            height: 50,
+            width: 50,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  HomePage.accentGold.withOpacity(0.25),
+                  HomePage.accentGoldDeep.withOpacity(0.10),
+                ],
+              ),
+              border: Border.all(
+                color: HomePage.accentGold.withOpacity(0.7),
+                width: 1.2,
+              ),
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                "assets/photos/img.png",
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.broken_image,
+                  color: HomePage.accentGold,
+                  size: 24,
                 ),
               ),
-              child: Image.asset("assets/photos/img.png")
+            ),
           ),
           const SizedBox(width: 12),
           Flexible(
@@ -1756,11 +1768,9 @@ class _AboutState extends State<About> {
                 maxLines: isMultiLine ? 3 : 1,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: isMultiLine
-                      ? AboutTheme.accentWhite
-                      : AboutTheme.textMuted,
+                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
                   height: 1.4,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
                 ),
               ),
             ),
