@@ -876,7 +876,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-                padding: EdgeInsets.all(isDesktop ? 48 : 24),
+                padding: EdgeInsets.all(isDesktop ? 22 : 15),
                 child: isDesktop
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
