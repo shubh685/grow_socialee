@@ -2401,26 +2401,8 @@ class _TeamSectionState extends State<TeamSection>
       isFeatured: true,
     );
 
-    final managerCard = _buildTeamCard(
-      name: "Umesh Baraiya",
-      designation: "Manager",
-      tagline: "Client Relations",
-      initials: "UB",
-      accentColor: AboutTheme.accentCyan,
-      isFeatured: true,
-    );
-
-    final subManagerCard = _buildTeamCard(
-      name: "Vaibhavsinh Jadeja",
-      designation: "Sub Manager",
-      tagline: "Operations",
-      initials: "VJ",
-      accentColor: AboutTheme.accentGoldSoft,
-      isFeatured: true,
-    );
-
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 65, horizontal: 20),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -2434,23 +2416,33 @@ class _TeamSectionState extends State<TeamSection>
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10.5),
             decoration: BoxDecoration(
               color: AboutTheme.accentGold.withOpacity(0.15),
               borderRadius: BorderRadius.circular(30),
               border:
               Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
             ),
-            child: Text("MEET OUR LEADERSHIP",
-                style: GoogleFonts.playfairDisplay(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AboutTheme.accentGold,
-                    letterSpacing: 2.0)),
+            child: Column(
+              children: [
+                Text("Chapter 04",
+                    style: GoogleFonts.playfairDisplay(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AboutTheme.accentGold,
+                        letterSpacing: 2.0)), SizedBox(height: 8.5),
+                Text("Founder's History",
+                    style: GoogleFonts.playfairDisplay(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 2.0))
+              ],
+            ),
           ),
           const SizedBox(height: 14),
           Text(
-            "The Minds Behind the Agency",
+            "Meet to Our Founder",
             style: GoogleFonts.alegreyaSc(
               fontSize: widget.isDesktop ? 34 : 26,
               fontWeight: FontWeight.bold,
@@ -2473,23 +2465,6 @@ class _TeamSectionState extends State<TeamSection>
                             opacity: _fadeAnimation, child: founderCard),
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: SlideTransition(
-                        position: _topToBottomAnimation,
-                        child: FadeTransition(
-                            opacity: _fadeAnimation, child: managerCard),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: SlideTransition(
-                        position: _rightToLeftAnimation,
-                        child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: subManagerCard),
-                      ),
-                    ),
                   ],
                 ),
               )
@@ -2501,17 +2476,7 @@ class _TeamSectionState extends State<TeamSection>
                         opacity: _fadeAnimation, child: founderCard),
                   ),
                   const SizedBox(height: 20),
-                  SlideTransition(
-                    position: _topToBottomAnimation,
-                    child: FadeTransition(
-                        opacity: _fadeAnimation, child: managerCard),
-                  ),
-                  const SizedBox(height: 20),
-                  SlideTransition(
-                    position: _rightToLeftAnimation,
-                    child: FadeTransition(
-                        opacity: _fadeAnimation, child: subManagerCard),
-                  ),
+
                 ],
               ),
             ),
