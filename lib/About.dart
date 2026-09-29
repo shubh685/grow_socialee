@@ -398,7 +398,7 @@ class _AboutState extends State<About> {
               ),
               child: ClipOval(
                 child: Image.asset(
-                  "assets/photos/img.png",
+                  "assets/photos/logo.png",
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.broken_image,

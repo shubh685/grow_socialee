@@ -786,7 +786,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
               child: ClipOval(
                 child: Image.asset(
-                  "assets/photos/img.png",
+                  "assets/photos/logo.png",
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.broken_image,
