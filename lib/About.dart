@@ -2207,6 +2207,7 @@ class _ValuesSectionState extends State<ValuesSection>
   }) {
     return Container(
       width: double.infinity,
+      height: widget.isDesktop ? double.infinity : null, // Ensures equal heights across cards on desktop without breaking mobile viewports
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -2228,7 +2229,7 @@ class _ValuesSectionState extends State<ValuesSection>
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           // Ribbon header
           Container(
@@ -2296,14 +2297,10 @@ class _ValuesSectionState extends State<ValuesSection>
               ],
             ),
           ),
-          // Content — Flexible loose so it fills remaining space without
-          // forcing unbounded constraints inside IntrinsicHeight.
-          Flexible(
-            fit: FlexFit.loose,
-            child: Padding(
-              padding: const EdgeInsets.all(22),
-              child: content,
-            ),
+          // Content Area
+          Padding(
+            padding: const EdgeInsets.all(22),
+            child: content,
           ),
         ],
       ),
@@ -2440,7 +2437,7 @@ class _TeamSectionState extends State<TeamSection>
           ),
           const SizedBox(height: 14),
           Text(
-            "The Experts Driving Our Vision",
+            "Get to Know Our Digital Team",
             textAlign: TextAlign.center,
             style: GoogleFonts.alegreyaSc(
               fontSize: widget.isDesktop ? 34 : 26,
