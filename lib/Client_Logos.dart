@@ -922,7 +922,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
   // FILTER CHIPS (visual only)
   // ============================================================
   Widget _buildFilterChips(bool isDesktop) {
-    final chips = ["ALL BRANDS", "FEATURED", "PARTNERS"];
+    final chips = ["ALL BRANDS", "FEATURED", "CLIENTS"];
 
     return Container(
       width: double.infinity,
@@ -1096,7 +1096,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                   ],
                 ).createShader(bounds),
                 child: Text(
-                  "Ready to Join Them?",
+                  "Ready to Join US?",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.alegreyaSc(
                     fontSize: isDesktop ? 36 : 26,

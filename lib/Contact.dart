@@ -50,12 +50,11 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
   double _scrollOffset = 0;
   final List<String> _servicesList = [
-    "Social Media Strategy Development",
-    "Content Creation",
-    "Social Media Account Management",
-    "Social Media Advertising",
-    "Analytics and Reporting",
-    "Reputation Management",
+    "Social Media Marketing",
+    "Search Engine Optimization",
+    "P.P.C (Google Ads)",
+    "Website Development",
+    "Branding"
   ];
 
   bool _isSubmitting = false;
