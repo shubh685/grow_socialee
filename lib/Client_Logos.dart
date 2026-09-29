@@ -1221,7 +1221,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               ),
             ),
             child: Text(
-              "TRUSTED PARTNERSHIPS",
+              "TRUSTED CLIENTS",
               style: GoogleFonts.playfairDisplay(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
