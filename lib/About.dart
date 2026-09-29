@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grow_socialee/Client_Logos.dart';
 import 'package:grow_socialee/Services.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Reviews.dart';
 import 'contact.dart';
@@ -14,24 +16,20 @@ import 'home_page.dart';
 // ABOUT PAGE — THEME (matches HomePage royal blue + gold)
 // ============================================================
 class AboutTheme {
-  // Backgrounds (identical to HomePage)
   static const Color royalBlue = Color(0xFF0A1F44);
   static const Color royalBlueMid = Color(0xFF0F2A5C);
   static const Color darkBg = Color(0xFF0A1F44);
   static const Color darkCardBg = Color(0xFF0D2551);
   static const Color glassCard = Color(0xFF13315C);
 
-  // Gold accents (identical to HomePage)
   static const Color accentGold = Color(0xFFF5C842);
   static const Color accentGoldDeep = Color(0xFFD4A017);
   static const Color accentGoldSoft = Color(0xFFFFE08A);
 
-  // Cyan accents
   static const Color accentCyan = Color(0xFF4FC3F7);
   static const Color accentCyanGlow = Color(0xFF29B6F6);
   static const Color brandBlue = Color(0xFF1E88E5);
 
-  // Text colors
   static const Color accentWhite = Colors.white;
   static const Color textMuted = Color(0xFFB8D4F0);
   static const Color textSoft = Color(0xFFD6E6FA);
@@ -47,6 +45,7 @@ class About extends StatefulWidget {
 class _AboutState extends State<About> {
   int _selectedIndex = 1;
   double _scrollOffset = 0;
+
   final GlobalKey<_ValuesSectionState> _valuesKey =
   GlobalKey<_ValuesSectionState>();
   final GlobalKey<_TeamSectionState> _teamKey = GlobalKey<_TeamSectionState>();
@@ -109,8 +108,9 @@ class _AboutState extends State<About> {
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
+          // Values section uses its own visibility check
           _valuesKey.currentState?.checkVisibility();
-          _teamKey.currentState?.checkVisibility();
+          // Team section uses VisibilityDetector (no manual call needed)
           return false;
         },
         child: CustomScrollView(
@@ -150,7 +150,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // APP BAR — IDENTICAL NAVIGATION BAR TO HOME_PAGE.DART
+  // APP BAR
   // ============================================================
   PreferredSizeWidget _buildAppBar(double screenWidth, bool isDesktop) {
     final bool isScrolled = _scrollOffset > 30;
@@ -193,14 +193,12 @@ class _AboutState extends State<About> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // 1. Wrapped in Flexible to prevent logo text overflow on resize
                   Flexible(
                     flex: 3,
                     child: _buildLogoHeader(),
                   ),
                   const SizedBox(width: 8),
                   if (isDesktop)
-                  // 2. Wrapped in Flexible and SingleChildScrollView to prevent button overflow
                     Flexible(
                       flex: 7,
                       child: SingleChildScrollView(
@@ -227,7 +225,8 @@ class _AboutState extends State<About> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const ClientLogoPage()),
+                                    builder: (context) =>
+                                    const ClientLogoPage()),
                               );
                             }),
                             _buildNavButton("SERVICES", 3, () {
@@ -258,7 +257,8 @@ class _AboutState extends State<About> {
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: HomePage.accentGold.withOpacity(0.3),
+                                      color: HomePage.accentGold
+                                          .withOpacity(0.3),
                                       blurRadius: 10,
                                     ),
                                   ],
@@ -277,7 +277,8 @@ class _AboutState extends State<About> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Contact()),
+                                          builder: (context) =>
+                                          const Contact()),
                                     );
                                   },
                                   child: Text(
@@ -351,7 +352,8 @@ class _AboutState extends State<About> {
               style: GoogleFonts.alegreyaSc(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                color: isSelected ? AboutTheme.accentGold : AboutTheme.textSoft,
+                color:
+                isSelected ? AboutTheme.accentGold : AboutTheme.textSoft,
                 letterSpacing: 1.0,
               ),
             ),
@@ -378,7 +380,8 @@ class _AboutState extends State<About> {
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const HomePage())),
             child: Container(
               height: 50,
               width: 50,
@@ -657,7 +660,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // HERO BANNER — Split layout with numbering + gradient text
+  // HERO BANNER
   // ============================================================
   Widget _buildAGHeroBanner(double screenWidth, bool isDesktop) {
     return Container(
@@ -675,7 +678,6 @@ class _AboutState extends State<About> {
       ),
       child: Stack(
         children: [
-          // Ambient glows
           Positioned(
             top: -80,
             right: -80,
@@ -724,7 +726,6 @@ class _AboutState extends State<About> {
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1150),
-                // Framed Container Wrapper
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -782,7 +783,6 @@ class _AboutState extends State<About> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Pill badge
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
@@ -812,7 +812,6 @@ class _AboutState extends State<About> {
           ),
         ),
         const SizedBox(height: 22),
-        // "Crafting Digital" — small
         Text(
           "Crafting Digital",
           style: GoogleFonts.alegreyaSc(
@@ -823,7 +822,6 @@ class _AboutState extends State<About> {
             letterSpacing: -0.5,
           ),
         ),
-        // "Legacies" — gradient huge
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
             colors: [
@@ -982,7 +980,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // PHILOSOPHY STRIP — Horizontal band of 4 mini values
+  // PHILOSOPHY STRIP
   // ============================================================
   Widget _buildPhilosophyStrip(bool isDesktop) {
     final items = [
@@ -1042,7 +1040,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // ABOUT SPLIT SECTION — Overlapping image + tilt effect
+  // ABOUT SPLIT SECTION
   // ============================================================
   Widget _buildAboutSplitSection(double screenWidth, bool isDesktop) {
     return Container(
@@ -1092,7 +1090,6 @@ class _AboutState extends State<About> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Back tilted frame
             Positioned(
               top: 30,
               left: 0,
@@ -1119,7 +1116,6 @@ class _AboutState extends State<About> {
                 ),
               ),
             ),
-            // Front main image
             Positioned(
               top: 0,
               right: 0,
@@ -1162,7 +1158,6 @@ class _AboutState extends State<About> {
                 ),
               ),
             ),
-            // Floating year badge
             Positioned(
               bottom: 20,
               left: 10,
@@ -1222,7 +1217,6 @@ class _AboutState extends State<About> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Chapter marker
         Row(
           children: [
             Container(
@@ -1243,7 +1237,6 @@ class _AboutState extends State<About> {
           ],
         ),
         const SizedBox(height: 14),
-        // Big heading
         Text(
           "Innovating Digital",
           style: GoogleFonts.alegreyaSc(
@@ -1272,7 +1265,6 @@ class _AboutState extends State<About> {
           ),
         ),
         const SizedBox(height: 22),
-        // First paragraph with left accent bar
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1329,7 +1321,6 @@ class _AboutState extends State<About> {
           ),
         ),
         const SizedBox(height: 26),
-        // CTA
         _buildGoldGradientButton(
           icon: Icons.arrow_forward_rounded,
           label: "WORK WITH US",
@@ -1394,7 +1385,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // ORNAMENT DIVIDER — Gold diamond between sections
+  // ORNAMENT DIVIDER
   // ============================================================
   Widget _buildOrnamentDivider() {
     return Container(
@@ -1459,7 +1450,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // CAPABILITIES — Horizontal cards with vertical accent bars
+  // CAPABILITIES SECTION
   // ============================================================
   Widget _buildCapabilitiesSection(bool isDesktop) {
     final capabilities = [
@@ -1517,9 +1508,9 @@ class _AboutState extends State<About> {
           constraints: const BoxConstraints(maxWidth: 1150),
           child: Column(
             children: [
-              // Section header
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   color: AboutTheme.accentGold.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(30),
@@ -1547,8 +1538,6 @@ class _AboutState extends State<About> {
                 ),
               ),
               const SizedBox(height: 40),
-
-              // Capability cards
               LayoutBuilder(
                 builder: (context, constraints) {
                   return Wrap(
@@ -1600,7 +1589,6 @@ class _AboutState extends State<About> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Vertical accent bar + number
           Column(
             children: [
               Container(
@@ -1628,7 +1616,6 @@ class _AboutState extends State<About> {
             ],
           ),
           const SizedBox(width: 16),
-          // Icon
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -1644,7 +1631,6 @@ class _AboutState extends State<About> {
             child: Icon(cap["icon"] as IconData, color: color, size: 24),
           ),
           const SizedBox(width: 16),
-          // Text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1676,7 +1662,7 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // FOOTER — IDENTICAL DESIGN TO HOME_PAGE.DART
+  // FOOTER
   // ============================================================
   Widget _buildFooter(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -1710,11 +1696,14 @@ class _AboutState extends State<About> {
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(flex: 2, child: _buildFooterBrandSection()),
+                    Expanded(
+                        flex: 2, child: _buildFooterBrandSection()),
                     const SizedBox(width: 40),
-                    Expanded(flex: 2, child: _buildFooterContactSection()),
+                    Expanded(
+                        flex: 2, child: _buildFooterContactSection()),
                     const SizedBox(width: 40),
-                    Expanded(flex: 1, child: _buildFooterSocialSection()),
+                    Expanded(
+                        flex: 1, child: _buildFooterSocialSection()),
                   ],
                 )
                     : Column(
@@ -1824,9 +1813,9 @@ class _AboutState extends State<About> {
                 maxLines: isMultiLine ? 3 : 1,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
+                  color: AboutTheme.accentWhite,
                   height: 1.4,
-                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -1979,6 +1968,7 @@ class _ValuesSectionState extends State<ValuesSection>
 
   void checkVisibility() {
     if (_hasAnimated) return;
+    if (!mounted) return;
 
     final RenderObject? renderObject = context.findRenderObject();
     if (renderObject is RenderBox && renderObject.hasSize) {
@@ -2032,6 +2022,7 @@ class _ValuesSectionState extends State<ValuesSection>
       accentColor: AboutTheme.accentGoldSoft,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           _buildPillarPoint(
               "01", "Clarity First",
@@ -2088,10 +2079,11 @@ class _ValuesSectionState extends State<ValuesSection>
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
           Center(
-            child: Container(
+            child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1150),
               child: widget.isDesktop
                   ? IntrinsicHeight(
@@ -2102,7 +2094,8 @@ class _ValuesSectionState extends State<ValuesSection>
                       child: SlideTransition(
                         position: _leftToRightAnimation,
                         child: FadeTransition(
-                            opacity: _fadeAnimation, child: missionCard),
+                            opacity: _fadeAnimation,
+                            child: missionCard),
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -2110,7 +2103,8 @@ class _ValuesSectionState extends State<ValuesSection>
                       child: SlideTransition(
                         position: _topToBottomAnimation,
                         child: FadeTransition(
-                            opacity: _fadeAnimation, child: visionCard),
+                            opacity: _fadeAnimation,
+                            child: visionCard),
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -2118,7 +2112,8 @@ class _ValuesSectionState extends State<ValuesSection>
                       child: SlideTransition(
                         position: _rightToLeftAnimation,
                         child: FadeTransition(
-                            opacity: _fadeAnimation, child: pillarsCard),
+                            opacity: _fadeAnimation,
+                            child: pillarsCard),
                       ),
                     ),
                   ],
@@ -2235,7 +2230,7 @@ class _ValuesSectionState extends State<ValuesSection>
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Ribbon header with number + icon
+          // Ribbon header
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
             decoration: BoxDecoration(
@@ -2266,8 +2261,7 @@ class _ValuesSectionState extends State<ValuesSection>
                       ],
                     ),
                     borderRadius: BorderRadius.circular(10),
-                    border:
-                    Border.all(color: accentColor.withOpacity(0.55)),
+                    border: Border.all(color: accentColor.withOpacity(0.55)),
                   ),
                   child: Icon(icon, color: accentColor, size: 22),
                 ),
@@ -2275,6 +2269,7 @@ class _ValuesSectionState extends State<ValuesSection>
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         "CHAPTER $number",
@@ -2301,10 +2296,14 @@ class _ValuesSectionState extends State<ValuesSection>
               ],
             ),
           ),
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(22),
-            child: content,
+          // Content — Flexible loose so it fills remaining space without
+          // forcing unbounded constraints inside IntrinsicHeight.
+          Flexible(
+            fit: FlexFit.loose,
+            child: Padding(
+              padding: const EdgeInsets.all(22),
+              child: content,
+            ),
           ),
         ],
       ),
@@ -2313,7 +2312,7 @@ class _ValuesSectionState extends State<ValuesSection>
 }
 
 // ============================================================
-// TEAM SECTION — Horizontal profile cards with avatar rings
+// TEAM SECTION
 // ============================================================
 class TeamSection extends StatefulWidget {
   final bool isDesktop;
@@ -2327,61 +2326,31 @@ class TeamSection extends StatefulWidget {
 class _TeamSectionState extends State<TeamSection>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
-  late Animation<Offset> _leftToRightAnimation;
-  late Animation<Offset> _topToBottomAnimation;
-  late Animation<Offset> _rightToLeftAnimation;
-  late Animation<double> _fadeAnimation;
-
   bool _hasAnimated = false;
+
+  final List<Map<String, String>> _teamMembers = [
+    {"name": "Shaily Shah", "designation": "Founder", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Umesh", "designation": "Manager", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/foldername/ph2.jpg"},
+    {"name": "Ankita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph3.jpg"},
+    {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/foldername/ph2.jpg"},
+    {"name": "Om", "designation": "Video Editor", "photo": "assets/foldername/ph3.jpg"},
+    {"name": "Dharmik", "designation": "Video Editor", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Harshdeep", "designation": "Video Editor", "photo": "assets/foldername/ph2.jpg"},
+    {"name": "Kashish", "designation": "Social Media Executive", "photo": "assets/foldername/ph3.jpg"},
+    {"name": "Hitanshi", "designation": "Data Scraper", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Chirag", "designation": "SEO Executive", "photo": "assets/foldername/ph2.jpg"},
+    {"name": "Shubham", "designation": "Web Developer", "photo": "assets/team_photos/shubham.png"},
+  ];
 
   @override
   void initState() {
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1600),
     );
-
-    _leftToRightAnimation = Tween<Offset>(
-      begin: const Offset(-0.3, 0.0),
-      end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
-
-    _topToBottomAnimation = Tween<Offset>(
-      begin: const Offset(0.0, -0.3),
-      end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
-
-    _rightToLeftAnimation = Tween<Offset>(
-      begin: const Offset(0.3, 0.0),
-      end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic));
-
-    _fadeAnimation =
-        CurvedAnimation(parent: _animController, curve: Curves.easeIn);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkVisibility();
-    });
-  }
-
-  void checkVisibility() {
-    if (_hasAnimated) return;
-
-    final RenderObject? renderObject = context.findRenderObject();
-    if (renderObject is RenderBox && renderObject.hasSize) {
-      final position = renderObject.localToGlobal(Offset.zero);
-      final screenHeight = MediaQuery.of(context).size.height;
-
-      if (position.dy < screenHeight - 100 &&
-          (position.dy + renderObject.size.height) > 0) {
-        _hasAnimated = true;
-        _animController.forward();
-      }
-    }
   }
 
   @override
@@ -2390,17 +2359,42 @@ class _TeamSectionState extends State<TeamSection>
     super.dispose();
   }
 
+  /// Row-based top-to-bottom animation.
+  /// Row 0 (first 5)  → starts at 0.00
+  /// Row 1 (next 5)   → starts at 0.25
+  /// Row 2 (last 3)   → starts at 0.50
+  Animation<Offset> _slideFor(int index) {
+    final int columns = widget.isDesktop ? 5 : 2;
+    final int row = index ~/ columns;
+    // Each row's animation starts later than the previous one.
+    final double start = (row * 0.25).clamp(0.0, 0.7);
+    final double end = (start + 0.5).clamp(0.0, 1.0);
+
+    return Tween<Offset>(
+      begin: const Offset(0.0, -0.5), // from above
+      end: Offset.zero,               // to natural position
+    ).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: Interval(start, end, curve: Curves.easeOutCubic),
+      ),
+    );
+  }
+
+  Animation<double> _fadeFor(int index) {
+    final int columns = widget.isDesktop ? 5 : 2;
+    final int row = index ~/ columns;
+    final double start = (row * 0.25).clamp(0.0, 0.7);
+    final double end = (start + 0.5).clamp(0.0, 1.0);
+
+    return CurvedAnimation(
+      parent: _animController,
+      curve: Interval(start, end, curve: Curves.easeIn),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final founderCard = _buildTeamCard(
-      name: "Shaily Shah",
-      designation: "Founder",
-      tagline: "Vision & Direction",
-      initials: "SS",
-      accentColor: AboutTheme.accentGold,
-      isFeatured: true,
-    );
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 65, horizontal: 20),
       decoration: const BoxDecoration(
@@ -2420,29 +2414,34 @@ class _TeamSectionState extends State<TeamSection>
             decoration: BoxDecoration(
               color: AboutTheme.accentGold.withOpacity(0.15),
               borderRadius: BorderRadius.circular(30),
-              border:
-              Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
+              border: Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
             ),
             child: Column(
               children: [
-                Text("Chapter 04",
-                    style: GoogleFonts.playfairDisplay(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: AboutTheme.accentGold,
-                        letterSpacing: 2.0)), SizedBox(height: 8.5),
-                Text("Founder's History",
-                    style: GoogleFonts.playfairDisplay(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 2.0))
+                Text(
+                  "CHAPTER 04",
+                  style: GoogleFonts.playfairDisplay(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: AboutTheme.accentGold,
+                      letterSpacing: 2.0),
+                ),
+                const SizedBox(height: 8.5),
+                Text(
+                  "OUR DEDICATED TEAM",
+                  style: GoogleFonts.playfairDisplay(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 2.0),
+                ),
               ],
             ),
           ),
           const SizedBox(height: 14),
           Text(
-            "Meet to Our Founder",
+            "The Experts Driving Our Vision",
+            textAlign: TextAlign.center,
             style: GoogleFonts.alegreyaSc(
               fontSize: widget.isDesktop ? 34 : 26,
               fontWeight: FontWeight.bold,
@@ -2451,33 +2450,43 @@ class _TeamSectionState extends State<TeamSection>
           ),
           const SizedBox(height: 40),
           Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 1150),
-              child: widget.isDesktop
-                  ? IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: SlideTransition(
-                        position: _leftToRightAnimation,
-                        child: FadeTransition(
-                            opacity: _fadeAnimation, child: founderCard),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-                  : Column(
-                children: [
-                  SlideTransition(
-                    position: _leftToRightAnimation,
-                    child: FadeTransition(
-                        opacity: _fadeAnimation, child: founderCard),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              child: VisibilityDetector(
+                key: const Key('team-section-visibility'),
+                onVisibilityChanged: (info) {
+                  if (!_hasAnimated && info.visibleFraction > 0.15) {
+                    _hasAnimated = true;
+                    _animController.forward();
+                  }
+                },
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemCount: _teamMembers.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: widget.isDesktop ? 5 : 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: widget.isDesktop ? 0.92 : 0.68,
                   ),
-                  const SizedBox(height: 20),
-
-                ],
+                  itemBuilder: (context, index) {
+                    final member = _teamMembers[index];
+                    return SlideTransition(
+                      position: _slideFor(index),
+                      child: FadeTransition(
+                        opacity: _fadeFor(index),
+                        child: _buildTeamCard(
+                          name: member["name"]!,
+                          designation: member["designation"]!,
+                          assetPath: member["photo"]!,
+                          accentColor: AboutTheme.accentGold,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -2489,10 +2498,8 @@ class _TeamSectionState extends State<TeamSection>
   Widget _buildTeamCard({
     required String name,
     required String designation,
-    required String tagline,
-    required String initials,
+    required String assetPath,
     required Color accentColor,
-    required bool isFeatured,
   }) {
     return Container(
       width: double.infinity,
@@ -2515,142 +2522,112 @@ class _TeamSectionState extends State<TeamSection>
           ),
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Top ribbon bar (dynamically shows designation)
-          if (isFeatured)
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AboutTheme.accentGoldSoft,
-                    AboutTheme.accentGold,
-                    AboutTheme.accentGoldDeep,
-                  ],
-                ),
-                borderRadius:
-                BorderRadius.vertical(top: Radius.circular(15)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.workspace_premium_rounded,
-                    size: 12,
-                    color: Color(0xFF1A1200),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    designation.toUpperCase(),
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A1200),
-                      letterSpacing: 2,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          else
-            const SizedBox(height: 24),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-                24, isFeatured ? 20 : 0, 24, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final double cardWidth = constraints.maxWidth;
+            final double circleSize = cardWidth * 0.62;
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Avatar with ring
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        accentColor.withOpacity(0.60),
-                        accentColor.withOpacity(0.15),
-                      ],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: accentColor.withOpacity(0.35),
-                        blurRadius: 18,
-                        spreadRadius: 2,
+                // ===== FIXED-HEIGHT PHOTO AREA =====
+                SizedBox(
+                  height: circleSize,
+                  child: Center(
+                    child: Container(
+                      width: circleSize,
+                      height: circleSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            accentColor.withOpacity(0.60),
+                            accentColor.withOpacity(0.15),
+                          ],
+                        ),
+                        border: Border.all(color: accentColor, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: accentColor.withOpacity(0.35),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: 38,
-                    backgroundColor: AboutTheme.darkCardBg,
-                    child: Text(
-                      initials,
-                      style: GoogleFonts.alegreyaSc(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: accentColor,
-                        letterSpacing: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.5),
+                        child: ClipOval(
+                          child: Image.asset(
+                            assetPath,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                                  color: AboutTheme.royalBlueMid,
+                                  child: const Icon(Icons.person,
+                                      color: Colors.white, size: 30),
+                                ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                // Name
+                const SizedBox(height: 12),
+                // ===== NAME — fixed one line height =====
                 Text(
                   name,
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.alegreyaSc(
-                    fontSize: 19,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: AboutTheme.accentWhite,
-                    height: 1.2,
+                    height: 1.1,
                   ),
                 ),
-                const SizedBox(height: 6),
-                // Designation chip
-                Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(20),
-                    border:
-                    Border.all(color: accentColor.withOpacity(0.55)),
-                  ),
-                  child: Text(
-                    designation.toUpperCase(),
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.bold,
-                      color: accentColor,
-                      letterSpacing: 1.6,
+                const SizedBox(height: 8),
+                // ===== DESIGNATION CHIP — fixed height =====
+                SizedBox(
+                  height: 36,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        designation.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          fontSize: 9.8,
+                          fontWeight: FontWeight.bold,
+                          color: AboutTheme.darkCardBg,
+                          letterSpacing: 1.1,
+                          height: 1.2,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                // Tagline
-                Text(
-                  tagline,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 12,
-                    color: AboutTheme.textMuted,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.3,
-                  ),
-                ),
               ],
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
 }
 
 // ============================================================
-// HOVER SCALE WRAPPER (Desktop hover effect)
+// HOVER SCALE WRAPPER
 // ============================================================
 class _HoverScale extends StatefulWidget {
   final Widget child;
