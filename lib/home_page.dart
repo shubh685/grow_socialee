@@ -2205,7 +2205,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildSectionPill("TRUSTED PARTNERSHIPS"),
+              _buildSectionPill("TRUSTED CLIENTS"),
               const SizedBox(height: 14),
               Text(
                 "The Brands We're Working With",
