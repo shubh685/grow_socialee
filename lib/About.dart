@@ -123,6 +123,53 @@ class _AboutState extends State<About> {
               child: _buildPhilosophyStrip(isDesktop),
             ),
             SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AboutTheme.accentGold.withOpacity(0.1),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 1.5,
+                          color: AboutTheme.darkBg,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "FOUNDER'S HISTORY",
+                          style: GoogleFonts.poppins(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.bold,
+                            color: AboutTheme.darkCardBg,
+                            letterSpacing: 2.5,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Container(
+                          width: 24,
+                          height: 1.5,
+                          color: AboutTheme.darkBg,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
               child: _buildAboutSplitSection(screenWidth, isDesktop),
             ),
             SliverToBoxAdapter(
@@ -1055,7 +1102,7 @@ class _AboutState extends State<About> {
         ),
       ),
       padding: EdgeInsets.symmetric(
-        vertical: 70,
+        vertical: 15,
         horizontal: isDesktop ? 60 : 20,
       ),
       child: Center(
@@ -1158,54 +1205,61 @@ class _AboutState extends State<About> {
                 ),
               ),
             ),
-            Positioned(
-              bottom: 20,
-              left: 10,
-              child: Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      AboutTheme.accentGoldSoft,
-                      AboutTheme.accentGold,
-                      AboutTheme.accentGoldDeep,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AboutTheme.accentGold.withOpacity(0.40),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
+          Positioned(
+            bottom: 20,
+            left: 10,
+            child: Container(
+              padding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    AboutTheme.accentGoldSoft,
+                    AboutTheme.accentGold,
+                    AboutTheme.accentGoldDeep,
                   ],
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "EST.",
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF1A1200),
-                        letterSpacing: 2,
-                      ),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: AboutTheme.accentGold.withOpacity(0.40),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Shaily Shah",
+                    style:  GoogleFonts.alegreyaSc(
+                      fontSize: 16.8,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF1A1200),
+                      letterSpacing: 2,
                     ),
-                    Text(
-                      "Bhavnagar",
-                      style: GoogleFonts.alegreyaSc(
-                        fontSize: 15,
+                  ),
+                  Container(
+                    padding : EdgeInsets.only(left : 8.5, right : 6.5, top : 5.5, bottom : 6.2),
+                    decoration : BoxDecoration (
+                        color : AboutTheme.darkCardBg,
+                        borderRadius : BorderRadius.circular(0)
+                    ),
+                    child: Text(
+                      "Founder",
+                      style: GoogleFonts.poppins(
+                        fontSize: 13.8,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF1A1200),
+                        color: Colors.white,
                         height: 1.1,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ]
               ),
             ),
+           ),
           ],
         ),
       ),
@@ -1217,35 +1271,8 @@ class _AboutState extends State<About> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 30,
-              height: 1.5,
-              color: AboutTheme.accentGold,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              "ABOUT GROW SOCIALEE",
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AboutTheme.accentGold,
-                letterSpacing: 2.5,
-              ),
-            ),
-          ],
-        ),
         const SizedBox(height: 14),
-        Text(
-          "Innovating Digital",
-          style: GoogleFonts.alegreyaSc(
-            fontSize: 34,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            height: 1.15,
-          ),
-        ),
+        Text("Shaily Shah", style: GoogleFonts.alegreyaSc(fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white, height: 1.15)),
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
             colors: [
@@ -1255,7 +1282,7 @@ class _AboutState extends State<About> {
             ],
           ).createShader(bounds),
           child: Text(
-            "Excellence in Bhavnagar",
+            "Founder of Grow Socialee",
             style: GoogleFonts.alegreyaSc(
               fontSize: 34,
               fontWeight: FontWeight.bold,
@@ -2337,7 +2364,7 @@ class _TeamSectionState extends State<TeamSection>
   final List<Map<String, String>> _teamMembers = [
     {"name": "Shaily Shah", "designation": "Founder", "photo": "assets/foldername/ph1.jpg"},
     {"name": "Umesh", "designation": "Manager", "photo": "assets/foldername/ph1.jpg"},
-    {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/foldername/ph2.jpg"},
+    {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/team_photos/vaibhav.png"},
     {"name": "Ankita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph3.jpg"},
     {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/team_photos/dhruvita.png"},
     {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/foldername/ph1.jpg"},
@@ -2461,7 +2488,7 @@ class _TeamSectionState extends State<TeamSection>
                     crossAxisCount: widget.isDesktop ? 5 : 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
-                    childAspectRatio: widget.isDesktop ? 0.92 : 0.68,
+                    childAspectRatio: widget.isDesktop ? 0.99 : 0.68,
                   ),
                   itemBuilder: (context, index) {
                     final member = _teamMembers[index];
@@ -2519,7 +2546,7 @@ class _TeamSectionState extends State<TeamSection>
         child: LayoutBuilder(
           builder: (context, constraints) {
             final double cardWidth = constraints.maxWidth;
-            final double circleSize = cardWidth * 0.62;
+            final double circleSize = cardWidth * 0.58;
 
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -2541,11 +2568,7 @@ class _TeamSectionState extends State<TeamSection>
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => Container(
                             color: AboutTheme.royalBlueMid,
-                            child: const Icon(
-                              Icons.person,
-                              color: Colors.white,
-                              size: 30,
-                            ),
+                            child: const Icon(Icons.person, color: Colors.white, size: 30),
                           ),
                         ),
                       ),
