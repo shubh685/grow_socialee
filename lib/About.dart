@@ -2205,9 +2205,94 @@ class _ValuesSectionState extends State<ValuesSection>
     required Widget content,
     required Color accentColor,
   }) {
+    final cardChild = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: widget.isDesktop ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        // Ribbon header
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                accentColor.withOpacity(0.18),
+                accentColor.withOpacity(0.04),
+              ],
+            ),
+            borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(15)),
+            border: Border(
+              bottom: BorderSide(
+                color: accentColor.withOpacity(0.35),
+                width: 1,
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      accentColor.withOpacity(0.30),
+                      accentColor.withOpacity(0.10),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: accentColor.withOpacity(0.55)),
+                ),
+                child: Icon(icon, color: accentColor, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "CHAPTER $number",
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                        color: accentColor,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      title,
+                      style: GoogleFonts.alegreyaSc(
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold,
+                        color: AboutTheme.accentWhite,
+                        height: 1.15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Content Area - safely conditioned for desktop vs mobile
+        widget.isDesktop
+            ? Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(22),
+            child: content,
+          ),
+        )
+            : Padding(
+          padding: const EdgeInsets.all(22),
+          child: content,
+        ),
+      ],
+    );
+
     return Container(
       width: double.infinity,
-      height: widget.isDesktop ? double.infinity : null, // Ensures equal heights across cards on desktop without breaking mobile viewports
+      height: widget.isDesktop ? double.infinity : null,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -2227,83 +2312,7 @@ class _ValuesSectionState extends State<ValuesSection>
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          // Ribbon header
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  accentColor.withOpacity(0.18),
-                  accentColor.withOpacity(0.04),
-                ],
-              ),
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(15)),
-              border: Border(
-                bottom: BorderSide(
-                  color: accentColor.withOpacity(0.35),
-                  width: 1,
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        accentColor.withOpacity(0.30),
-                        accentColor.withOpacity(0.10),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: accentColor.withOpacity(0.55)),
-                  ),
-                  child: Icon(icon, color: accentColor, size: 22),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "CHAPTER $number",
-                        style: GoogleFonts.playfairDisplay(
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w800,
-                          color: accentColor,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        title,
-                        style: GoogleFonts.alegreyaSc(
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold,
-                          color: AboutTheme.accentWhite,
-                          height: 1.15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Content Area
-          Padding(
-            padding: const EdgeInsets.all(22),
-            child: content,
-          ),
-        ],
-      ),
+      child: cardChild,
     );
   }
 }
@@ -2330,13 +2339,13 @@ class _TeamSectionState extends State<TeamSection>
     {"name": "Umesh", "designation": "Manager", "photo": "assets/foldername/ph1.jpg"},
     {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/foldername/ph2.jpg"},
     {"name": "Ankita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph3.jpg"},
-    {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph1.jpg"},
-    {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/foldername/ph2.jpg"},
-    {"name": "Om", "designation": "Video Editor", "photo": "assets/foldername/ph3.jpg"},
-    {"name": "Dharmik", "designation": "Video Editor", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/team_photos/dhruvita.png"},
+    {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Om", "designation": "Video Editor", "photo": "assets/team_photos/om.png"},
+    {"name": "Dharmik", "designation": "Video Editor", "photo": "assets/team_photos/dharmik.png"},
     {"name": "Harshdeep", "designation": "Video Editor", "photo": "assets/foldername/ph2.jpg"},
     {"name": "Kashish", "designation": "Social Media Executive", "photo": "assets/foldername/ph3.jpg"},
-    {"name": "Hitanshi", "designation": "Data Scraper", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Hitanshi", "designation": "Data Scraper", "photo": "assets/team_photos/hitanshi.png"},
     {"name": "Chirag", "designation": "SEO Executive", "photo": "assets/foldername/ph2.jpg"},
     {"name": "Shubham", "designation": "Web Developer", "photo": "assets/team_photos/shubham.png"},
   ];
@@ -2415,23 +2424,9 @@ class _TeamSectionState extends State<TeamSection>
             ),
             child: Column(
               children: [
-                Text(
-                  "CHAPTER 04",
-                  style: GoogleFonts.playfairDisplay(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: AboutTheme.accentGold,
-                      letterSpacing: 2.0),
-                ),
+                Text("CHAPTER 04", style: GoogleFonts.playfairDisplay(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
                 const SizedBox(height: 8.5),
-                Text(
-                  "OUR DEDICATED TEAM",
-                  style: GoogleFonts.playfairDisplay(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 2.0),
-                ),
+                Text("OUR DEDICATED TEAM", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               ],
             ),
           ),
@@ -2537,35 +2532,20 @@ class _TeamSectionState extends State<TeamSection>
                     child: Container(
                       width: circleSize,
                       height: circleSize,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            accentColor.withOpacity(0.60),
-                            accentColor.withOpacity(0.15),
-                          ],
-                        ),
-                        border: Border.all(color: accentColor, width: 2),
-                        boxShadow: [
-                          BoxShadow(
-                            color: accentColor.withOpacity(0.35),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.5),
-                        child: ClipOval(
-                          child: Image.asset(
-                            assetPath,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                                  color: AboutTheme.royalBlueMid,
-                                  child: const Icon(Icons.person,
-                                      color: Colors.white, size: 30),
-                                ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          assetPath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: AboutTheme.royalBlueMid,
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                           ),
                         ),
                       ),
