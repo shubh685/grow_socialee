@@ -158,7 +158,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   ];
 
   final List<Map<String, String>> ourWorkVideos = [
-    {"title": "Brand Campaign 1", "path": "assets/videos/video_2.mp4"},
+    {"title": "Brand Campaign 1", "path": "assets/videos/video.mp4"},
+    {"title": "Brand Campaign 2", "path": "assets/videos/video_2.mp4"},
     {"title": "Social Media Showcase", "path": "assets/videos/video_3.mp4"},
     {"title": "Client Reel 1", "path": "assets/videos/video_4.mp4"},
     {"title": "Promotional Short 1", "path": "assets/videos/video_5.mp4"},
