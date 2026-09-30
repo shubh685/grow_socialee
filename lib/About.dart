@@ -170,7 +170,7 @@ class _AboutState extends State<About> {
               ),
             ),
             SliverToBoxAdapter(
-              child: _buildAboutSplitSection(screenWidth, isDesktop),
+              child: _AboutSplitSectionAnimated(screenWidth: screenWidth, isDesktop: isDesktop),
             ),
             SliverToBoxAdapter(
               child: _buildCapabilitiesSection(isDesktop),
@@ -1087,331 +1087,6 @@ class _AboutState extends State<About> {
   }
 
   // ============================================================
-  // ABOUT SPLIT SECTION
-  // ============================================================
-  Widget _buildAboutSplitSection(double screenWidth, bool isDesktop) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AboutTheme.royalBlue,
-            AboutTheme.royalBlueMid,
-          ],
-        ),
-      ),
-      padding: EdgeInsets.symmetric(
-        vertical: 15,
-        horizontal: isDesktop ? 60 : 20,
-      ),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1150),
-          child: isDesktop
-              ? Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(child: _buildTiltedImageStack()),
-              const SizedBox(width: 60),
-              Expanded(child: _buildAboutDescription()),
-            ],
-          )
-              : Column(
-            children: [
-              _buildTiltedImageStack(),
-              const SizedBox(height: 40),
-              _buildAboutDescription(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTiltedImageStack() {
-    return Center(
-      child: SizedBox(
-        width: 440,
-        height: 460,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              top: 30,
-              left: 0,
-              child: Transform.rotate(
-                angle: -0.06,
-                child: Container(
-                  width: 340,
-                  height: 380,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AboutTheme.accentGold.withOpacity(0.25),
-                        AboutTheme.accentGoldDeep.withOpacity(0.10),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AboutTheme.accentGold.withOpacity(0.5),
-                      width: 1.2,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                width: 340,
-                height: 400,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: AboutTheme.accentGold.withOpacity(0.7),
-                    width: 1.8,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AboutTheme.accentGold.withOpacity(0.25),
-                      blurRadius: 28,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 12),
-                    ),
-                    BoxShadow(
-                      color: AboutTheme.accentCyan.withOpacity(0.20),
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
-                    "assets/photos/image.png",
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: AboutTheme.darkCardBg,
-                      child: const Icon(
-                        Icons.business_rounded,
-                        size: 60,
-                        color: AboutTheme.textMuted,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          Positioned(
-            bottom: 20,
-            left: 10,
-            child: Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    AboutTheme.accentGoldSoft,
-                    AboutTheme.accentGold,
-                    AboutTheme.accentGoldDeep,
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                    color: AboutTheme.accentGold.withOpacity(0.40),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Shaily Shah",
-                    style:  GoogleFonts.alegreyaSc(
-                      fontSize: 16.8,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A1200),
-                      letterSpacing: 2,
-                    ),
-                  ),
-                  Container(
-                    padding : EdgeInsets.only(left : 8.5, right : 6.5, top : 5.5, bottom : 6.2),
-                    decoration : BoxDecoration (
-                        color : AboutTheme.darkCardBg,
-                        borderRadius : BorderRadius.circular(0)
-                    ),
-                    child: Text(
-                      "Founder",
-                      style: GoogleFonts.poppins(
-                        fontSize: 13.8,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
-                ]
-              ),
-            ),
-           ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAboutDescription() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(height: 14),
-        Text("Shaily Shah", style: GoogleFonts.alegreyaSc(fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white, height: 1.15)),
-        ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [
-              AboutTheme.accentGoldSoft,
-              AboutTheme.accentGold,
-              AboutTheme.accentGoldDeep,
-            ],
-          ).createShader(bounds),
-          child: Text(
-            "Founder of Grow Socialee",
-            style: GoogleFonts.alegreyaSc(
-              fontSize: 34,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              height: 1.15,
-            ),
-          ),
-        ),
-        const SizedBox(height: 22),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 3,
-              height: 82,
-              margin: const EdgeInsets.only(top: 4, right: 14),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AboutTheme.accentGold,
-                    AboutTheme.accentCyan,
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                "We are Grow Socialee—a full-suite digital marketing agency based in Bhavnagar committed to scaling small and medium enterprises. Modern market dynamics demand more than an online presence; they require digital dominance.",
-                textAlign: TextAlign.justify,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 15,
-                  color: AboutTheme.textMuted,
-                  height: 1.6,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Text(
-          "From custom social media strategies and video editing production to conversion-focused ad campaigns and brand identity design, our tailored solutions eliminate complexity and generate sustainable revenue growth.",
-          textAlign: TextAlign.justify,
-          style: GoogleFonts.playfairDisplay(
-            fontSize: 15,
-            color: AboutTheme.textMuted,
-            height: 1.6,
-            fontWeight: FontWeight.w300,
-          ),
-        ),
-        const SizedBox(height: 14),
-        Text(
-          "At Grow Socialee, we believe every brand has a unique story waiting to be told. We combine creative thinking, strategic planning, and digital technology to transform ideas into impactful brand experiences that connect with the right audience and build lasting relationships.",
-          textAlign: TextAlign.justify,
-          style: GoogleFonts.playfairDisplay(
-            fontSize: 15,
-            color: AboutTheme.textMuted,
-            height: 1.6,
-            fontWeight: FontWeight.w300,
-          ),
-        ),
-        const SizedBox(height: 26),
-        _buildGoldGradientButton(
-          icon: Icons.arrow_forward_rounded,
-          label: "WORK WITH US",
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Contact()),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGoldGradientButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AboutTheme.accentGoldSoft,
-            AboutTheme.accentGold,
-            AboutTheme.accentGoldDeep,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(50),
-        boxShadow: [
-          BoxShadow(
-            color: AboutTheme.accentGold.withOpacity(0.35),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ElevatedButton.icon(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          foregroundColor: const Color(0xFF1A1200),
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-        ),
-        icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
-        label: Text(
-          label,
-          style: GoogleFonts.playfairDisplay(
-            fontSize: 13,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.0,
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ============================================================
   // ORNAMENT DIVIDER
   // ============================================================
   Widget _buildOrnamentDivider() {
@@ -1897,6 +1572,410 @@ class _AboutState extends State<About> {
       child: IconButton(
         icon: Icon(icon, size: 18, color: AboutTheme.accentGold),
         onPressed: () => _launchUrlString(url),
+      ),
+    );
+  }
+}
+
+// ============================================================
+// ABOUT SPLIT SECTION WITH ANIMATIONS (Congratulations Top-to-Down & Walk Back-to-Front)
+// ============================================================
+class _AboutSplitSectionAnimated extends StatefulWidget {
+  final double screenWidth;
+  final bool isDesktop;
+
+  const _AboutSplitSectionAnimated({
+    required this.screenWidth,
+    required this.isDesktop,
+  });
+
+  @override
+  State<_AboutSplitSectionAnimated> createState() => _AboutSplitSectionAnimatedState();
+}
+
+class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _topDownSlideAnimation;
+  late Animation<double> _walkBackToFrontScaleAnimation;
+  late Animation<double> _fadeInAnimation;
+  bool _hasAnimated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    );
+
+    // 1. Congratulations top-to-down animation translation
+    _topDownSlideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -0.4),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
+    ));
+
+    // 2. Walk from back to front animation (scaling from deep/small to full size)
+    _walkBackToFrontScaleAnimation = Tween<double>(
+      begin: 0.65,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.1, 1.0, curve: Curves.easeOutBack),
+    ));
+
+    _fadeInAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VisibilityDetector(
+      key: const Key('about-split-visibility-key'),
+      onVisibilityChanged: (info) {
+        if (!_hasAnimated && info.visibleFraction > 0.15) {
+          _hasAnimated = true;
+          _controller.forward();
+        }
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AboutTheme.royalBlue,
+              AboutTheme.royalBlueMid,
+            ],
+          ),
+        ),
+        padding: EdgeInsets.symmetric(
+          vertical: 15,
+          horizontal: widget.isDesktop ? 60 : 20,
+        ),
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 1150),
+            child: widget.isDesktop
+                ? Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: _buildTiltedImageStackAnimated()),
+                const SizedBox(width: 60),
+                Expanded(child: _buildAboutDescription()),
+              ],
+            )
+                : Column(
+              children: [
+                _buildTiltedImageStackAnimated(),
+                const SizedBox(height: 40),
+                _buildAboutDescription(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTiltedImageStackAnimated() {
+    return SlideTransition(
+      position: _topDownSlideAnimation,
+      child: FadeTransition(
+        opacity: _fadeInAnimation,
+        child: ScaleTransition(
+          scale: _walkBackToFrontScaleAnimation,
+          child: Center(
+            child: SizedBox(
+              width: 440,
+              height: 460,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned(
+                    top: 30,
+                    left: 0,
+                    child: Transform.rotate(
+                      angle: -0.06,
+                      child: Container(
+                        width: 340,
+                        height: 380,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AboutTheme.accentGold.withOpacity(0.25),
+                              AboutTheme.accentGoldDeep.withOpacity(0.10),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AboutTheme.accentGold.withOpacity(0.5),
+                            width: 1.2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      width: 340,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AboutTheme.accentGold.withOpacity(0.7),
+                          width: 1.8,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.25),
+                            blurRadius: 28,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 12),
+                          ),
+                          BoxShadow(
+                            color: AboutTheme.accentCyan.withOpacity(0.20),
+                            blurRadius: 20,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          "assets/photos/image.png",
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: AboutTheme.darkCardBg,
+                            child: const Icon(
+                              Icons.business_rounded,
+                              size: 60,
+                              color: AboutTheme.textMuted,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    left: 10,
+                    child: Container(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGold,
+                            AboutTheme.accentGoldDeep,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.40),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Shaily Shah",
+                              style: GoogleFonts.alegreyaSc(
+                                fontSize: 16.8,
+                                fontWeight: FontWeight.w800,
+                                color: const Color(0xFF1A1200),
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(left: 8.5, right: 6.5, top: 5.5, bottom: 6.2),
+                              decoration: BoxDecoration(
+                                  color: AboutTheme.darkCardBg,
+                                  borderRadius: BorderRadius.circular(0)
+                              ),
+                              child: Text(
+                                "Founder",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13.8,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ),
+                          ]
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAboutDescription() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 14),
+        Text("Shaily Shah", style: GoogleFonts.alegreyaSc(fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white, height: 1.15)),
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [
+              AboutTheme.accentGoldSoft,
+              AboutTheme.accentGold,
+              AboutTheme.accentGoldDeep,
+            ],
+          ).createShader(bounds),
+          child: Text(
+            "Founder of Grow Socialee",
+            style: GoogleFonts.alegreyaSc(
+              fontSize: 34,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              height: 1.15,
+            ),
+          ),
+        ),
+        const SizedBox(height: 22),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 3,
+              height: 82,
+              margin: const EdgeInsets.only(top: 4, right: 14),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AboutTheme.accentGold,
+                    AboutTheme.accentCyan,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                "We are Grow Socialee—a full-suite digital marketing agency based in Bhavnagar committed to scaling small and medium enterprises. Modern market dynamics demand more than an online presence; they require digital dominance.",
+                textAlign: TextAlign.justify,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 15,
+                  color: AboutTheme.textMuted,
+                  height: 1.6,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "From custom social media strategies and video editing production to conversion-focused ad campaigns and brand identity design, our tailored solutions eliminate complexity and generate sustainable revenue growth.",
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 15,
+            color: AboutTheme.textMuted,
+            height: 1.6,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          "At Grow Socialee, we believe every brand has a unique story waiting to be told. We combine creative thinking, strategic planning, and digital technology to transform ideas into impactful brand experiences that connect with the right audience and build lasting relationships.",
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 15,
+            color: AboutTheme.textMuted,
+            height: 1.6,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        const SizedBox(height: 26),
+        _buildGoldGradientButton(
+          icon: Icons.arrow_forward_rounded,
+          label: "WORK WITH US",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Contact()),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGoldGradientButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AboutTheme.accentGoldSoft,
+            AboutTheme.accentGold,
+            AboutTheme.accentGoldDeep,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+          BoxShadow(
+            color: AboutTheme.accentGold.withOpacity(0.35),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          foregroundColor: const Color(0xFF1A1200),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+        ),
+        icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
+        label: Text(
+          label,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.0,
+          ),
+        ),
       ),
     );
   }
