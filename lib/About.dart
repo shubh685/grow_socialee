@@ -2442,6 +2442,7 @@ class _TeamSectionState extends State<TeamSection>
 
   final List<Map<String, String>> _teamMembers = [
     {"name": "Shaily Shah", "designation": "Founder", "photo": "assets/foldername/ph1.jpg"},
+    {"name": "Harsh Shah", "designation": "Co - Founder", "photo": "assets/foldername/ph1.jpg"},
     {"name": "Umesh", "designation": "Manager", "photo": "assets/foldername/ph1.jpg"},
     {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/team_photos/vaibhav.png"},
     {"name": "Ankita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph3.jpg"},
