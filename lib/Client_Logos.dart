@@ -851,7 +851,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                           const SizedBox(width: 8),
                           Text(
                             "CHAPTER 03 · OUR CLIENTS",
-                            style: GoogleFonts.playfairDisplay(
+                            style: GoogleFonts.poppins(
                               fontSize: 10.5,
                               fontWeight: FontWeight.bold,
                               color: ClientTheme.accentGold,

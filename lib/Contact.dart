@@ -900,7 +900,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               Flexible(
                 child: Text(
                   "CHAPTER 06 · GET IN TOUCH",
-                  style: GoogleFonts.alegreyaSc(
+                  style: GoogleFonts.poppins(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w700,
                     color: accentGold,

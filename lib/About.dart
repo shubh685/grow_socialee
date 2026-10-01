@@ -847,8 +847,8 @@ class _AboutState extends State<About> {
                   size: 14, color: AboutTheme.accentGold),
               const SizedBox(width: 8),
               Text(
-                "CHAPTER 01 · WHO WE ARE",
-                style: GoogleFonts.playfairDisplay(
+                "CHAPTER 01 · About of Grow Socialee",
+                style: GoogleFonts.poppins(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
                   color: AboutTheme.accentGold,
@@ -2358,7 +2358,7 @@ class _ValuesSectionState extends State<ValuesSection>
                   children: [
                     Text(
                       "CHAPTER $number",
-                      style: GoogleFonts.playfairDisplay(
+                      style: GoogleFonts.poppins(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w800,
                         color: accentColor,
@@ -2442,19 +2442,19 @@ class _TeamSectionState extends State<TeamSection>
 
   final List<Map<String, String>> _teamMembers = [
     {"name": "Shaily Shah", "designation": "Founder", "photo": "assets/foldername/ph1.jpg"},
-    {"name": "Harsh Shah", "designation": "Co - Founder", "photo": "assets/team_photos/.png"},
-    {"name": "Umesh", "designation": "Manager", "photo": "assets/team_photos/.png"},
-    {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/team_photos/.png"},
-    {"name": "Ankita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph3.jpg"},
-    {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/team_photos/.png"},
-    {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/team_photos/.png"},
-    {"name": "Om", "designation": "Video Editor", "photo": "assets/team_photos/.png"},
-    {"name": "Dharmik", "designation": "Video Editor", "photo": "assets/team_photos/.png"},
-    {"name": "Harshdeep", "designation": "Video Editor", "photo": "assets/team_photos/.png"},
+    {"name": "Harsh Shah", "designation": "Co - Founder", "photo": "assets/team_photos/team_photos/harsh_sir.png"},
+    {"name": "Umesh", "designation": "Manager", "photo": "assets/team_photos/team_photos/umesh.png"},
+    {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/team_photos/team_photos/vaibhav.png"},
+    {"name": "Ankita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/team_photos/team_photos/ankita.png"},
+    {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/team_photos/team_photos/dhruvita.png"},
+    {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/team_photos/team_photos/mayank.png"},
+    {"name": "Om", "designation": "Video Editor", "photo": "assets/team_photos/team_photos/om.png"},
+    {"name": "Dharmik", "designation": "Video Editor", "photo": "assets/team_photos/team_photos/dharmik.png"},
+    {"name": "Harshdeep", "designation": "Video Editor", "photo": "assets/team_photos/team_photos/harshdeep.png"},
     {"name": "Kashish", "designation": "Social Media Executive", "photo": "assets/foldername/ph3.jpg"},
-    {"name": "Hitanshi", "designation": "Data Scraper", "photo": "assets/team_photos/.png"},
-    {"name": "Chirag", "designation": "SEO Executive", "photo": "assets/foldername/ph2.jpg"},
-    {"name": "Shubham", "designation": "Web Developer", "photo": "assets/team_photos/sh.png"},
+    {"name": "Hitanshi", "designation": "Data Scraper", "photo": "assets/team_photos/team_photos/hitanshi.png"},
+    {"name": "Chirag", "designation": "SEO Executive", "photo": "assets/team_photos/team_photos/chirag.png"},
+    {"name": "Shubham", "designation": "Web Developer", "photo": "assets/team_photos/team_photos/shubham.png"},
   ];
 
   @override
@@ -2531,7 +2531,7 @@ class _TeamSectionState extends State<TeamSection>
             ),
             child: Column(
               children: [
-                Text("CHAPTER 04", style: GoogleFonts.playfairDisplay(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
+                Text("CHAPTER 04", style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
                 const SizedBox(height: 8.5),
                 Text("THE PEOPLE SHAPING DIGITAL EXPERIENCES", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               ],

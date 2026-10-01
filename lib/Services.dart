@@ -986,7 +986,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               const SizedBox(width: 8),
               Text(
                 "CHAPTER 04 · OUR SERVICES",
-                style: GoogleFonts.alegreyaSc(
+                style: GoogleFonts.poppins(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
                   color: Services.accentGold,

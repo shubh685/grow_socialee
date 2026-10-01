@@ -884,7 +884,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
               const SizedBox(width: 8),
               Text(
                 "CHAPTER 05 · CLIENT TESTIMONIALS",
-                style: GoogleFonts.playfairDisplay(
+                style: GoogleFonts.poppins(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
                   color: accentGold,
