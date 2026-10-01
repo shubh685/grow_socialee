@@ -2442,19 +2442,19 @@ class _TeamSectionState extends State<TeamSection>
 
   final List<Map<String, String>> _teamMembers = [
     {"name": "Shaily Shah", "designation": "Founder", "photo": "assets/foldername/ph1.jpg"},
-    {"name": "Harsh Shah", "designation": "Co - Founder", "photo": "assets/team_photos/harsh_shah.png"},
-    {"name": "Umesh", "designation": "Manager", "photo": "assets/foldername/ph1.jpg"},
-    {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/team_photos/vaibhav.png"},
+    {"name": "Harsh Shah", "designation": "Co - Founder", "photo": "assets/team_photos/.png"},
+    {"name": "Umesh", "designation": "Manager", "photo": "assets/team_photos/.png"},
+    {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/team_photos/.png"},
     {"name": "Ankita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/foldername/ph3.jpg"},
-    {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/team_photos/dhruvita.png"},
-    {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/foldername/ph1.jpg"},
-    {"name": "Om", "designation": "Video Editor", "photo": "assets/team_photos/om.png"},
-    {"name": "Dharmik", "designation": "Video Editor", "photo": "assets/team_photos/dharmik.png"},
-    {"name": "Harshdeep", "designation": "Video Editor", "photo": "assets/foldername/ph2.jpg"},
+    {"name": "Dhruvita", "designation": "Video Editor\n& Graphics Designer", "photo": "assets/team_photos/.png"},
+    {"name": "Mayank", "designation": "Graphics Designer", "photo": "assets/team_photos/.png"},
+    {"name": "Om", "designation": "Video Editor", "photo": "assets/team_photos/.png"},
+    {"name": "Dharmik", "designation": "Video Editor", "photo": "assets/team_photos/.png"},
+    {"name": "Harshdeep", "designation": "Video Editor", "photo": "assets/team_photos/.png"},
     {"name": "Kashish", "designation": "Social Media Executive", "photo": "assets/foldername/ph3.jpg"},
-    {"name": "Hitanshi", "designation": "Data Scraper", "photo": "assets/team_photos/hitanshi.png"},
+    {"name": "Hitanshi", "designation": "Data Scraper", "photo": "assets/team_photos/.png"},
     {"name": "Chirag", "designation": "SEO Executive", "photo": "assets/foldername/ph2.jpg"},
-    {"name": "Shubham", "designation": "Web Developer", "photo": "assets/team_photos/shubham.png"},
+    {"name": "Shubham", "designation": "Web Developer", "photo": "assets/team_photos/sh.png"},
   ];
 
   @override
@@ -2533,19 +2533,13 @@ class _TeamSectionState extends State<TeamSection>
               children: [
                 Text("CHAPTER 04", style: GoogleFonts.playfairDisplay(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
                 const SizedBox(height: 8.5),
-                Text("OUR DEDICATED TEAM", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
+                Text("THE PEOPLE SHAPING DIGITAL EXPERIENCES", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
               ],
             ),
           ),
           const SizedBox(height: 14),
           Text(
-            "Get to Know Our Digital Team",
-            textAlign: TextAlign.center,
-            style: GoogleFonts.alegreyaSc(
-              fontSize: widget.isDesktop ? 34 : 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            "Get to Know Our Digital Team", textAlign: TextAlign.center, style: GoogleFonts.alegreyaSc(fontSize: widget.isDesktop ? 34 : 26, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 40),
           Center(
