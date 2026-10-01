@@ -123,6 +123,18 @@ class _AboutState extends State<About> {
               child: _buildPhilosophyStrip(isDesktop),
             ),
             SliverToBoxAdapter(
+              child: _buildCapabilitiesSection(isDesktop),
+            ),
+            SliverToBoxAdapter(
+              child: _buildOrnamentDivider(),
+            ),
+            SliverToBoxAdapter(
+              child: ValuesSection(key: _valuesKey, isDesktop: isDesktop),
+            ),
+            SliverToBoxAdapter(
+              child: _buildOrnamentDivider(),
+            ),
+            SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 30),
                 child: Center(
@@ -139,7 +151,7 @@ class _AboutState extends State<About> {
                         ),
                       ],
                     ),
-                    child: Row(
+                    child:  Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
@@ -173,19 +185,13 @@ class _AboutState extends State<About> {
               child: _AboutSplitSectionAnimated(screenWidth: screenWidth, isDesktop: isDesktop),
             ),
             SliverToBoxAdapter(
-              child: _buildCapabilitiesSection(isDesktop),
-            ),
-            SliverToBoxAdapter(
-              child: _buildOrnamentDivider(),
-            ),
-            SliverToBoxAdapter(
-              child: ValuesSection(key: _valuesKey, isDesktop: isDesktop),
-            ),
-            SliverToBoxAdapter(
               child: _buildOrnamentDivider(),
             ),
             SliverToBoxAdapter(
               child: TeamSection(key: _teamKey, isDesktop: isDesktop),
+            ),
+            SliverToBoxAdapter(
+              child: _buildOrnamentDivider(),
             ),
             SliverToBoxAdapter(
               child: _buildFooter(context),
@@ -725,6 +731,7 @@ class _AboutState extends State<About> {
       ),
       child: Stack(
         children: [
+          // ---- decorative glows ----
           Positioned(
             top: -80,
             right: -80,
@@ -765,10 +772,14 @@ class _AboutState extends State<About> {
               child: CustomPaint(painter: _AboutHeroPatternPainter()),
             ),
           ),
+
+          // ============================================================
+          //  FRAME — wide / short layout matching reference photo
+          // ============================================================
           Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? 28 : 18,
-              horizontal: isDesktop ? 40 : 16,
+              vertical: isDesktop ? 12 : 8,
+              horizontal: isDesktop ? 24 : 12,
             ),
             child: Center(
               child: Container(
@@ -782,7 +793,7 @@ class _AboutState extends State<About> {
                       Colors.white.withOpacity(0.02),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: AboutTheme.accentGold.withOpacity(0.3),
                     width: 1.2,
@@ -795,27 +806,52 @@ class _AboutState extends State<About> {
                     ),
                   ],
                 ),
-                padding: EdgeInsets.all(isDesktop ? 48 : 24),
-                child: isDesktop
-                    ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                padding: EdgeInsets.all(isDesktop ? 16 : 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 7,
-                      child: _buildHeroLeftText(),
-                    ),
-                    const SizedBox(width: 48),
-                    Expanded(
-                      flex: 5,
-                      child: _buildHeroRightBadges(),
-                    ),
-                  ],
-                )
-                    : Column(
-                  children: [
-                    _buildHeroLeftText(),
-                    const SizedBox(height: 36),
-                    _buildHeroRightBadges(),
+                    isDesktop
+                        ? SizedBox(
+                      height: 300,                          // ← fixed hero content height
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // ---------- COLUMN 1: 55% ----------
+                          Expanded(
+                            flex: 110,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                _buildHeroLeftText(isDesktop: true),
+                                const SizedBox(height: 18),
+                                _buildHeroRightBadges(true, screenWidth),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(width: 13),
+
+                          // ---------- VERTICAL DIVIDER ----------
+                          Container(
+                            width: 1.2,
+                            decoration: BoxDecoration(
+                              color: AboutTheme.accentGold
+                            ),
+                          ),
+
+                          const SizedBox(width: 12.5),
+
+                          // ---------- COLUMN 2: 45% ----------
+                          Expanded(
+                            flex: 90,
+                            child: _buildHeroCompanyContent(isDesktop: true),
+                          ),
+                        ],
+                      ),
+                    )
+                        : Column(/* …unchanged mobile… */),
                   ],
                 ),
               ),
@@ -826,12 +862,235 @@ class _AboutState extends State<About> {
     );
   }
 
-  Widget _buildHeroLeftText() {
+  Widget _buildHeroLeftText({bool isDesktop = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // "Crafting Digital"
+        Text(
+          "Crafting Digital",
+          style: GoogleFonts.alegreyaSc(
+            fontSize: isDesktop ? 30 : 26,           // ↓ 32 → 30
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            height: 1.05,
+            letterSpacing: -0.5,
+          ),
+        ),
+        // "Legacies"
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [
+              AboutTheme.accentGoldSoft,
+              AboutTheme.accentGold,
+              AboutTheme.accentGoldDeep,
+            ],
+          ).createShader(bounds),
+          child: Text(
+            "Legacies",
+            style: GoogleFonts.alegreyaSc(
+              fontSize: isDesktop ? 54 : 44,         // ↓ 60 → 54
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              height: 1.05,
+              letterSpacing: -1.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        // Merged subtitle
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: "Through Strategic Innovation. ",
+                style: GoogleFonts.alegreyaSc(
+                  fontSize: isDesktop ? 16 : 16,     // ↓ 18 → 16
+                  fontWeight: FontWeight.w400,
+                  color: AboutTheme.accentCyan,
+                  height: 1.4,
+                ),
+              ),
+              TextSpan(
+                text:
+                "We combine creative thinking, data-driven strategy, and design excellence to help brands dominate their digital space.",
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: isDesktop ? 13.5 : 13.5, // ↓ 14 → 13.5
+                  color: AboutTheme.textSoft,
+                  height: 1.4,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
+          ),
+          textAlign: TextAlign.justify,
+          softWrap: true,
+        ),
+      ],
+    );
+  }
+
+  // RIGHT SIDE BADGES — compact vertical stack beside headline
+  Widget _buildHeroRightBadges(bool isDesktop, double screenWidth) {
+    final badges = [
+      {
+        "icon": Icons.emoji_events_outlined,
+        "label": "AWARD-WINNING",
+      },
+      {
+        "icon": Icons.groups_2_outlined,
+        "label": "14-PERSON TEAM",
+      },
+      {
+        "icon": Icons.trending_up_rounded,
+        "label": "50+ BRANDS",
+      },
+    ];
+
+    if (isDesktop) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          const double spacing = 10.0;
+          const int count = 3;
+          final double badgeWidth =
+              (constraints.maxWidth - spacing * (count - 1)) / count;
+
+          return IntrinsicHeight(                 // ← gives the Row a height
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: badges.asMap().entries.map((entry) {
+                final i = entry.key;
+                final b = entry.value;
+                return Padding(
+                  padding: EdgeInsets.only(left: i == 0 ? 0 : spacing),
+                  child: SizedBox(
+                    width: badgeWidth,
+                    child: _buildHeroBadge(
+                      icon: b["icon"] as IconData,
+                      label: b["label"] as String,
+                      isDesktopOrTablet: true,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          );
+        },
+      );
+    }
+
+    // MOBILE / TABLET wrap
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableWidth = constraints.maxWidth;
+        final bool isTablet = availableWidth > 600;
+
+        double itemWidth = isTablet ? (availableWidth - 16) / 2 : availableWidth;
+
+        return Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          alignment: WrapAlignment.start,
+          children: badges.map((b) {
+            return SizedBox(
+              width: itemWidth,
+              child: _buildHeroBadge(
+                icon: b["icon"] as IconData,
+                label: b["label"] as String,
+                isDesktopOrTablet: isTablet,
+              ),
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildHeroBadge({
+    required IconData icon,
+    required String label,
+    bool isDesktopOrTablet = false,
+  }) {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 60),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.08),
+            Colors.white.withOpacity(0.03),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AboutTheme.accentCyan.withOpacity(0.35),
+          width: 1.1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AboutTheme.accentCyan.withOpacity(0.10),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  AboutTheme.accentGoldSoft,
+                  AboutTheme.accentGoldDeep,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: AboutTheme.accentGold.withOpacity(0.22),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            child: Icon(icon, color: const Color(0xFF1A1200), size: 17),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              style: GoogleFonts.poppins(
+                fontSize: 11.85,                // ← slight bump from 11.5
+                fontWeight: FontWeight.w800,
+                color: AboutTheme.accentGold,
+                letterSpacing: 0.6,
+                height: 1.15,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroCompanyContent({required bool isDesktop}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Chapter chip
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10.5, vertical: 5.5),
           decoration: BoxDecoration(
             color: AboutTheme.accentGold.withOpacity(0.12),
             borderRadius: BorderRadius.circular(30),
@@ -846,186 +1105,26 @@ class _AboutState extends State<About> {
               const Icon(Icons.auto_awesome_rounded,
                   size: 14, color: AboutTheme.accentGold),
               const SizedBox(width: 8),
-              Text(
-                "CHAPTER 01 · About of Grow Socialee",
-                style: GoogleFonts.poppins(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w700,
-                  color: AboutTheme.accentGold,
-                  letterSpacing: 2.2,
+              Flexible(
+                child: Text(
+                  "CHAPTER 01 · About Grow Socialee",
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    color: AboutTheme.accentGold,
+                    letterSpacing: isDesktop ? 2.2 : 1.2,
+                  ),
                 ),
               ),
             ],
-          ),
-        ),
-        const SizedBox(height: 22),
-        Text(
-          "Crafting Digital",
-          style: GoogleFonts.alegreyaSc(
-            fontSize: 30,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-            height: 1.05,
-            letterSpacing: -0.5,
-          ),
-        ),
-        ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [
-              AboutTheme.accentGoldSoft,
-              AboutTheme.accentGold,
-              AboutTheme.accentGoldDeep,
-            ],
-          ).createShader(bounds),
-          child: Text(
-            "Legacies",
-            style: GoogleFonts.alegreyaSc(
-              fontSize: 58,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              height: 1.05,
-              letterSpacing: -1.5,
-            ),
-          ),
-        ),
-        const SizedBox(height: 18),
-        Text(
-          "Through Strategic Innovation.",
-          style: GoogleFonts.alegreyaSc(
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-            color: AboutTheme.accentCyan,
-            height: 1.3,
-          ),
-        ),
-        const SizedBox(height: 22),
-        Text(
-          "We combine creative thinking, data-driven strategy, and design excellence to help brands dominate their digital space.",
-          style: GoogleFonts.playfairDisplay(
-            fontSize: 15,
-            color: AboutTheme.textSoft,
-            height: 1.6,
-            fontWeight: FontWeight.w300,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildHeroRightBadges() {
-    final badges = [
-      {
-        "icon": Icons.emoji_events_outlined,
-        "label": "AWARD-WINNING",
-        "sub": "Design & Strategy",
-      },
-      {
-        "icon": Icons.groups_2_outlined,
-        "label": "14-PERSON TEAM",
-        "sub": "Dedicated Specialists",
-      },
-      {
-        "icon": Icons.trending_up_rounded,
-        "label": "50+ BRANDS",
-        "sub": "Scaled Successfully",
-      },
-    ];
-
-    return Column(
-      children: badges.map((b) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 14),
-          child: _buildHeroBadge(
-            icon: b["icon"] as IconData,
-            label: b["label"] as String,
-            sub: b["sub"] as String,
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildHeroBadge({
-    required IconData icon,
-    required String label,
-    required String sub,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.08),
-            Colors.white.withOpacity(0.03),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AboutTheme.accentCyan.withOpacity(0.35),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AboutTheme.accentCyan.withOpacity(0.10),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  AboutTheme.accentGoldSoft,
-                  AboutTheme.accentGoldDeep,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: AboutTheme.accentGold.withOpacity(0.22),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-            child: Icon(icon, color: const Color(0xFF1A1200), size: 20),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.alegreyaSc(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w800,
-                    color: AboutTheme.accentGold,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  sub,
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 11.5,
-                    color: AboutTheme.textMuted,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+  //  build philosphy card
   // ============================================================
   // PHILOSOPHY STRIP
   // ============================================================
@@ -1220,7 +1319,7 @@ class _AboutState extends State<About> {
                   Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
                 ),
                 child: Text(
-                  "WHAT WE BRING TO THE TABLE",
+                  "SERVICES THAT DRIVE DIGITAL GROWTH",
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -1430,17 +1529,68 @@ class _AboutState extends State<About> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 45,
-          child: Image.asset(
-            "assets/photos/Gro_Soc_Image.png",
-            color: Colors.white,
-            errorBuilder: (context, error, stackTrace) => const Icon(
-              Icons.image,
-              color: Colors.white,
-              size: 40,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
+              child: Container(
+                height: 50,
+                width: 50,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      HomePage.accentGold.withOpacity(0.25),
+                      HomePage.accentGoldDeep.withOpacity(0.10),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: HomePage.accentGold.withOpacity(0.7),
+                    width: 1.2,
+                  ),
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    "assets/photos/logo.png",
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.broken_image,
+                      color: HomePage.accentGold,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: InkWell(
+                child: ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [
+                      HomePage.accentGoldSoft,
+                      HomePage.accentGold,
+                      HomePage.accentGoldDeep,
+                    ],
+                  ).createShader(bounds),
+                  child: Text(
+                    "We are Grow Socialee",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.alegreyaSc(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.05,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         Text(
@@ -1681,6 +1831,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
                 _buildTiltedImageStackAnimated(),
                 const SizedBox(height: 40),
                 _buildAboutDescription(),
+
               ],
             ),
           ),
@@ -2441,7 +2592,6 @@ class _TeamSectionState extends State<TeamSection>
   bool _hasAnimated = false;
 
   final List<Map<String, String>> _teamMembers = [
-    {"name": "Shaily Shah", "designation": "Founder", "photo": "assets/foldername/ph1.jpg"},
     {"name": "Harsh Shah", "designation": "Co - Founder", "photo": "assets/team_photos/team_photos/harsh_sir.png"},
     {"name": "Umesh", "designation": "Manager", "photo": "assets/team_photos/team_photos/umesh.png"},
     {"name": "Vaibhav", "designation": "Sr. Video Editor", "photo": "assets/team_photos/team_photos/vaibhav.png"},

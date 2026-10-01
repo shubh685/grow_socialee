@@ -2686,17 +2686,68 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: 45,
-          child: Image.asset(
-            "assets/photos/Gro_Soc_Image.png",
-            color: Colors.white,
-            errorBuilder: (context, error, stackTrace) => const Icon(
-              Icons.image,
-              color: Colors.white,
-              size: 40,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
+              child: Container(
+                height: 50,
+                width: 50,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      HomePage.accentGold.withOpacity(0.25),
+                      HomePage.accentGoldDeep.withOpacity(0.10),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: HomePage.accentGold.withOpacity(0.7),
+                    width: 1.2,
+                  ),
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    "assets/photos/logo.png",
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.broken_image,
+                      color: HomePage.accentGold,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: InkWell(
+                child: ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [
+                      HomePage.accentGoldSoft,
+                      HomePage.accentGold,
+                      HomePage.accentGoldDeep,
+                    ],
+                  ).createShader(bounds),
+                  child: Text(
+                    "We are Grow Socialee",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.alegreyaSc(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.05,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         Text(
