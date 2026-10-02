@@ -30,47 +30,61 @@ Widget _buildSectionTitleBadge(String title, {BuildContext? context}) {
   final bool isDesktop = Breakpoints.isDesktop(screenWidth);
   final bool isLargeDesktop = Breakpoints.isLargeDesktop(screenWidth);
 
-  // -------- Responsive tokens --------
+  // -------- Responsive tokens for LONG text --------
   final double horizontalPadding = isMobileSmall
-      ? 8.0
-      : isMobile
-      ? 9.5
-      : isTablet
-      ? 12.0
-      : isDesktop
-      ? 16.0
-      : 18.0;
-
-  final double verticalPadding = isMobileSmall
-      ? 5.0
-      : isMobile
-      ? 6.0
-      : isTablet
-      ? 7.0
-      : 8.0;
-
-  final double fontSize = isMobileSmall
       ? 10.0
       : isMobile
-      ? 11.5
+      ? 12.0
       : isTablet
-      ? 13.0
+      ? 16.0
       : isDesktop
-      ? 14.5
-      : 15.5;
+      ? 20.0
+      : 24.0;
+
+  final double verticalPadding = isMobileSmall
+      ? 6.0
+      : isMobile
+      ? 7.0
+      : isTablet
+      ? 8.0
+      : 9.0;
+
+  final double fontSize = isMobileSmall
+      ? 9.0
+      : isMobile
+      ? 10.0
+      : isTablet
+      ? 11.5
+      : isDesktop
+      ? 13.0
+      : 14.0;
 
   final double letterSpacing = isMobileSmall
-      ? 1.0
+      ? 0.6
       : isMobile
-      ? 1.2
+      ? 0.8
       : isTablet
-      ? 1.6
-      : 2.0;
+      ? 1.0
+      : 1.4;
 
-  final double borderRadiusValue = isMobileSmall ? 22 : 30;
+  final double borderRadiusValue = isMobileSmall
+      ? 18
+      : isMobile
+      ? 22
+      : 28;
 
   // -------- Build --------
   return Container(
+    // Constrain width so long text wraps instead of overflowing
+    constraints: BoxConstraints(
+      maxWidth: isMobileSmall
+          ? screenWidth * 0.72
+          : isMobile
+          ? screenWidth * 0.75
+          : isTablet
+          ? screenWidth * 0.65
+          : screenWidth * 0.55,
+    ),
     padding: EdgeInsets.symmetric(
       horizontal: horizontalPadding,
       vertical: verticalPadding,
@@ -90,19 +104,17 @@ Widget _buildSectionTitleBadge(String title, {BuildContext? context}) {
         ),
       ],
     ),
-    child: FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Text(
-        title,
-        textAlign: TextAlign.center,
-        maxLines: 1,
-        softWrap: false,
-        style: GoogleFonts.alegreyaSc(
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-          color: AboutTheme.darkCardBg,
-          letterSpacing: letterSpacing,
-        ),
+    child: Text(
+      title,
+      textAlign: TextAlign.center,
+      maxLines: 2, // Allow 2 lines for long titles
+      overflow: TextOverflow.ellipsis,
+      style: GoogleFonts.alegreyaSc(
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+        color: AboutTheme.darkCardBg,
+        letterSpacing: letterSpacing,
+        height: 1.25,
       ),
     ),
   );
@@ -281,8 +293,13 @@ class _AboutState extends State<About> {
                           ),
                           SizedBox(width: isDesktop ? 12 : 8),
 
-                          // Title badge
-                          _buildSectionTitleBadge("FOUNDER'S HISTORY"),
+                          // Title badge (now responsive for long text)
+                          Flexible(
+                            child: _buildSectionTitleBadge(
+                              "From a Creative Passion to a Growing Digital Agency",
+                              context: context,
+                            ),
+                          ),
 
                           SizedBox(width: isDesktop ? 12 : 8),
 
@@ -973,13 +990,13 @@ class _AboutState extends State<About> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 5.5),
+                          const SizedBox(width: 6.5),
                           Container(
                             width: 1.35,
                             decoration: BoxDecoration(
                                 color: AboutTheme.accentGold),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 10.35),
                           Expanded(
                             flex: 90,
                             child: _buildHeroCompanyContent(isDesktop: true),
@@ -1224,41 +1241,234 @@ class _AboutState extends State<About> {
   }
 
   Widget _buildHeroCompanyContent({required bool isDesktop}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10.5, vertical: 5.5),
-          decoration: BoxDecoration(
-            color: AboutTheme.accentGold.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(
-              color: AboutTheme.accentGold.withOpacity(0.6),
-              width: 1.2,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.auto_awesome_rounded,
-                  size: 14, color: AboutTheme.accentGold),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  "About Grow Socialee",
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w700,
-                    color: AboutTheme.accentGold,
-                    letterSpacing: isDesktop ? 2.2 : 1.2,
+    return Builder(
+      builder: (context) {
+        final double screenWidth = MediaQuery.of(context).size.width;
+
+        // ---------- Breakpoint tiers ----------
+        final bool isMobileSmall = Breakpoints.isMobileSmall(screenWidth);
+        final bool isMobile = Breakpoints.isMobile(screenWidth);
+        final bool isTablet = Breakpoints.isTablet(screenWidth);
+        final bool isDesktopTier = Breakpoints.isDesktop(screenWidth);
+        final bool isLargeDesktop = Breakpoints.isLargeDesktop(screenWidth);
+
+        // ---------- Responsive tokens ----------
+        // Header font size
+        final double headerFontSize = isMobileSmall
+            ? 11.5
+            : (isMobile && !isTablet)
+            ? 13.0
+            : isTablet
+            ? 15.0
+            : isDesktopTier && !isLargeDesktop
+            ? 15.0
+            : 17.0;
+
+        // Body font size (Adjusted for better readability on larger screens)
+        final double bodyFontSize = isMobileSmall
+            ? 10.0
+            : (isMobile && !isTablet)
+            ? 11.0
+            : isTablet
+            ? 12.0
+            : isDesktopTier && !isLargeDesktop
+            ? 12.8
+            : 12.8;
+
+        final double headerHPad = isMobileSmall
+            ? 12
+            : (isMobile && !isTablet)
+            ? 16
+            : isTablet
+            ? 20
+            : 22;
+
+        final double headerVPad = isMobileSmall
+            ? 10
+            : (isMobile && !isTablet)
+            ? 12
+            : isTablet
+            ? 14
+            : 14;
+
+        final double bodyPad = isMobileSmall
+            ? 12
+            : (isMobile && !isTablet)
+            ? 15
+            : isTablet
+            ? 19
+            : 16;
+
+        // Icon box size
+        final double iconBoxSize = isMobileSmall
+            ? 24
+            : (isMobile && !isTablet)
+            ? 28
+            : isTablet
+            ? 32
+            : 34;
+
+        final double headerGap = isMobileSmall
+            ? 10
+            : (isMobile && !isTablet)
+            ? 12
+            : 14;
+
+        final double outerRadius = isMobileSmall ? 12 : 16;
+        final double headerRadius = isMobileSmall ? 11 : 15;
+
+        // Spacing between paragraphs
+        final double paragraphSpacing = isMobileSmall
+            ? 8.0
+            : (isMobile && !isTablet)
+            ? 10.0
+            : isTablet
+            ? 12.0
+            : 12.0;
+
+        // ---------- Content (Combined first two texts into a single paragraph) ----------
+        final List<String> paragraphs = [
+          "Grow Socialee is a creative social media and digital marketing agency based in Bhavnagar, Gujarat. We help brands build a strong digital presence through strategy, content, branding, and social media marketing.",
+          "Our team of creative and digital professionals works with businesses across India and international markets.",
+          "From content creation and social media management to SEO and web development, we offer end-to-end digital solutions.",
+          "We focus on turning ideas into meaningful content, stronger brands, and measurable digital growth.",
+        ];
+
+        // Build the card body (header + scrollable paragraphs)
+        final Widget cardBody = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ================= RIBBON HEADER =================
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: headerHPad,
+                vertical: headerVPad,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AboutTheme.accentGold.withOpacity(0.18),
+                    AboutTheme.accentGold.withOpacity(0.04),
+                  ],
+                ),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(headerRadius),
+                ),
+                border: Border(
+                  bottom: BorderSide(
+                    color: AboutTheme.accentGold.withOpacity(0.35),
+                    width: 1,
                   ),
                 ),
               ),
+              child: Row(
+                children: [
+                  Container(
+                    width: iconBoxSize,
+                    height: iconBoxSize,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AboutTheme.accentGold.withOpacity(0.30),
+                          AboutTheme.accentGold.withOpacity(0.10),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: AboutTheme.accentGold.withOpacity(0.55),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.auto_awesome_rounded,
+                      color: AboutTheme.accentGold,
+                      size: 12.5,
+                    ),
+                  ),
+                  SizedBox(width: headerGap),
+                  Expanded(
+                    child: Text(
+                      "About Grow Socialee",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.alegreyaSc(
+                        fontSize: headerFontSize,
+                        fontWeight: FontWeight.bold,
+                        color: AboutTheme.accentWhite,
+                        height: 1.15,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ================= SCROLLABLE CONTENT AREA =================
+            Flexible(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.all(bodyPad),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: paragraphs.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final text = entry.value;
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        bottom: index == paragraphs.length - 1
+                            ? 0
+                            : paragraphSpacing,
+                      ),
+                      child: Text(
+                        text,
+                        textAlign: TextAlign.justify,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: bodyFontSize,
+                          color: AboutTheme.accentWhite,
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+
+        // Wrap in the outer gradient container
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.06),
+                AboutTheme.accentGold.withOpacity(0.03),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(outerRadius),
+            border: Border.all(
+              color: AboutTheme.accentGold.withOpacity(0.45),
+              width: 1.3,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AboutTheme.accentGold.withOpacity(0.14),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
             ],
           ),
-        ),
-      ],
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(outerRadius),
+            child: cardBody,
+          ),
+        );
+      },
     );
   }
 
@@ -2091,7 +2301,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: Image.asset(
-                          "assets/photos/image.png",
+                          "assets/team_photos/team_photos/shaily_mam.png",
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => Container(
                             color: AboutTheme.darkCardBg,
@@ -2216,7 +2426,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
             ),
             Expanded(
               child: Text(
-                "We are Grow Socialee—a full-suite digital marketing agency based in Bhavnagar committed to scaling small and medium enterprises. Modern market dynamics demand more than an online presence; they require digital dominance.",
+                "Around 7–8 years ago, our Founder and CEO began her journey with a strong interest in branding, creativity, and out-of-the-box thinking. What started as a personal passion soon turned into a vision — to build a creative agency that could help brands communicate better and grow in the digital world.",
                 textAlign: TextAlign.justify,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
@@ -2230,7 +2440,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
         ),
         const SizedBox(height: 16),
         Text(
-          "From custom social media strategies and video editing production to conversion-focused ad campaigns and brand identity design, our tailored solutions eliminate complexity and generate sustainable revenue growth.",
+          "She started Grow Socialee from the ground up, initially working with a small team of just 1–2 employees while managing 5–6 clients. With growing trust from clients and a clear vision for the future, the journey took its next step when Grow Socialee moved into its first physical office, with a team of around 2–3 employees and a growing client base.",
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
@@ -2241,7 +2451,29 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
         ),
         const SizedBox(height: 14),
         Text(
-          "At Grow Socialee, we believe every brand has a unique story waiting to be told. We combine creative thinking, strategic planning, and digital technology to transform ideas into impactful brand experiences that connect with the right audience and build lasting relationships.",
+          "From there, the company continued to grow year after year. The team expanded, the client portfolio grew, and what started as a small creative setup gradually became a team of 11–12 professionals managing 25–30 clients simultaneously.",
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 15,
+            color: AboutTheme.textMuted,
+            height: 1.6,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          "Through consistent work, creative thinking, and a strong focus on building meaningful brands, she established Grow Socialee as a recognised name in Bhavnagar and across Gujarat’s digital marketing space.",
+          textAlign: TextAlign.justify,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 15,
+            color: AboutTheme.textMuted,
+            height: 1.6,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          "Today, the journey continues — with a growing team, clients across India and international markets, and the same creative mindset that started it all.",
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
@@ -2304,7 +2536,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
         icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
         label: Text(
           label,
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.poppins(
             fontSize: 13,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.0,

@@ -1346,7 +1346,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           icon: Icon(icon, size: 15, color: const Color(0xFF1A1200)),
           label: Text(label,
-              style: GoogleFonts.playfairDisplay(
+              style: GoogleFonts.poppins(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.6)),
@@ -1756,7 +1756,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         const SizedBox(height: 16),
         Text(
-          "We are Grow Socialee, a top social media marketing agency in Bhavnagar, helping small and medium-sized businesses boost their online presence. In today's digital world, standing out is essential, and we simplify that process for you.",
+          "Grow Socialee is a creative social media and digital marketing agency based in Bhavnagar, Gujarat."
+              "We help brands build a strong digital presence through strategy, content, branding, and social media marketing.",
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
@@ -1767,7 +1768,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         const SizedBox(height: 16),
         Text(
-          "As the best digital marketing agency in Bhavnagar, we specialize in branding, content creation, social media management, and digital advertising. Need engaging video content? We are also the best video editing company in Bhavnagar, crafting eye-catching visuals for your brand.",
+          "Our team of creative and digital professionals works with businesses across India and international markets."
+              "From content creation and social media management to SEO and web development, we offer end-to-end digital solutions",
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
@@ -1778,24 +1780,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         const SizedBox(height: 18),
         Text(
-          "Let's build your digital success together! 📩 Contact Grow Socialee today!",
+          "We focus on turning ideas into meaningful content, stronger brands, and measurable digital growth.",
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: Colors.white,
+            color: HomePage.textMuted,
             height: 1.5,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 14),
-        Text(
-          "We understand social behaviours within online communities, cultures and subcultures.",
-          textAlign: TextAlign.justify,
-          style: GoogleFonts.playfairDisplay(
-            fontSize: 15,
             fontWeight: FontWeight.w300,
-            color: Colors.white70,
-            height: 1.4,
           ),
         ),
         const SizedBox(height: 24),
