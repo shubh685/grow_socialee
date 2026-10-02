@@ -75,6 +75,31 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   final String instagramUrl = "https://www.instagram.com/growsocialee.official/";
   final String linkedInUrl = "https://in.linkedin.com/company/grow-socialee";
 
+  // ============================================================
+  // BUSINESS OPEN / CLOSE LOGIC
+  // ============================================================
+  bool _isBusinessOpen() {
+    final now = DateTime.now();
+    final int weekday = now.weekday; // 1 = Monday, ..., 7 = Sunday
+
+    // Sunday (7) is closed
+    if (weekday == DateTime.sunday) {
+      return false;
+    }
+
+    // Define opening and closing times (9:30 AM to 7:00 PM)
+    final TimeOfDay currentTime = TimeOfDay.fromDateTime(now);
+    const TimeOfDay openTime = TimeOfDay(hour: 9, minute: 30);
+    const TimeOfDay closeTime = TimeOfDay(hour: 19, minute: 0); // 7:00 PM in 24h format
+
+    // Convert times to total minutes for comparison
+    final int currentMinutes = currentTime.hour * 60 + currentTime.minute;
+    final int openMinutes = openTime.hour * 60 + openTime.minute;
+    final int closeMinutes = closeTime.hour * 60 + closeTime.minute;
+
+    return currentMinutes >= openMinutes && currentMinutes <= closeMinutes;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -153,7 +178,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       ];
       final String selectedCategory = categories[_selectedFormCategory];
       final Uri apiUrl =
-      Uri.parse("http://192.168.1.103/grow_socialee/send_inquiry.php");
+      Uri.parse("http://192.168.1.91/grow_socialee/send_inquiry.php");
 
       try {
         final Map<String, dynamic> requestData = {
@@ -335,14 +360,12 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // 1. Wrapped in Flexible to prevent logo text overflow on resize
                   Flexible(
                     flex: 3,
                     child: _buildLogoHeader(),
                   ),
                   const SizedBox(width: 8),
                   if (isDesktop)
-                  // 2. Wrapped in Flexible and SingleChildScrollView to prevent button overflow
                     Flexible(
                       flex: 7,
                       child: SingleChildScrollView(
@@ -992,6 +1015,8 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
       },
     ];
 
+    final bool isOpen = _isBusinessOpen();
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
       decoration: BoxDecoration(
@@ -1060,10 +1085,10 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 padding:
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.15),
+                  color: (isOpen ? Colors.green : Colors.red).withOpacity(0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.green.withOpacity(0.5),
+                    color: (isOpen ? Colors.green : Colors.red).withOpacity(0.5),
                   ),
                 ),
                 child: Row(
@@ -1072,18 +1097,18 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                     Container(
                       width: 6,
                       height: 6,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.greenAccent,
+                        color: isOpen ? Colors.greenAccent : Colors.redAccent,
                       ),
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      "OPEN",
+                      isOpen ? "OPEN" : "CLOSED",
                       style: GoogleFonts.alegreyaSc(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w800,
-                        color: Colors.greenAccent,
+                        color: isOpen ? Colors.greenAccent : Colors.redAccent,
                         letterSpacing: 1.5,
                       ),
                     ),
@@ -1676,6 +1701,8 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   // SIDEBAR CARDS
   // ============================================================
   Widget _buildInteractiveContactSidebar() {
+    final bool isOpen = _isBusinessOpen();
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1778,7 +1805,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
           icon: Icons.access_time_filled_rounded,
           title: "Working Hours",
           subtitle: "9:30 AM to 7:00 PM (Monday - Saturday)",
-          actionLabel: "Status: Open Today",
+          actionLabel: isOpen ? "Status: Open Today" : "Status: Closed Now",
           onTap: null,
           isStatusBadge: true,
         ),
@@ -1794,6 +1821,8 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
     required VoidCallback? onTap,
     bool isStatusBadge = false,
   }) {
+    final bool isOpen = _isBusinessOpen();
+
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(16),
@@ -1842,7 +1871,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: GoogleFonts.playfairDisplay(
+                      style: GoogleFonts.poppins(
                         fontSize: 13,
                         color: textMuted,
                         height: 1.4,
@@ -1857,10 +1886,10 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.2),
+                          color: (isOpen ? Colors.green : Colors.red).withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Colors.green.withOpacity(0.6),
+                            color: (isOpen ? Colors.green : Colors.red).withOpacity(0.6),
                           ),
                         ),
                         child: Row(
@@ -1873,11 +1902,11 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                   width: 8,
                                   height: 8,
                                   decoration: BoxDecoration(
-                                    color: Colors.greenAccent,
+                                    color: isOpen ? Colors.greenAccent : Colors.redAccent,
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.greenAccent.withOpacity(
+                                        color: (isOpen ? Colors.greenAccent : Colors.redAccent).withOpacity(
                                             0.4 + 0.5 * _pulseController.value),
                                         blurRadius: 8,
                                         spreadRadius: 1,
@@ -1896,7 +1925,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                 style: GoogleFonts.alegreyaSc(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.greenAccent,
+                                  color: isOpen ? Colors.greenAccent : Colors.redAccent,
                                 ),
                               ),
                             ),
@@ -2069,7 +2098,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                   "4.9 (13)",
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
-                                  style: GoogleFonts.alegreyaSc(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: accentGold,
@@ -2484,6 +2513,7 @@ class _HeroPatternPainter extends CustomPainter {
 
     final cyanPaint = Paint()
       ..color = const Color(0xFF4FC3F7).withOpacity(0.05)
+    // ignore: unnecessary_constructor_name
       ..strokeWidth = 1.2;
     for (double i = -size.height; i < size.width + size.height; i += 80) {
       canvas.drawLine(
@@ -2523,6 +2553,7 @@ class _MapGridPainter extends CustomPainter {
 
     final roadPaint = Paint()
       ..color = Colors.white.withOpacity(0.25)
+    // ignore: unnecessary_constructor_name
       ..strokeWidth = 4.0
       ..style = PaintingStyle.stroke;
 
