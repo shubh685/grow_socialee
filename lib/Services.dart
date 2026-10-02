@@ -1218,9 +1218,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     Text(
                       "${step["num"]} · ",
                       style: GoogleFonts.poppins(
-                        fontSize: 11,
+                        fontSize: 12.5,
                         fontWeight: FontWeight.w800,
-                        color: Services.accentCyan,
+                        color: Colors.white70,
                         letterSpacing: 1.2,
                       ),
                     ),
