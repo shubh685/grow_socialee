@@ -179,10 +179,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             SliverToBoxAdapter(
               child: _buildHeroSection(isDesktop),
             ),
-            // ✅ Filter chips
-            SliverToBoxAdapter(
-              child: _buildFilterChips(isDesktop),
-            ),
             // ✅ Logos grid
             SliverToBoxAdapter(
               child: _buildAllLogosGrid(context),
@@ -850,7 +846,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            "CHAPTER 03 · OUR CLIENTS",
+                            "OUR CLIENTS",
                             style: GoogleFonts.poppins(
                               fontSize: 10.5,
                               fontWeight: FontWeight.bold,
@@ -918,78 +914,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     );
   }
 
-  // ============================================================
-  // FILTER CHIPS (visual only)
-  // ============================================================
-  Widget _buildFilterChips(bool isDesktop) {
-    final chips = ["ALL BRANDS", "FEATURED", "CLIENTS"];
-
-    return Container(
-      width: double.infinity,
-      color: ClientTheme.royalBlue,
-      padding: EdgeInsets.symmetric(
-        vertical: 24,
-        horizontal: isDesktop ? 60 : 20,
-      ),
-      child: Center(
-        child: Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 12,
-          runSpacing: 12,
-          children: List.generate(chips.length, (i) {
-            final isActive = _activeFilter == i;
-            return GestureDetector(
-              onTap: () => setState(() => _activeFilter = i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
-                padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  gradient: isActive
-                      ? const LinearGradient(
-                    colors: [
-                      ClientTheme.accentGoldSoft,
-                      ClientTheme.accentGold,
-                      ClientTheme.accentGoldDeep,
-                    ],
-                  )
-                      : null,
-                  color: isActive ? null : Colors.white.withOpacity(0.06),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: isActive
-                        ? ClientTheme.accentGold
-                        : ClientTheme.accentGold.withOpacity(0.35),
-                    width: 1.3,
-                  ),
-                  boxShadow: isActive
-                      ? [
-                    BoxShadow(
-                      color: ClientTheme.accentGold.withOpacity(0.30),
-                      blurRadius: 14,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                      : null,
-                ),
-                child: Text(
-                  chips[i],
-                  style: GoogleFonts.alegreyaSc(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w800,
-                    color: isActive
-                        ? const Color(0xFF1A1200)
-                        : ClientTheme.accentGold,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-              ),
-            );
-          }),
-        ),
-      ),
-    );
-  }
 
   // ============================================================
   // ORNAMENT DIVIDER
@@ -1732,9 +1656,9 @@ class _AnimatedFooterState extends State<AnimatedFooter>
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.poppins(
             fontSize: 14,
-            color: ClientTheme.textMuted,
+            color: AboutTheme.textMuted,
             height: 1.6,
           ),
         ),

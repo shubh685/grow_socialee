@@ -985,7 +985,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               ),
               const SizedBox(width: 8),
               Text(
-                "CHAPTER 04 · OUR SERVICES",
+                "OUR SERVICES",
                 style: GoogleFonts.poppins(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
@@ -2084,9 +2084,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Services.textMuted,
+            color: AboutTheme.textMuted,
             height: 1.6,
           ),
         ),
@@ -2145,18 +2145,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           crossAxisAlignment:
           isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: Services.accentGold),
+            Icon(icon, size: 18, color: AboutTheme.accentGold),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.playfairDisplay(
+                style: GoogleFonts.poppins(
                   fontSize: 13,
-                  color: isMultiLine ? Colors.white : Services.textMuted,
+                  color: AboutTheme.accentWhite,
                   height: 1.4,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),

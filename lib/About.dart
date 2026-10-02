@@ -13,6 +13,102 @@ import 'contact.dart';
 import 'home_page.dart';
 
 // ============================================================
+// REUSABLE SECTION TITLE BADGE (same design everywhere)
+// ============================================================
+Widget _buildSectionTitleBadge(String title, {BuildContext? context}) {
+  // Determine screen width — prefer passed context, fall back to MediaQuery
+  final double screenWidth = context != null
+      ? MediaQuery.of(context).size.width
+      : MediaQueryData.fromView(
+    WidgetsBinding.instance.platformDispatcher.views.first,
+  ).size.width;
+
+  // Determine tier using Breakpoints
+  final bool isMobileSmall = Breakpoints.isMobileSmall(screenWidth);
+  final bool isMobile = Breakpoints.isMobile(screenWidth);
+  final bool isTablet = Breakpoints.isTablet(screenWidth);
+  final bool isDesktop = Breakpoints.isDesktop(screenWidth);
+  final bool isLargeDesktop = Breakpoints.isLargeDesktop(screenWidth);
+
+  // -------- Responsive tokens --------
+  final double horizontalPadding = isMobileSmall
+      ? 8.0
+      : isMobile
+      ? 9.5
+      : isTablet
+      ? 12.0
+      : isDesktop
+      ? 16.0
+      : 18.0;
+
+  final double verticalPadding = isMobileSmall
+      ? 5.0
+      : isMobile
+      ? 6.0
+      : isTablet
+      ? 7.0
+      : 8.0;
+
+  final double fontSize = isMobileSmall
+      ? 10.0
+      : isMobile
+      ? 11.5
+      : isTablet
+      ? 13.0
+      : isDesktop
+      ? 14.5
+      : 15.5;
+
+  final double letterSpacing = isMobileSmall
+      ? 1.0
+      : isMobile
+      ? 1.2
+      : isTablet
+      ? 1.6
+      : 2.0;
+
+  final double borderRadiusValue = isMobileSmall ? 22 : 30;
+
+  // -------- Build --------
+  return Container(
+    padding: EdgeInsets.symmetric(
+      horizontal: horizontalPadding,
+      vertical: verticalPadding,
+    ),
+    decoration: BoxDecoration(
+      color: Colors.white70,
+      borderRadius: BorderRadius.circular(borderRadiusValue),
+      border: Border.all(
+        color: AboutTheme.accentGold.withOpacity(0.6),
+        width: 1.2,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: AboutTheme.accentGold.withOpacity(0.1),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(
+        title,
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        softWrap: false,
+        style: GoogleFonts.alegreyaSc(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          color: AboutTheme.darkCardBg,
+          letterSpacing: letterSpacing,
+        ),
+      ),
+    ),
+  );
+}
+
+// ============================================================
 // ABOUT PAGE — THEME (matches HomePage royal blue + gold)
 // ============================================================
 class AboutTheme {
@@ -108,9 +204,7 @@ class _AboutState extends State<About> {
       endDrawer: _buildEndDrawer(screenWidth, isDesktop),
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
-          // Values section uses its own visibility check
           _valuesKey.currentState?.checkVisibility();
-          // Team section uses VisibilityDetector (no manual call needed)
           return false;
         },
         child: CustomScrollView(
@@ -134,48 +228,103 @@ class _AboutState extends State<About> {
             SliverToBoxAdapter(
               child: _buildOrnamentDivider(),
             ),
+            // ============= FOUNDER'S HISTORY SLIVER =============
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 30),
                 child: Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AboutTheme.accentGold.withOpacity(0.1),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child:  Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 24,
-                          height: 1.5,
-                          color: AboutTheme.darkBg,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          "FOUNDER'S HISTORY",
-                          style: GoogleFonts.poppins(
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.bold,
-                            color: AboutTheme.darkCardBg,
-                            letterSpacing: 2.5,
+                    width: double.infinity,
+                    color: AboutTheme.royalBlueMid,
+                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Left gradient line
+                          Container(
+                            width: isDesktop ? 60 : 30,
+                            height: 1.2,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.transparent,
+                                  AboutTheme.accentGold.withOpacity(0.6),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Container(
-                          width: 24,
-                          height: 1.5,
-                          color: AboutTheme.darkBg,
-                        ),
-                      ],
+                          SizedBox(width: isDesktop ? 12 : 8),
+
+                          // Rotating Diamond/Ornament
+                          Transform.rotate(
+                            angle: 0.785,
+                            child: Container(
+                              width: isDesktop ? 10 : 8,
+                              height: isDesktop ? 10 : 8,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AboutTheme.accentGoldSoft,
+                                    AboutTheme.accentGoldDeep,
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AboutTheme.accentGold.withOpacity(0.5),
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: isDesktop ? 12 : 8),
+
+                          // Title badge
+                          _buildSectionTitleBadge("FOUNDER'S HISTORY"),
+
+                          SizedBox(width: isDesktop ? 12 : 8),
+
+                          // Rotating Diamond/Ornament #2
+                          Transform.rotate(
+                            angle: 0.785,
+                            child: Container(
+                              width: isDesktop ? 10 : 8,
+                              height: isDesktop ? 10 : 8,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    AboutTheme.accentGoldSoft,
+                                    AboutTheme.accentGoldDeep,
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AboutTheme.accentGold.withOpacity(0.5),
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: isDesktop ? 12 : 8),
+
+                          // Right gradient line
+                          Container(
+                            width: isDesktop ? 60 : 30,
+                            height: 1.2,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AboutTheme.accentGold.withOpacity(0.6),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -731,7 +880,6 @@ class _AboutState extends State<About> {
       ),
       child: Stack(
         children: [
-          // ---- decorative glows ----
           Positioned(
             top: -80,
             right: -80,
@@ -772,10 +920,6 @@ class _AboutState extends State<About> {
               child: CustomPaint(painter: _AboutHeroPatternPainter()),
             ),
           ),
-
-          // ============================================================
-          //  FRAME — wide / short layout matching reference photo
-          // ============================================================
           Padding(
             padding: EdgeInsets.symmetric(
               vertical: isDesktop ? 12 : 8,
@@ -812,11 +956,10 @@ class _AboutState extends State<About> {
                   children: [
                     isDesktop
                         ? SizedBox(
-                      height: 300,                          // ← fixed hero content height
+                      height: 300,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // ---------- COLUMN 1: 55% ----------
                           Expanded(
                             flex: 110,
                             child: Column(
@@ -830,20 +973,13 @@ class _AboutState extends State<About> {
                               ],
                             ),
                           ),
-
-                          const SizedBox(width: 13),
-
-                          // ---------- VERTICAL DIVIDER ----------
+                          const SizedBox(width: 5.5),
                           Container(
-                            width: 1.2,
+                            width: 1.35,
                             decoration: BoxDecoration(
-                              color: AboutTheme.accentGold
-                            ),
+                                color: AboutTheme.accentGold),
                           ),
-
-                          const SizedBox(width: 12.5),
-
-                          // ---------- COLUMN 2: 45% ----------
+                          const SizedBox(width: 8),
                           Expanded(
                             flex: 90,
                             child: _buildHeroCompanyContent(isDesktop: true),
@@ -851,7 +987,16 @@ class _AboutState extends State<About> {
                         ],
                       ),
                     )
-                        : Column(/* …unchanged mobile… */),
+                        : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildHeroLeftText(isDesktop: false),
+                        const SizedBox(height: 18),
+                        _buildHeroRightBadges(false, screenWidth),
+                        const SizedBox(height: 18),
+                        _buildHeroCompanyContent(isDesktop: false),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -867,18 +1012,16 @@ class _AboutState extends State<About> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // "Crafting Digital"
         Text(
           "Crafting Digital",
           style: GoogleFonts.alegreyaSc(
-            fontSize: isDesktop ? 30 : 26,           // ↓ 32 → 30
+            fontSize: isDesktop ? 30 : 26,
             fontWeight: FontWeight.w500,
             color: Colors.white,
             height: 1.05,
             letterSpacing: -0.5,
           ),
         ),
-        // "Legacies"
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
             colors: [
@@ -890,7 +1033,7 @@ class _AboutState extends State<About> {
           child: Text(
             "Legacies",
             style: GoogleFonts.alegreyaSc(
-              fontSize: isDesktop ? 54 : 44,         // ↓ 60 → 54
+              fontSize: isDesktop ? 54 : 44,
               fontWeight: FontWeight.bold,
               color: Colors.white,
               height: 1.05,
@@ -899,15 +1042,13 @@ class _AboutState extends State<About> {
           ),
         ),
         const SizedBox(height: 14),
-
-        // Merged subtitle
         Text.rich(
           TextSpan(
             children: [
               TextSpan(
                 text: "Through Strategic Innovation. ",
                 style: GoogleFonts.alegreyaSc(
-                  fontSize: isDesktop ? 16 : 16,     // ↓ 18 → 16
+                  fontSize: isDesktop ? 16 : 16,
                   fontWeight: FontWeight.w400,
                   color: AboutTheme.accentCyan,
                   height: 1.4,
@@ -917,7 +1058,7 @@ class _AboutState extends State<About> {
                 text:
                 "We combine creative thinking, data-driven strategy, and design excellence to help brands dominate their digital space.",
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: isDesktop ? 13.5 : 13.5, // ↓ 14 → 13.5
+                  fontSize: isDesktop ? 13.5 : 13.5,
                   color: AboutTheme.textSoft,
                   height: 1.4,
                   fontWeight: FontWeight.w300,
@@ -932,7 +1073,6 @@ class _AboutState extends State<About> {
     );
   }
 
-  // RIGHT SIDE BADGES — compact vertical stack beside headline
   Widget _buildHeroRightBadges(bool isDesktop, double screenWidth) {
     final badges = [
       {
@@ -957,7 +1097,7 @@ class _AboutState extends State<About> {
           final double badgeWidth =
               (constraints.maxWidth - spacing * (count - 1)) / count;
 
-          return IntrinsicHeight(                 // ← gives the Row a height
+          return IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: badges.asMap().entries.map((entry) {
@@ -981,7 +1121,6 @@ class _AboutState extends State<About> {
       );
     }
 
-    // MOBILE / TABLET wrap
     return LayoutBuilder(
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth;
@@ -1071,7 +1210,7 @@ class _AboutState extends State<About> {
               overflow: TextOverflow.ellipsis,
               softWrap: true,
               style: GoogleFonts.poppins(
-                fontSize: 11.85,                // ← slight bump from 11.5
+                fontSize: 11.85,
                 fontWeight: FontWeight.w800,
                 color: AboutTheme.accentGold,
                 letterSpacing: 0.6,
@@ -1088,7 +1227,6 @@ class _AboutState extends State<About> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Chapter chip
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10.5, vertical: 5.5),
           decoration: BoxDecoration(
@@ -1107,7 +1245,7 @@ class _AboutState extends State<About> {
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
-                  "CHAPTER 01 · About Grow Socialee",
+                  "About Grow Socialee",
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     fontSize: 10.5,
@@ -1124,7 +1262,6 @@ class _AboutState extends State<About> {
     );
   }
 
-  //  build philosphy card
   // ============================================================
   // PHILOSOPHY STRIP
   // ============================================================
@@ -1309,34 +1446,83 @@ class _AboutState extends State<About> {
           constraints: const BoxConstraints(maxWidth: 1150),
           child: Column(
             children: [
-              Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AboutTheme.accentGold.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(30),
-                  border:
-                  Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
-                ),
-                child: Text(
-                  "SERVICES THAT DRIVE DIGITAL GROWTH",
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AboutTheme.accentGold,
-                    letterSpacing: 2.0,
+              // ============= INTEGRATED DIGITAL EXPERTISE TITLE =============
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: isDesktop ? 60 : 30,
+                    height: 1.2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          AboutTheme.accentGold.withOpacity(0.6),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                "Integrated Digital Expertise",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.alegreyaSc(
-                  fontSize: isDesktop ? 36 : 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                  SizedBox(width: isDesktop ? 12 : 8),
+                  Transform.rotate(
+                    angle: 0.785,
+                    child: Container(
+                      width: isDesktop ? 10 : 8,
+                      height: isDesktop ? 10 : 8,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGoldDeep,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.5),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: isDesktop ? 12 : 8),
+                  _buildSectionTitleBadge("INTEGRATED DIGITAL EXPERTISE"),
+                  SizedBox(width: isDesktop ? 12 : 8),
+                  Transform.rotate(
+                    angle: 0.785,
+                    child: Container(
+                      width: isDesktop ? 10 : 8,
+                      height: isDesktop ? 10 : 8,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGoldDeep,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.5),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: isDesktop ? 12 : 8),
+                  Container(
+                    width: isDesktop ? 60 : 30,
+                    height: 1.2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AboutTheme.accentGold.withOpacity(0.6),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 40),
               LayoutBuilder(
@@ -1595,7 +1781,7 @@ class _AboutState extends State<About> {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.poppins(
             fontSize: 14,
             color: AboutTheme.textMuted,
             height: 1.6,
@@ -1663,7 +1849,7 @@ class _AboutState extends State<About> {
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.playfairDisplay(
+                style: GoogleFonts.poppins(
                   fontSize: 13,
                   color: AboutTheme.accentWhite,
                   height: 1.4,
@@ -1728,7 +1914,7 @@ class _AboutState extends State<About> {
 }
 
 // ============================================================
-// ABOUT SPLIT SECTION WITH ANIMATIONS (Congratulations Top-to-Down & Walk Back-to-Front)
+// ABOUT SPLIT SECTION WITH ANIMATIONS
 // ============================================================
 class _AboutSplitSectionAnimated extends StatefulWidget {
   final double screenWidth;
@@ -1759,7 +1945,6 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
       duration: const Duration(milliseconds: 1400),
     );
 
-    // 1. Congratulations top-to-down animation translation
     _topDownSlideAnimation = Tween<Offset>(
       begin: const Offset(0.0, -0.4),
       end: Offset.zero,
@@ -1768,7 +1953,6 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
       curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
     ));
 
-    // 2. Walk from back to front animation (scaling from deep/small to full size)
     _walkBackToFrontScaleAnimation = Tween<double>(
       begin: 0.65,
       end: 1.0,
@@ -1831,7 +2015,6 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
                 _buildTiltedImageStackAnimated(),
                 const SizedBox(height: 40),
                 _buildAboutDescription(),
-
               ],
             ),
           ),
@@ -2297,7 +2480,7 @@ class _ValuesSectionState extends State<ValuesSection>
     );
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 58, horizontal: 20),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -2311,34 +2494,100 @@ class _ValuesSectionState extends State<ValuesSection>
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AboutTheme.accentGold.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(30),
-              border:
-              Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
-            ),
-            child: Text(
-              "CORE PHILOSOPHY",
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AboutTheme.accentGold,
-                letterSpacing: 2.0,
+            width: double.infinity,
+            color: Colors.transparent,
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Left gradient line
+                  Container(
+                    width: widget.isDesktop ? 60 : 30,
+                    height: 1.2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          AboutTheme.accentGold.withOpacity(0.6),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+
+                  // Rotating Diamond/Ornament
+                  Transform.rotate(
+                    angle: 0.785,
+                    child: Container(
+                      width: widget.isDesktop ? 10 : 8,
+                      height: widget.isDesktop ? 10 : 8,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGoldDeep,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.5),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+
+                  // DRIVEN BY STRATEGY & PURPOSE badge
+                  _buildSectionTitleBadge("THINK. CREATE. GROW."),
+
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+
+                  // Rotating Diamond/Ornament #2 (Symmetrical balance)
+                  Transform.rotate(
+                    angle: 0.785,
+                    child: Container(
+                      width: widget.isDesktop ? 10 : 8,
+                      height: widget.isDesktop ? 10 : 8,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGoldDeep,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.5),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+
+                  // Right gradient line
+                  Container(
+                    width: widget.isDesktop ? 60 : 30,
+                    height: 1.2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AboutTheme.accentGold.withOpacity(0.6),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 14),
-          Text(
-            "Driven by Strategy & Purpose",
-            style: GoogleFonts.alegreyaSc(
-              fontSize: widget.isDesktop ? 34 : 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1150),
@@ -2466,7 +2715,6 @@ class _ValuesSectionState extends State<ValuesSection>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: widget.isDesktop ? MainAxisSize.max : MainAxisSize.min,
       children: [
-        // Ribbon header
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
           decoration: BoxDecoration(
@@ -2532,7 +2780,6 @@ class _ValuesSectionState extends State<ValuesSection>
             ],
           ),
         ),
-        // Content Area - safely conditioned for desktop vs mobile
         widget.isDesktop
             ? Expanded(
           child: Padding(
@@ -2622,20 +2869,15 @@ class _TeamSectionState extends State<TeamSection>
     super.dispose();
   }
 
-  /// Row-based top-to-bottom animation.
-  /// Row 0 (first 5)  → starts at 0.00
-  /// Row 1 (next 5)   → starts at 0.25
-  /// Row 2 (last 3)   → starts at 0.50
   Animation<Offset> _slideFor(int index) {
     final int columns = widget.isDesktop ? 5 : 2;
     final int row = index ~/ columns;
-    // Each row's animation starts later than the previous one.
     final double start = (row * 0.25).clamp(0.0, 0.7);
     final double end = (start + 0.5).clamp(0.0, 1.0);
 
     return Tween<Offset>(
-      begin: const Offset(0.0, -0.5), // from above
-      end: Offset.zero,               // to natural position
+      begin: const Offset(0.0, -0.5),
+      end: Offset.zero,
     ).animate(
       CurvedAnimation(
         parent: _animController,
@@ -2673,23 +2915,88 @@ class _TeamSectionState extends State<TeamSection>
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10.5),
-            decoration: BoxDecoration(
-              color: AboutTheme.accentGold.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: AboutTheme.accentGold.withOpacity(0.6)),
+            width: double.infinity,
+            color: AboutTheme.royalBlueMid,
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: widget.isDesktop ? 60 : 30,
+                    height: 1.2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          AboutTheme.accentGold.withOpacity(0.6),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+                  Transform.rotate(
+                    angle: 0.785,
+                    child: Container(
+                      width: widget.isDesktop ? 10 : 8,
+                      height: widget.isDesktop ? 10 : 8,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGoldDeep,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.5),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+                  _buildSectionTitleBadge("OUR DIGITAL MINDS"),
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+                  Transform.rotate(
+                    angle: 0.785,
+                    child: Container(
+                      width: widget.isDesktop ? 10 : 8,
+                      height: widget.isDesktop ? 10 : 8,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            AboutTheme.accentGoldSoft,
+                            AboutTheme.accentGoldDeep,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AboutTheme.accentGold.withOpacity(0.5),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: widget.isDesktop ? 12 : 8),
+                  Container(
+                    width: widget.isDesktop ? 60 : 30,
+                    height: 1.2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AboutTheme.accentGold.withOpacity(0.6),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              children: [
-                Text("CHAPTER 04", style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: AboutTheme.accentGold, letterSpacing: 2.0)),
-                const SizedBox(height: 8.5),
-                Text("THE PEOPLE SHAPING DIGITAL EXPERIENCES", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2.0)),
-              ],
-            ),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            "Get to Know Our Digital Team", textAlign: TextAlign.center, style: GoogleFonts.alegreyaSc(fontSize: widget.isDesktop ? 34 : 26, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 40),
           Center(
@@ -2776,7 +3083,6 @@ class _TeamSectionState extends State<TeamSection>
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // ===== FIXED-HEIGHT PHOTO AREA =====
                 SizedBox(
                   height: circleSize,
                   child: Center(
@@ -2800,7 +3106,6 @@ class _TeamSectionState extends State<TeamSection>
                   ),
                 ),
                 const SizedBox(height: 12),
-                // ===== NAME — fixed one line height =====
                 Text(
                   name,
                   textAlign: TextAlign.center,
@@ -2814,7 +3119,6 @@ class _TeamSectionState extends State<TeamSection>
                   ),
                 ),
                 const SizedBox(height: 8),
-                // ===== DESIGNATION CHIP — fixed height =====
                 SizedBox(
                   height: 36,
                   child: Center(

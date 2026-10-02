@@ -899,7 +899,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
-                  "CHAPTER 06 · GET IN TOUCH",
+                  "GET IN TOUCH",
                   style: GoogleFonts.poppins(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w700,
@@ -2331,9 +2331,9 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.poppins(
             fontSize: 14,
-            color: textMuted,
+            color: AboutTheme.textMuted,
             height: 1.6,
           ),
         ),
@@ -2399,11 +2399,11 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.playfairDisplay(
+                style: GoogleFonts.poppins(
                   fontSize: 13,
-                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
+                  color: AboutTheme.accentWhite,
                   height: 1.4,
-                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),

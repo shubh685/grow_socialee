@@ -1218,7 +1218,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Flexible(
                 child: Text(
                   "PREMIUM SOCIAL GROWTH AGENCY",
-                  style: GoogleFonts.playfairDisplay(
+                  style: GoogleFonts.poppins(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w700,
                     color: HomePage.accentGold,
@@ -2752,7 +2752,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         Text(
           "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.poppins(
             fontSize: 14,
             color: AboutTheme.textMuted,
             height: 1.6,
@@ -2768,7 +2768,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         Text(
           "CONTACT INFO",
-          style: GoogleFonts.alegreyaSc(
+          style: GoogleFonts.poppins(
             fontSize: 15,
             fontWeight: FontWeight.bold,
             color: AboutTheme.accentGold,
@@ -2820,7 +2820,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.playfairDisplay(
+                style: GoogleFonts.poppins(
                   fontSize: 13,
                   color: AboutTheme.accentWhite,
                   height: 1.4,
@@ -3015,38 +3015,6 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                         child: VideoPlayer(_controller),
                       ),
                     ),
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.55),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: HomePage.accentGold.withOpacity(0.6),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.touch_app_rounded,
-                                color: HomePage.accentGold, size: 12),
-                            const SizedBox(width: 4),
-                            Text(
-                              "TAP",
-                              style: GoogleFonts.bellota(
-                                fontSize: 9,
-                                color: HomePage.accentGold,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 )
                     : Container(
@@ -3073,7 +3041,7 @@ class _OurWorkVideoCardState extends State<_OurWorkVideoCard> {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.alegreyaSc(
+                style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: HomePage.accentGold,
@@ -3314,7 +3282,7 @@ class _StatsSectionState extends State<StatsSection>
                 fit: BoxFit.scaleDown,
                 child: Text(
                   "$formattedValue${item.suffix}",
-                  style: GoogleFonts.playfairDisplay(
+                  style: GoogleFonts.poppins(
                     fontSize: widget.isDesktop ? 34 : 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
