@@ -380,11 +380,11 @@ class _AboutState extends State<About> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isScrolled
-              ? HomePage.royalBlue.withOpacity(0.92)
-              : HomePage.royalBlue,
+              ? AboutTheme.royalBlue.withOpacity(0.92)
+              : AboutTheme.royalBlue,
           boxShadow: [
             BoxShadow(
-              color: HomePage.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              color: AboutTheme.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -400,12 +400,12 @@ class _AboutState extends State<About> {
                 gradient: LinearGradient(
                   colors: [
                     Colors.white.withOpacity(0.08),
-                    HomePage.royalBlueMid.withOpacity(0.6),
+                    AboutTheme.royalBlueMid.withOpacity(0.6),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.35),
+                  color:  AboutTheme.accentGold.withOpacity(0.35),
                   width: 1.2,
                 ),
               ),
@@ -469,14 +469,14 @@ class _AboutState extends State<About> {
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
                                     colors: [
-                                      HomePage.accentGoldSoft,
-                                      HomePage.accentGoldDeep,
+                                      AboutTheme.accentGoldSoft,
+                                      AboutTheme.accentGoldDeep,
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: HomePage.accentGold
+                                      color: AboutTheme.accentGold
                                           .withOpacity(0.3),
                                       blurRadius: 10,
                                     ),
@@ -529,17 +529,17 @@ class _AboutState extends State<About> {
                               shape: BoxShape.circle,
                               gradient: LinearGradient(
                                 colors: [
-                                  HomePage.accentGold.withOpacity(0.2),
-                                  HomePage.accentGoldDeep.withOpacity(0.1),
+                                  AboutTheme.accentGold.withOpacity(0.2),
+                                  AboutTheme.accentGoldDeep.withOpacity(0.1),
                                 ],
                               ),
                               border: Border.all(
-                                color: HomePage.accentGold.withOpacity(0.7),
+                                color:  AboutTheme.accentGold.withOpacity(0.7),
                                 width: 1.2,
                               ),
                             ),
                             child: const Icon(Icons.menu_rounded,
-                                color: HomePage.accentGold, size: 22),
+                                color:  AboutTheme.accentGold, size: 22),
                           ),
                         ),
                       ),
@@ -609,12 +609,12 @@ class _AboutState extends State<About> {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    HomePage.accentGold.withOpacity(0.25),
-                    HomePage.accentGoldDeep.withOpacity(0.10),
+                    AboutTheme.accentGold.withOpacity(0.25),
+                    AboutTheme.accentGoldDeep.withOpacity(0.10),
                   ],
                 ),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.7),
+                  color:  AboutTheme.accentGold.withOpacity(0.7),
                   width: 1.2,
                 ),
               ),
@@ -624,7 +624,7 @@ class _AboutState extends State<About> {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.broken_image,
-                    color: HomePage.accentGold,
+                    color:  AboutTheme.accentGold,
                     size: 24,
                   ),
                 ),
@@ -637,9 +637,9 @@ class _AboutState extends State<About> {
               child: ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
                   colors: [
-                    HomePage.accentGoldSoft,
-                    HomePage.accentGold,
-                    HomePage.accentGoldDeep,
+                    AboutTheme.accentGoldSoft,
+                    AboutTheme.accentGold,
+                    AboutTheme.accentGoldDeep,
                   ],
                 ).createShader(bounds),
                 child: Text(
@@ -1938,12 +1938,12 @@ class _AboutState extends State<About> {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      HomePage.accentGold.withOpacity(0.25),
-                      HomePage.accentGoldDeep.withOpacity(0.10),
+                      AboutTheme.accentGold.withOpacity(0.25),
+                      AboutTheme.accentGoldDeep.withOpacity(0.10),
                     ],
                   ),
                   border: Border.all(
-                    color: HomePage.accentGold.withOpacity(0.7),
+                    color:  AboutTheme.accentGold.withOpacity(0.7),
                     width: 1.2,
                   ),
                 ),
@@ -1953,7 +1953,7 @@ class _AboutState extends State<About> {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => const Icon(
                       Icons.broken_image,
-                      color: HomePage.accentGold,
+                      color:  AboutTheme.accentGold,
                       size: 24,
                     ),
                   ),
@@ -1966,9 +1966,9 @@ class _AboutState extends State<About> {
                 child: ShaderMask(
                   shaderCallback: (bounds) => const LinearGradient(
                     colors: [
-                      HomePage.accentGoldSoft,
-                      HomePage.accentGold,
-                      HomePage.accentGoldDeep,
+                      AboutTheme.accentGoldSoft,
+                      AboutTheme.accentGold,
+                      AboutTheme.accentGoldDeep,
                     ],
                   ).createShader(bounds),
                   child: Text(

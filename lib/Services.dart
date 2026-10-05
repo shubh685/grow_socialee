@@ -13,8 +13,7 @@ import 'home_page.dart';
 
 class Services extends StatefulWidget {
   const Services({super.key});
-
-  // ===== THEME (matches homepage.dart) =====
+  // ===== THEME (matches home_page.dart) =====
   static const Color royalBlue = Color(0xFF0A1F44);
   static const Color royalBlueMid = Color(0xFF0F2A5C);
   static const Color darkBg = Color(0xFF0A1F44);
@@ -322,11 +321,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isScrolled
-              ? HomePage.royalBlue.withOpacity(0.92)
-              : HomePage.royalBlue,
+              ? Services.royalBlue.withOpacity(0.92)
+              : Services.royalBlue,
           boxShadow: [
             BoxShadow(
-              color: HomePage.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              color: Services.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -342,12 +341,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 gradient: LinearGradient(
                   colors: [
                     Colors.white.withOpacity(0.08),
-                    HomePage.royalBlueMid.withOpacity(0.6),
+                    Services.royalBlueMid.withOpacity(0.6),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.35),
+                  color: Services.accentGold.withOpacity(0.35),
                   width: 1.2,
                 ),
               ),
@@ -412,14 +411,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
                                     colors: [
-                                      HomePage.accentGoldSoft,
-                                      HomePage.accentGoldDeep,
+                                      Services.accentGoldSoft,
+                                      Services.accentGoldDeep,
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: HomePage.accentGold.withOpacity(0.3),
+                                      color: Services.accentGold.withOpacity(0.3),
                                       blurRadius: 10,
                                     ),
                                   ],
@@ -470,17 +469,17 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                               shape: BoxShape.circle,
                               gradient: LinearGradient(
                                 colors: [
-                                  HomePage.accentGold.withOpacity(0.2),
-                                  HomePage.accentGoldDeep.withOpacity(0.1),
+                                  Services.accentGold.withOpacity(0.2),
+                                  Services.accentGoldDeep.withOpacity(0.1),
                                 ],
                               ),
                               border: Border.all(
-                                color: HomePage.accentGold.withOpacity(0.7),
+                                color: Services.accentGold.withOpacity(0.7),
                                 width: 1.2,
                               ),
                             ),
                             child: const Icon(Icons.menu_rounded,
-                                color: HomePage.accentGold, size: 22),
+                                color: Services.accentGold, size: 22),
                           ),
                         ),
                       ),
@@ -548,12 +547,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    HomePage.accentGold.withOpacity(0.25),
-                    HomePage.accentGoldDeep.withOpacity(0.10),
+                    Services.accentGold.withOpacity(0.25),
+                    Services.accentGoldDeep.withOpacity(0.10),
                   ],
                 ),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.7),
+                  color: Services.accentGold.withOpacity(0.7),
                   width: 1.2,
                 ),
               ),
@@ -563,7 +562,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.broken_image,
-                    color: HomePage.accentGold,
+                    color: Services.accentGold,
                     size: 24,
                   ),
                 ),
@@ -576,9 +575,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               child: ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
                   colors: [
-                    HomePage.accentGoldSoft,
-                    HomePage.accentGold,
-                    HomePage.accentGoldDeep,
+                    Services.accentGoldSoft,
+                    Services.accentGold,
+                    Services.accentGoldDeep,
                   ],
                 ).createShader(bounds),
                 child: Text(
@@ -1992,12 +1991,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      HomePage.accentGold.withOpacity(0.25),
-                      HomePage.accentGoldDeep.withOpacity(0.10),
+                      Services.accentGold.withOpacity(0.25),
+                      Services.accentGoldDeep.withOpacity(0.10),
                     ],
                   ),
                   border: Border.all(
-                    color: HomePage.accentGold.withOpacity(0.7),
+                    color: Services.accentGold.withOpacity(0.7),
                     width: 1.2,
                   ),
                 ),
@@ -2007,7 +2006,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => const Icon(
                       Icons.broken_image,
-                      color: HomePage.accentGold,
+                      color: Services.accentGold,
                       size: 24,
                     ),
                   ),
@@ -2020,9 +2019,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 child: ShaderMask(
                   shaderCallback: (bounds) => const LinearGradient(
                     colors: [
-                      HomePage.accentGoldSoft,
-                      HomePage.accentGold,
-                      HomePage.accentGoldDeep,
+                      Services.accentGoldSoft,
+                      Services.accentGold,
+                      Services.accentGoldDeep,
                     ],
                   ).createShader(bounds),
                   child: Text(

@@ -328,11 +328,11 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isScrolled
-              ? HomePage.royalBlue.withOpacity(0.92)
-              : HomePage.royalBlue,
+              ? royalBlue.withOpacity(0.92)
+              : royalBlue,
           boxShadow: [
             BoxShadow(
-              color: HomePage.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              color: accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -348,12 +348,12 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 gradient: LinearGradient(
                   colors: [
                     Colors.white.withOpacity(0.08),
-                    HomePage.royalBlueMid.withOpacity(0.6),
+                    royalBlueMid.withOpacity(0.6),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.35),
+                  color: accentGold.withOpacity(0.35),
                   width: 1.2,
                 ),
               ),
@@ -416,14 +416,14 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
                                     colors: [
-                                      HomePage.accentGoldSoft,
-                                      HomePage.accentGoldDeep,
+                                      accentGoldSoft,
+                                      accentGoldDeep,
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: HomePage.accentGold.withOpacity(0.3),
+                                      color: accentGold.withOpacity(0.3),
                                       blurRadius: 10,
                                     ),
                                   ],
@@ -474,17 +474,17 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                               shape: BoxShape.circle,
                               gradient: LinearGradient(
                                 colors: [
-                                  HomePage.accentGold.withOpacity(0.2),
-                                  HomePage.accentGoldDeep.withOpacity(0.1),
+                                  accentGold.withOpacity(0.2),
+                                  accentGoldDeep.withOpacity(0.1),
                                 ],
                               ),
                               border: Border.all(
-                                color: HomePage.accentGold.withOpacity(0.7),
+                                color: accentGold.withOpacity(0.7),
                                 width: 1.2,
                               ),
                             ),
                             child: const Icon(Icons.menu_rounded,
-                                color: HomePage.accentGold, size: 22),
+                                color: accentGold, size: 22),
                           ),
                         ),
                       ),
@@ -552,12 +552,11 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    HomePage.accentGold.withOpacity(0.25),
-                    HomePage.accentGoldDeep.withOpacity(0.10),
+                    accentGold.withOpacity(0.25), accentGoldDeep.withOpacity(0.10),
                   ],
                 ),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.7),
+                  color: accentGold.withOpacity(0.7),
                   width: 1.2,
                 ),
               ),
@@ -567,7 +566,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.broken_image,
-                    color: HomePage.accentGold,
+                    color: accentGold,
                     size: 24,
                   ),
                 ),
@@ -580,9 +579,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
               child: ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
                   colors: [
-                    HomePage.accentGoldSoft,
-                    HomePage.accentGold,
-                    HomePage.accentGoldDeep,
+                    accentGoldSoft, accentGold, accentGoldDeep,
                   ],
                 ).createShader(bounds),
                 child: Text(
@@ -2307,12 +2304,12 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      HomePage.accentGold.withOpacity(0.25),
-                      HomePage.accentGoldDeep.withOpacity(0.10),
+                      accentGold.withOpacity(0.25),
+                      accentGoldDeep.withOpacity(0.10),
                     ],
                   ),
                   border: Border.all(
-                    color: HomePage.accentGold.withOpacity(0.7),
+                    color: accentGold.withOpacity(0.7),
                     width: 1.2,
                   ),
                 ),
@@ -2322,7 +2319,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => const Icon(
                       Icons.broken_image,
-                      color: HomePage.accentGold,
+                      color: accentGold,
                       size: 24,
                     ),
                   ),
@@ -2335,9 +2332,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 child: ShaderMask(
                   shaderCallback: (bounds) => const LinearGradient(
                     colors: [
-                      HomePage.accentGoldSoft,
-                      HomePage.accentGold,
-                      HomePage.accentGoldDeep,
+                      accentGoldSoft, accentGold, accentGoldDeep,
                     ],
                   ).createShader(bounds),
                   child: Text(

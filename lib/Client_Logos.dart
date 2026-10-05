@@ -28,27 +28,23 @@ class Breakpoints {
 // CLIENT LOGOS PAGE — THEME (matches HomePage royal blue + gold)
 // ============================================================
 class ClientTheme {
-  // Backgrounds (identical to HomePage)
-  static const Color royalBlue = HomePage.royalBlue;
-  static const Color royalBlueMid = HomePage.royalBlueMid;
-  static const Color darkBg = HomePage.darkBg;
-  static const Color darkCardBg = HomePage.darkCardBg;
-  static const Color glassCard = HomePage.glassCard;
+  static const Color royalBlue = Color(0xFF0A1F44);
+  static const Color royalBlueMid = Color(0xFF0F2A5C);
+  static const Color darkBg = Color(0xFF0A1F44);
+  static const Color darkCardBg = Color(0xFF0D2551);
+  static const Color glassCard = Color(0xFF13315C);
 
-  // Gold accents
-  static const Color accentGold = HomePage.accentGold;
-  static const Color accentGoldDeep = HomePage.accentGoldDeep;
-  static const Color accentGoldSoft = HomePage.accentGoldSoft;
+  static const Color accentGold = Color(0xFFF5C842);
+  static const Color accentGoldDeep = Color(0xFFD4A017);
+  static const Color accentGoldSoft = Color(0xFFFFE08A);
 
-  // Cyan accents
-  static const Color accentCyan = HomePage.accentCyan;
-  static const Color accentCyanGlow = HomePage.accentCyanGlow;
-  static const Color brandBlue = HomePage.brandBlue;
+  static const Color accentCyan = Color(0xFF4FC3F7);
+  static const Color accentCyanGlow = Color(0xFF29B6F6);
+  static const Color brandBlue = Color(0xFF1E88E5);
 
-  // Text
-  static const Color accentWhite = HomePage.accentWhite;
-  static const Color textMuted = HomePage.textMuted;
-  static const Color textSoft = HomePage.textSoft;
+  static const Color accentWhite = Colors.white;
+  static const Color textMuted = Color(0xFFB8D4F0);
+  static const Color textSoft = Color(0xFFD6E6FA);
 }
 
 class ClientLogoPage extends StatefulWidget {
@@ -224,11 +220,11 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isScrolled
-              ? HomePage.royalBlue.withOpacity(0.92)
-              : HomePage.royalBlue,
+              ? ClientTheme.royalBlue.withOpacity(0.92)
+              : ClientTheme.royalBlue,
           boxShadow: [
             BoxShadow(
-              color: HomePage.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
+              color: ClientTheme.accentGold.withOpacity(isScrolled ? 0.2 : 0.05),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -244,12 +240,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 gradient: LinearGradient(
                   colors: [
                     Colors.white.withOpacity(0.08),
-                    HomePage.royalBlueMid.withOpacity(0.6),
+                    ClientTheme.royalBlueMid.withOpacity(0.6),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.35),
+                  color: ClientTheme.accentGold.withOpacity(0.35),
                   width: 1.2,
                 ),
               ),
@@ -314,14 +310,14 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
                                     colors: [
-                                      HomePage.accentGoldSoft,
-                                      HomePage.accentGoldDeep,
+                                      ClientTheme.accentGoldSoft,
+                                      ClientTheme.accentGoldDeep,
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: HomePage.accentGold.withOpacity(0.3),
+                                      color: ClientTheme.accentGold.withOpacity(0.3),
                                       blurRadius: 10,
                                     ),
                                   ],
@@ -372,17 +368,17 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                               shape: BoxShape.circle,
                               gradient: LinearGradient(
                                 colors: [
-                                  HomePage.accentGold.withOpacity(0.2),
-                                  HomePage.accentGoldDeep.withOpacity(0.1),
+                                  ClientTheme.accentGold.withOpacity(0.2),
+                                  ClientTheme.accentGoldDeep.withOpacity(0.1),
                                 ],
                               ),
                               border: Border.all(
-                                color: HomePage.accentGold.withOpacity(0.7),
+                                color: ClientTheme.accentGold.withOpacity(0.7),
                                 width: 1.2,
                               ),
                             ),
                             child: const Icon(Icons.menu_rounded,
-                                color: HomePage.accentGold, size: 22),
+                                color: ClientTheme.accentGold, size: 22),
                           ),
                         ),
                       ),
@@ -452,12 +448,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    HomePage.accentGold.withOpacity(0.25),
-                    HomePage.accentGoldDeep.withOpacity(0.10),
+                    ClientTheme.accentGold.withOpacity(0.25),
+                    ClientTheme.accentGoldDeep.withOpacity(0.10),
                   ],
                 ),
                 border: Border.all(
-                  color: HomePage.accentGold.withOpacity(0.7),
+                  color: ClientTheme.accentGold.withOpacity(0.7),
                   width: 1.2,
                 ),
               ),
@@ -467,7 +463,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.broken_image,
-                    color: HomePage.accentGold,
+                    color: ClientTheme.accentGold,
                     size: 24,
                   ),
                 ),
@@ -480,9 +476,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               child: ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
                   colors: [
-                    HomePage.accentGoldSoft,
-                    HomePage.accentGold,
-                    HomePage.accentGoldDeep,
+                    ClientTheme.accentGoldSoft,
+                    ClientTheme.accentGold,
+                    ClientTheme.accentGoldDeep,
                   ],
                 ).createShader(bounds),
                 child: Text(
@@ -1603,12 +1599,12 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      HomePage.accentGold.withOpacity(0.25),
-                      HomePage.accentGoldDeep.withOpacity(0.10),
+                      ClientTheme.accentGold.withOpacity(0.25),
+                      ClientTheme.accentGoldDeep.withOpacity(0.10),
                     ],
                   ),
                   border: Border.all(
-                    color: HomePage.accentGold.withOpacity(0.7),
+                    color: ClientTheme.accentGold.withOpacity(0.7),
                     width: 1.2,
                   ),
                 ),
@@ -1618,7 +1614,7 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => const Icon(
                       Icons.broken_image,
-                      color: HomePage.accentGold,
+                      color: ClientTheme.accentGold,
                       size: 24,
                     ),
                   ),
@@ -1631,9 +1627,9 @@ class _AnimatedFooterState extends State<AnimatedFooter>
                 child: ShaderMask(
                   shaderCallback: (bounds) => const LinearGradient(
                     colors: [
-                      HomePage.accentGoldSoft,
-                      HomePage.accentGold,
-                      HomePage.accentGoldDeep,
+                      ClientTheme.accentGoldSoft,
+                      ClientTheme.accentGold,
+                      ClientTheme.accentGoldDeep,
                     ],
                   ).createShader(bounds),
                   child: Text(
