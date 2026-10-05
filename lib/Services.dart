@@ -1291,14 +1291,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         ),
       ),
       icon: Icon(icon, size: 18, color: Services.accentCyan),
-      label: Text(
-        label,
-        style: GoogleFonts.alegreyaSc(
-          fontSize: 13,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.8,
-        ),
-      ),
+      label: Text(label, style: GoogleFonts.alegreyaSc(fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.8)),
       onPressed: onTap,
     );
   }
