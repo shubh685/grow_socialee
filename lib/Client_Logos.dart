@@ -1392,15 +1392,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "CONNECT WITH US",
-          style: GoogleFonts.alegreyaSc(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: ClientTheme.accentGold,
-            letterSpacing: 1.2,
-          ),
-        ),
+        Text("CONNECT WITH US", style: GoogleFonts.alegreyaSc(fontSize: 15, fontWeight: FontWeight.bold, color: ClientTheme.accentGold, letterSpacing: 1.2)),
         const SizedBox(height: 16),
         Wrap(
           spacing: 10,
