@@ -24,6 +24,7 @@ class Breakpoints {
   static bool isDesktop(double w) => w >= tablet;
   static bool isLargeDesktop(double w) => w >= desktop;
 }
+
 // ============================================================
 // CLIENT LOGOS PAGE — THEME (matches HomePage royal blue + gold)
 // ============================================================
@@ -187,20 +188,9 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             SliverToBoxAdapter(
               child: _buildCTASection(isDesktop),
             ),
-            // ✅ Footer
+            // ✅ Footer matching About Page
             SliverToBoxAdapter(
-              child: AnimatedFooter(
-                addressQuery: addressQuery,
-                phoneNum: phoneNum,
-                emailAddr: emailAddr,
-                googleMapsUrl: googleMapsUrl,
-                facebookUrl: facebookUrl,
-                instagramUrl: instagramUrl,
-                linkedInUrl: linkedInUrl,
-                onLaunchUrl: _launchUrlString,
-                onMakeCall: _makePhoneCall,
-                onSendEmail: _sendEmail,
-              ),
+              child: _buildFooter(context),
             ),
           ],
         ),
@@ -252,14 +242,12 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // 1. Wrapped in Flexible to prevent logo text overflow on resize
                   Flexible(
                     flex: 3,
                     child: _buildLogoHeader(),
                   ),
                   const SizedBox(width: 8),
                   if (isDesktop)
-                  // 2. Wrapped in Flexible and SingleChildScrollView to prevent button overflow
                     Flexible(
                       flex: 7,
                       child: SingleChildScrollView(
@@ -439,7 +427,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage())),
             child: Container(
               height: 50,
               width: 50,
@@ -555,7 +543,7 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                     icon: Icons.home_rounded,
                     label: "HOME",
                     onTap: () {
-                      setState( () => _selectedIndex = 0);
+                      setState(() => _selectedIndex = 0);
                       Navigator.pop(context);
                       Navigator.pushReplacement(
                         context,
@@ -604,21 +592,21 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       );
                     },
                   ),
-                _buildDrawerItem(
-                  index: 4,
-                  icon: Icons.chat_bubble_outline_rounded,
-                  label: "REVIEWS",
-                  onTap: () {
-                    setState(() => _selectedIndex = 4);
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Reviews(), // Ensures no const modifier mismatch
-                      ),
-                    );
-                  },
-                ),
+                  _buildDrawerItem(
+                    index: 4,
+                    icon: Icons.chat_bubble_outline_rounded,
+                    label: "REVIEWS",
+                    onTap: () {
+                      setState(() => _selectedIndex = 4);
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Reviews(),
+                        ),
+                      );
+                    },
+                  ),
                   _buildDrawerItem(
                     index: 5,
                     icon: Icons.contact_phone_sharp,
@@ -739,7 +727,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       ),
       child: Stack(
         children: [
-          // Cyan glow top-right
           Positioned(
             top: -80,
             right: -80,
@@ -757,7 +744,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
               ),
             ),
           ),
-          // Gold glow bottom-left
           Positioned(
             bottom: -100,
             left: -80,
@@ -789,7 +775,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 1150),
-                // Framed Glassmorphic Card Container matching AG Hero layout
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -815,7 +800,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 padding: EdgeInsets.all(isDesktop ? 48 : 24),
                 child: Column(
                   children: [
-                    // Chapter marker
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
@@ -854,7 +838,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       ),
                     ),
                     const SizedBox(height: 22),
-                    // "Trusted by" small line
                     Text(
                       "Trusted by",
                       textAlign: TextAlign.center,
@@ -866,7 +849,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    // Big gradient headline
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                         colors: [
@@ -909,7 +891,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       ),
     );
   }
-
 
   // ============================================================
   // ORNAMENT DIVIDER
@@ -1038,7 +1019,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
                 ),
               ),
               const SizedBox(height: 26),
-              // Gold gradient CTA
               Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
@@ -1130,7 +1110,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Section pill
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
@@ -1174,7 +1153,6 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             itemBuilder: (context, index) {
               final int rowIndex = index ~/ crossAxisCount;
               final int colIndex = index % crossAxisCount;
-              // Find global index for key usage
               final globalIndex = clientLogos
                   .indexWhere((c) => c["path"] == filtered[index]["path"]);
               return BottomToTopAnimatedLogoCard(
@@ -1188,6 +1166,281 @@ class _ClientLogoPageState extends State<ClientLogoPage> {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  // ============================================================
+  // FOOTER (Matching About Page design)
+  // ============================================================
+  Widget _buildFooter(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isDesktop = screenWidth > 800;
+
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            ClientTheme.royalBlue,
+            Color(0xFF05132B),
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: ClientTheme.accentGold.withOpacity(0.4),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 24),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: isDesktop
+                    ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        flex: 2, child: _buildFooterBrandSection()),
+                    const SizedBox(width: 40),
+                    Expanded(
+                        flex: 2, child: _buildFooterContactSection()),
+                    const SizedBox(width: 40),
+                    Expanded(
+                        flex: 1, child: _buildFooterSocialSection()),
+                  ],
+                )
+                    : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFooterBrandSection(),
+                    const SizedBox(height: 36),
+                    _buildFooterContactSection(),
+                    const SizedBox(height: 36),
+                    _buildFooterSocialSection(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFooterBrandSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const HomePage())),
+              child: Container(
+                height: 50,
+                width: 50,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      ClientTheme.accentGold.withOpacity(0.25),
+                      ClientTheme.accentGoldDeep.withOpacity(0.10),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: ClientTheme.accentGold.withOpacity(0.7),
+                    width: 1.2,
+                  ),
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    "assets/photos/logo.png",
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.broken_image,
+                      color: ClientTheme.accentGold,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: InkWell(
+                onTap: () => Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const HomePage())),
+                child: ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [
+                      ClientTheme.accentGoldSoft,
+                      ClientTheme.accentGold,
+                      ClientTheme.accentGoldDeep,
+                    ],
+                  ).createShader(bounds),
+                  child: Text(
+                    "We are Grow Socialee",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.alegreyaSc(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.05,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: ClientTheme.textMuted,
+            height: 1.6,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFooterContactSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "CONTACT INFO",
+          style: GoogleFonts.alegreyaSc(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: ClientTheme.accentGold,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildFooterLink(
+          icon: Icons.location_on_outlined,
+          text: addressQuery,
+          onTap: () => _launchUrlString(googleMapsUrl),
+          isMultiLine: true,
+        ),
+        const SizedBox(height: 12),
+        _buildFooterLink(
+          icon: Icons.phone_outlined,
+          text: phoneNum,
+          onTap: () => _makePhoneCall(phoneNum),
+        ),
+        const SizedBox(height: 12),
+        _buildFooterLink(
+          icon: Icons.email_outlined,
+          text: emailAddr,
+          onTap: () => _sendEmail(emailAddr),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFooterLink({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+    bool isMultiLine = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          crossAxisAlignment:
+          isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: ClientTheme.accentGold),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                maxLines: isMultiLine ? 3 : 1,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: ClientTheme.accentWhite,
+                  height: 1.4,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFooterSocialSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "CONNECT WITH US",
+          style: GoogleFonts.alegreyaSc(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: ClientTheme.accentGold,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            _buildSocialButton(
+              icon: FontAwesomeIcons.facebook,
+              url: facebookUrl,
+            ),
+            _buildSocialButton(
+              icon: FontAwesomeIcons.instagram,
+              url: instagramUrl,
+            ),
+            _buildSocialButton(
+              icon: FontAwesomeIcons.linkedin,
+              url: linkedInUrl,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSocialButton({required IconData icon, required String url}) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: ClientTheme.accentGold.withOpacity(0.6),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: ClientTheme.accentGold.withOpacity(0.10),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 18, color: ClientTheme.accentGold),
+        onPressed: () => _launchUrlString(url),
       ),
     );
   }
@@ -1345,7 +1598,6 @@ class _BottomToTopAnimatedLogoCardState
     final bool isFeatured = widget.isFeatured;
     final bool isWhite = widget.isWhiteLogo;
 
-    // Featured cards get gold border + glow; normal cards get subtle cyan
     final borderColor = isFeatured
         ? ClientTheme.accentGold
         : (isWhite
@@ -1394,7 +1646,6 @@ class _BottomToTopAnimatedLogoCardState
       ),
       child: Stack(
         children: [
-          // Logo
           Center(
             child: Image.asset(
               widget.imagePath,
@@ -1405,7 +1656,6 @@ class _BottomToTopAnimatedLogoCardState
               ),
             ),
           ),
-          // Featured crown badge
           if (isFeatured)
             Positioned(
               top: 0,
@@ -1429,364 +1679,6 @@ class _BottomToTopAnimatedLogoCardState
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-// ============================================================
-// ANIMATED FOOTER
-// ============================================================
-class AnimatedFooter extends StatefulWidget {
-  final String addressQuery;
-  final String phoneNum;
-  final String emailAddr;
-  final String googleMapsUrl;
-  final String facebookUrl;
-  final String instagramUrl;
-  final String linkedInUrl;
-  final Function(String) onLaunchUrl;
-  final Function(String) onMakeCall;
-  final Function(String) onSendEmail;
-
-  const AnimatedFooter({
-    super.key,
-    required this.addressQuery,
-    required this.phoneNum,
-    required this.emailAddr,
-    required this.googleMapsUrl,
-    required this.facebookUrl,
-    required this.instagramUrl,
-    required this.linkedInUrl,
-    required this.onLaunchUrl,
-    required this.onMakeCall,
-    required this.onSendEmail,
-  });
-
-  @override
-  State<AnimatedFooter> createState() => _AnimatedFooterState();
-}
-
-class _AnimatedFooterState extends State<AnimatedFooter>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _glowController;
-  late Animation<double> _glowAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _glowController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat(reverse: true);
-
-    _glowAnimation = Tween<double>(begin: 0.3, end: 0.9).animate(
-      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _glowController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isDesktop = screenWidth >= Breakpoints.tablet;
-
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            ClientTheme.royalBlue,
-            Color(0xFF05132B),
-          ],
-        ),
-      ),
-      child: Column(
-        children: [
-          AnimatedBuilder(
-            animation: _glowAnimation,
-            builder: (context, child) {
-              return Container(
-                height: 3,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      ClientTheme.accentGold
-                          .withOpacity(_glowAnimation.value),
-                      ClientTheme.accentCyan
-                          .withOpacity(_glowAnimation.value),
-                      ClientTheme.accentGoldDeep
-                          .withOpacity(_glowAnimation.value),
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: ClientTheme.accentGold
-                          .withOpacity(_glowAnimation.value * 0.6),
-                      blurRadius: 12,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 24),
-            child: Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                child: isDesktop
-                    ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: _buildFooterBrandSection(),
-                    ),
-                    const SizedBox(width: 40),
-                    Expanded(
-                      flex: 2,
-                      child: _buildFooterContactSection(),
-                    ),
-                    const SizedBox(width: 40),
-                    Expanded(
-                      flex: 1,
-                      child: _buildFooterSocialSection(),
-                    ),
-                  ],
-                )
-                    : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildFooterBrandSection(),
-                    const SizedBox(height: 36),
-                    _buildFooterContactSection(),
-                    const SizedBox(height: 36),
-                    _buildFooterSocialSection(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooterBrandSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage())),
-              child: Container(
-                height: 50,
-                width: 50,
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      ClientTheme.accentGold.withOpacity(0.25),
-                      ClientTheme.accentGoldDeep.withOpacity(0.10),
-                    ],
-                  ),
-                  border: Border.all(
-                    color: ClientTheme.accentGold.withOpacity(0.7),
-                    width: 1.2,
-                  ),
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    "assets/photos/logo.png",
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
-                      Icons.broken_image,
-                      color: ClientTheme.accentGold,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Flexible(
-              child: InkWell(
-                child: ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [
-                      ClientTheme.accentGoldSoft,
-                      ClientTheme.accentGold,
-                      ClientTheme.accentGoldDeep,
-                    ],
-                  ).createShader(bounds),
-                  child: Text(
-                    "We are Grow Socialee",
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.alegreyaSc(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      height: 1.05,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Text(
-          "Empowering businesses through digital strategies, branding, video production, and social media solutions.",
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: AboutTheme.textMuted,
-            height: 1.6,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFooterContactSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "CONTACT INFO",
-          style: GoogleFonts.alegreyaSc(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: ClientTheme.accentGold,
-            letterSpacing: 1.0,
-          ),
-        ),
-        const SizedBox(height: 16),
-        _buildFooterLink(
-          icon: Icons.location_on_outlined,
-          text: widget.addressQuery,
-          onTap: () => widget.onLaunchUrl(widget.googleMapsUrl),
-          isMultiLine: true,
-        ),
-        const SizedBox(height: 12),
-        _buildFooterLink(
-          icon: Icons.phone_outlined,
-          text: widget.phoneNum,
-          onTap: () => widget.onMakeCall(widget.phoneNum),
-        ),
-        const SizedBox(height: 12),
-        _buildFooterLink(
-          icon: Icons.email_outlined,
-          text: widget.emailAddr,
-          onTap: () => widget.onSendEmail(widget.emailAddr),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFooterLink({
-    required IconData icon,
-    required String text,
-    required VoidCallback onTap,
-    bool isMultiLine = false,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(6),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
-        child: Row(
-          crossAxisAlignment:
-          isMultiLine ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-          children: [
-            Icon(icon, size: 18, color: AboutTheme.accentGold),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                text,
-                overflow: TextOverflow.ellipsis,
-                maxLines: isMultiLine ? 3 : 1,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 13,
-                  color: AboutTheme.accentWhite, // Makes all contact details bright and bold white
-                  height: 1.4,
-                  fontWeight: FontWeight.bold, // Forces bold style across Address, Phone, & Email
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFooterSocialSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "CONNECT WITH US",
-          style: GoogleFonts.alegreyaSc(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: ClientTheme.accentGold,
-            letterSpacing: 1.0,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: [
-            _buildSocialButton(
-              icon: FontAwesomeIcons.facebook,
-              url: widget.facebookUrl,
-            ),
-            _buildSocialButton(
-              icon: FontAwesomeIcons.instagram,
-              url: widget.instagramUrl,
-            ),
-            _buildSocialButton(
-              icon: FontAwesomeIcons.linkedin,
-              url: widget.linkedInUrl,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialButton({required IconData icon, required String url}) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: ClientTheme.accentGold.withOpacity(0.6),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: ClientTheme.accentGold.withOpacity(0.10),
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, size: 18, color: ClientTheme.accentGold),
-        onPressed: () => widget.onLaunchUrl(url),
       ),
     );
   }

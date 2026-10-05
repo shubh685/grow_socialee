@@ -2430,7 +2430,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
                 textAlign: TextAlign.justify,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 15,
-                  color: AboutTheme.textMuted,
+                  color: Colors.white,
                   height: 1.6,
                   fontWeight: FontWeight.w300,
                 ),
@@ -2444,7 +2444,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: AboutTheme.textMuted,
+            color: Colors.white,
             height: 1.6,
             fontWeight: FontWeight.w300,
           ),
@@ -2455,7 +2455,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: AboutTheme.textMuted,
+            color: Colors.white,
             height: 1.6,
             fontWeight: FontWeight.w300,
           ),
@@ -2466,7 +2466,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: AboutTheme.textMuted,
+            color: Colors.white,
             height: 1.6,
             fontWeight: FontWeight.w300,
           ),
@@ -2477,7 +2477,7 @@ class _AboutSplitSectionAnimatedState extends State<_AboutSplitSectionAnimated>
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: AboutTheme.textMuted,
+            color: Colors.white,
             height: 1.6,
             fontWeight: FontWeight.w300,
           ),
