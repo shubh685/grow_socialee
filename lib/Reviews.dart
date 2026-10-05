@@ -26,7 +26,6 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   static const Color royalBlue = Color(0xFF0A1F44);
   static const Color royalBlueMid = Color(0xFF0F2A5C);
   static const Color darkBg = Color(0xFF0A1F44);
-  static const Color darkCardBg = Color(0xFF0D2551);
   static const Color glassCard = Color(0xFF13315C);
 
   static const Color accentGold = Color(0xFFF5C842);
@@ -34,10 +33,7 @@ class _ReviewsState extends State<Reviews> with TickerProviderStateMixin {
   static const Color accentGoldSoft = Color(0xFFFFE08A);
 
   static const Color accentCyan = Color(0xFF4FC3F7);
-  static const Color accentCyanGlow = Color(0xFF29B6F6);
-  static const Color brandBlue = Color(0xFF1E88E5);
 
-  static const Color accentWhite = Colors.white;
   static const Color textMuted = Color(0xFFB8D4F0);
   static const Color textSoft = Color(0xFFD6E6FA);
 
