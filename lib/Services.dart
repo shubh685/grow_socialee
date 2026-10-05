@@ -1215,38 +1215,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               children: [
                 Row(
                   children: [
-                    Text(
-                      "${step["num"]} · ",
-                      style: GoogleFonts.poppins(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white70,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
+                    Text("${step["num"]} · ", style: GoogleFonts.poppins(fontSize: 12.5, fontWeight: FontWeight.w800, color: Colors.white70, letterSpacing: 1.2)),
                     Flexible(
-                      child: Text(
-                        step["title"] as String,
-                        style: GoogleFonts.playfairDisplay(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 1.2,
-                        ),
-                      ),
+                      child: Text(step["title"] as String, style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white, height: 1.2)),
                     ),
                   ],
                 ),
                 const SizedBox(height: 3),
-                Text(
-                  step["desc"] as String,
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 12,
-                    color: Services.textMuted,
-                    fontWeight: FontWeight.w400,
-                    height: 1.4,
-                  ),
-                ),
+                Text(step["desc"] as String, style: GoogleFonts.playfairDisplay(fontSize: 12, color: Services.textMuted, fontWeight: FontWeight.w400, height: 1.4)),
               ],
             ),
           ),
@@ -1289,16 +1265,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),
-        ),
-        icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
-        label: Text(
-          label,
-          style: GoogleFonts.alegreyaSc(
-            fontSize: 13,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.8,
-          ),
-        ),
+        ), icon: Icon(icon, size: 18, color: const Color(0xFF1A1200)),
+        label: Text(label, style: GoogleFonts.alegreyaSc(fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 0.8)),
         onPressed: onTap,
       ),
     );
