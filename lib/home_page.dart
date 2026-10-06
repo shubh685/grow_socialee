@@ -1761,7 +1761,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: HomePage.textMuted,
+            color: Colors.white,
             height: 1.6,
             fontWeight: FontWeight.w300,
           ),
@@ -1773,7 +1773,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: HomePage.textMuted,
+            color: Colors.white,
             height: 1.6,
             fontWeight: FontWeight.w300,
           ),
@@ -1784,7 +1784,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           textAlign: TextAlign.justify,
           style: GoogleFonts.playfairDisplay(
             fontSize: 15,
-            color: HomePage.textMuted,
+            color: Colors.white,
             height: 1.5,
             fontWeight: FontWeight.w300,
           ),

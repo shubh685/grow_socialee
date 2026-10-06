@@ -1801,15 +1801,7 @@ class _AboutState extends State<About> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                cap["num"] as String,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                  letterSpacing: 1.5,
-                ),
-              ),
+              Text(cap["num"] as String, style: GoogleFonts.playfairDisplay(fontSize: 12, fontWeight: FontWeight.bold, color: color, letterSpacing: 1.5)),
             ],
           ),
           const SizedBox(width: 16),
@@ -1824,32 +1816,16 @@ class _AboutState extends State<About> {
               ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: color.withOpacity(0.5)),
-            ),
-            child: Icon(cap["icon"] as IconData, color: color, size: 24),
+            ), child: Icon(cap["icon"] as IconData, color: color, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  cap["title"] as String,
-                  style: GoogleFonts.alegreyaSc(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: AboutTheme.accentWhite,
-                    height: 1.3,
-                  ),
-                ),
+                Text(cap["title"] as String, style: GoogleFonts.alegreyaSc(fontSize: 17, fontWeight: FontWeight.bold, color: AboutTheme.accentWhite, height: 1.3)),
                 const SizedBox(height: 8),
-                Text(
-                  cap["desc"] as String,
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 13.5,
-                    color: AboutTheme.textMuted,
-                    height: 1.55,
-                  ),
-                ),
+                Text(cap["desc"] as String, style: GoogleFonts.playfairDisplay(fontSize: 13.5, color: AboutTheme.textMuted, height: 1.55)),
               ],
             ),
           ),
